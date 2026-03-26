@@ -33,6 +33,17 @@ Global architecture decisions are made by **Orion** together with the Director. 
 
 ---
 
+## COMMUNICATION RULES
+
+- When implementation is complete: reply only **"Ready to test"** — nothing else
+- When you have a blocking question: reply only **"Blocked: [one line explaining why]"**
+- When commit is done: reply only **"Done. Committed."**
+- No explanations, no summaries, no walkthroughs unless the Director asks
+
+Reason: Token efficiency. The Director reads the code, not the explanation.
+
+---
+
 ## HOW TO READ AN ISSUE
 
 Every issue Orion creates has:
@@ -40,7 +51,7 @@ Every issue Orion creates has:
 2. **Prompt** — exactly what to implement
 3. **Test plan** — what the Director must verify
 
-If the issue is missing any of these three parts → ask Orion to complete it before executing.
+If the issue is missing any of these three parts → reply **"Blocked: issue incomplete"**
 
 ---
 
@@ -73,6 +84,7 @@ If the issue is missing any of these three parts → ask Orion to complete it be
 - Don't ignore the test plan
 - Don't change issue scope without notifying Orion
 - Don't break DTO contracts that the backend already consumes
+- Don't explain what you did — just say "Ready to test"
 
 ---
 
