@@ -28,6 +28,20 @@ npm run db:migrate
 $env:DATABASE_URL="postgresql://..."; npm run db:migrate
 ```
 
+## ⚠️ CRITICAL — Clean DATABASE_URL after running migrations
+
+After running production migrations, always clear the variable:
+
+```powershell
+$env:DATABASE_URL=""
+```
+
+**Why:** If `DATABASE_URL` stays set in the PowerShell session, the local backend will connect to Neon (production DB) instead of Docker — causing unexpected behavior and data issues.
+
+**Symptom:** Local features that worked before suddenly don't behave as expected, or you see production data locally.
+
+---
+
 ## Existing migrations in order
 
 1. `InitialSchema` — base schema
@@ -43,4 +57,4 @@ $env:DATABASE_URL="postgresql://..."; npm run db:migrate
 - Always run migrations manually before deploying
 - NEVER modify migrations that already ran in production
 - Migrations path in `app.module.ts`: `__dirname + '/../migrations/*.js'`
-- See issue #65 for the full documented flow
+- Always clear `$env:DATABASE_URL=""` after running production migrations
