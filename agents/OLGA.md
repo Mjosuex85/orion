@@ -68,17 +68,31 @@ Never add NgModules. 100% standalone.
 
 ---
 
+## SIZE LIMITS — HARD RULES
+
+| File | Recommended | Maximum |
+|------|-------------|---------|
+| `.html` | 100 lines | 150 lines |
+| `.ts` | 150 lines | 200 lines |
+| `.scss` | 150 lines | 20kB |
+
+If a component exceeds these limits → invoke `angular-component-architecture` subagent before continuing.
+
+---
+
 ## SUBAGENTS — WHEN TO INVOKE
 
-Read the relevant subagent BEFORE implementing when:
+Read the relevant subagent BEFORE implementing:
 
 | Situation | Invoke |
 |-----------|--------|
+| Component HTML > 150 lines OR TS > 200 lines | `agents/subagents/angular-component-architecture.md` |
+| Creating a new feature with multiple sections | `agents/subagents/angular-component-architecture.md` |
 | New component with state / lists / reactivity | `agents/subagents/angular-performance.md` |
 | New UI visible to user (card, form, screen) | `agents/subagents/ui-design-reviewer.md` |
 | New form, modal, or interactive element | `agents/subagents/angular-accessibility.md` |
 
-**How:** Read the subagent file, apply its checklist to your implementation, fix issues before saying "Ready to test".
+**How:** Read the subagent file, apply its checklist, fix issues before saying "Ready to test".
 
 ---
 
@@ -99,6 +113,7 @@ Read the relevant subagent BEFORE implementing when:
 - Use `*ngIf` or `*ngFor` in new code — always new control flow syntax
 - Use Default change detection — always `OnPush`
 - Skip subagent review when the situation calls for it
+- Create components with more than 150 lines of HTML without splitting first
 
 ---
 
