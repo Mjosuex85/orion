@@ -43,7 +43,7 @@ Olga           →  ejecuta frontend
 - Toma buenas decisiones cuando tiene el contexto completo
 
 **Patrones débiles:**
-- Tiende a over-perfeccionar antes de mostrar al usuario real — quiere que todo esté perfecto antes de enseñarlo
+- Tiende a over-perfeccionar antes de mostrar al usuario real
 - A veces necesita que alguien le diga "ya está, muéstralo" — eso también es mi trabajo
 
 **Cómo trabaja mejor:**
@@ -85,11 +85,15 @@ Durante la sesión NO releo estos archivos a menos que Mario lo pida.
 ```
 Mario          → Director (visión, pruebas, decisiones de negocio)
 Orion          → CTO (arquitectura, coordinación, issues, cierra issues)
-Nestor         → Backend Tech Lead (VSCode + Copilot Pro)
-Olga           → Frontend Tech Lead (Antigravity)
+Nestor         → Backend Tech Lead (VSCode + Copilot Pro, Sonnet 4.6 mínimo)
+Olga           → Frontend Tech Lead (Antigravity, Sonnet 4.6 mínimo)
 ```
 
-**Regla crítica de modelos:** Haiku 4.5 no sigue reglas complejas. Nestor y Olga deben usar **Sonnet 4.6 mínimo**.
+**Subagentes de Olga (en `orion/agents/subagents/`):**
+- `angular-component-architecture.md` — componentizar, Single Responsibility, límites de tamaño
+- `angular-performance.md` — signals, OnPush, computed, trackBy
+- `ui-design-reviewer.md` — paleta GameOn, UX, mobile first
+- `angular-accessibility.md` — HTML semántico, formularios, contraste
 
 ---
 
@@ -105,6 +109,32 @@ Todos los issues viven en `gameon-api` — incluyendo los de frontend.
 
 ---
 
+## ESTRATEGIA DE TOKENS
+
+```
+Tareas S/M simples  → Copilot Pro (Nestor) + Gemini (Olga) — sin costo extra
+Tareas L/XL         → Claude CLI — cuando se necesita más razonamiento
+Orion               → Claude.ai Pro — aquí, coordinando
+```
+
+**El valor diferencial NO está en el modelo — está en el contexto.**
+`ORION.md + DECISIONS.md + CLAUDE.md` es lo que hace poderoso al sistema.
+Un agente genérico de aitmpl.com sin ese contexto es solo un dev que no conoce el proyecto.
+
+---
+
+## HERRAMIENTAS DESCUBIERTAS
+
+**aitmpl.com** — librería de +1000 componentes para Claude CLI:
+- Hooks: triggers automáticos (PostToolUse, pre-commit, etc.)
+- Agentes especializados instalables con `npx claude-code-templates@latest`
+- MCPs de integración (Figma, Vercel, etc.)
+- ClaudeKit: setup completo battle-tested, 4000+ devs en 109 países
+
+**Estrategia:** usar componentes de aitmpl para potenciar a Nestor/Olga, pero siempre con nuestro contexto (CLAUDE.md) como base. No reemplaza a los agentes — los potencia.
+
+---
+
 ## LOG DE SESIONES
 
 ### Sesiones 1-6 (antes del 26 marzo 2026)
@@ -117,52 +147,36 @@ Todos los issues viven en `gameon-api` — incluyendo los de frontend.
 
 ### Sesión 7 — 26 de marzo de 2026
 
-**Orion OS — nacimiento del framework completo:**
-- Creado repo `Mjosuex85/orion` como sistema operativo de agentes
-- Estructura: `agents/`, `skills/`, `projects/`, `templates/`, `workflows/`
-- `AGENT_RULES.md` — reglas universales para todos los agentes
-- `NESTOR.md` y `OLGA.md` simplificados — solo lo específico de cada agente
-- `CLAUDE.md` en `gameon-api` y `gameon` — contexto automático al abrir el repo
-- Business Rules en `orion/projects/gameon.md` — no en CLAUDE.md
-- GitHub Actions `agent-log.yml` — métricas automáticas por commit
+**Primera mitad:**
+- Orion OS framework completo creado en `Mjosuex85/orion`
+- CLAUDE.md en gameon-api y gameon
+- Primer flujo completo con Olga (#61) y Nestor (#36) ✅
+- Issues cerrados: #32, #36, #61, #62, #65
+- Error detectado: ORION.md nunca fue creado en el repo orion — corregido
+- DECISIONS.md restaurado completo (D1-D61) desde historial de gameon-api
 
-**Error detectado y corregido:**
-`ORION.md` nunca fue creado en el repo `orion` al hacer la migración. Se asumió sin verificar. Mario lo detectó. Corregido en esta sesión — y documentado como aprendizaje.
+**Segunda mitad:**
+- Olga potenciada con 4 subagentes especializados en `orion/agents/subagents/`
+- Olga redefinida como Angular expert (no generalista): OnPush, signals, nueva sintaxis
+- Límites de tamaño documentados: HTML ≤150 líneas, TS ≤200, SCSS ≤20kB
+- Issue #69 creado: refactor admin.component (650 líneas → 8 componentes)
+- Descubrimiento: aitmpl.com como librería de componentes para Claude CLI
+- Estrategia de tokens definida: Copilot/Gemini para S/M, Claude CLI para L/XL
+- D62 añadida: límites de tamaño de componentes Angular
 
-**Primer flujo completo Orion OS — Olga (#61):**
-- Olga leyó el Kanban sola via MCP GitHub ✅
-- Implementó `isLoading = signal(false)` ✅
-- Dijo "Ready to test" y esperó aprobación ✅
-- GitHub Action disparado — primer registro en `logs/usage.jsonl` ✅
-- Issue #61 cerrado ✅
+**Issues abiertos al cerrar sesión:**
+- 🔴 #10 — Waitlist system (próximo grande, Nestor + Olga)
+- 🔴 #64 — admin scss (se resuelve con #69)
+- 🔴 #66 — Google OAuth refresh token producción
+- 🔴 #69 — refactor admin.component (Olga, XL)
+- 🔴 #67 — WhatsApp bot N8N (futuro)
 
-**Primer flujo completo Orion OS — Nestor (#36):**
-- Primera vez: usó Haiku 4.5, committeó sin aprobación ❌
-- Nestor creó su propio archivo de memoria — metacognición espontánea ✅
-- Segunda vez: siguió el protocolo correctamente ✅
-- Bug encontrado: `!user.password` con `select: false` nunca carga — Mario lo detectó
-- Issue #36 cerrado ✅
-
-**Issues cerrados:** #32, #36, #61, #62, #65
-**Issues nuevos:** #63, #64, #66, #67 (WhatsApp N8N), #68 (QA Agent)
-**Issues redefinidos:** #10 (waitlist — redefinido completamente)
-
-**Aprendizajes técnicos:**
-- Haiku 4.5 no sigue reglas complejas — Sonnet 4.6 mínimo
-- `password` con `select: false` nunca se carga — no usar en condiciones
-- `DATABASE_URL` persiste en PowerShell — siempre limpiar con `$env:DATABASE_URL=""`
-- Business Rules van en `projects/gameon.md`, no en `CLAUDE.md`
-- Las instrucciones "despierta Orion" apuntaban a `gameon-api` — corregido a repo `orion`
-
-**Estado al cerrar sesión:**
+**Estado del stack:**
 - ✅ Backend + Frontend en producción (Vercel)
 - ✅ Resend funcionando
-- ✅ Orion OS live en `github.com/Mjosuex85/orion`
-- 🔴 #66 — Google OAuth refresh token falla en producción
-- 🔴 #64 — admin.component.scss oversized
-- 🔴 #10 — Waitlist system (próximo grande)
+- ✅ Orion OS live — subagentes de Olga activos
 
 ---
 
 *Orion OS — construido por Mario Vidal + Orion*
-*Última actualización: 26 de marzo de 2026*
+*Última actualización: 26 de marzo de 2026 — Sesión 7 completa*
