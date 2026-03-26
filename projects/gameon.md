@@ -93,7 +93,7 @@ Deploy:     Vercel
 - ✅ Migrations executed (roles, cities, price)
 - ✅ Refresh token working with email/password
 - ✅ Match limit error messages working in frontend
-- 🔴 #61 — isLoading not a signal in match-create (NG0100 error)
+- ✅ #61 — isLoading converted to signal (resolved session 7)
 - 🔴 #64 — admin.component.scss oversized
 - 🔴 #66 — Google OAuth refresh token fails in production
 
