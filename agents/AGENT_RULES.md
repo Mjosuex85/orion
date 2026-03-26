@@ -26,6 +26,27 @@ Reason: Token efficiency. The Director reads the code, not the explanation.
 
 ---
 
+## WINDOWS / POWERSHELL ENVIRONMENT
+
+The Director works on **Windows 11 with PowerShell**. Always follow these rules for terminal commands:
+
+- NEVER use `&&` to chain commands — it does NOT work in PowerShell
+- Use `;` instead: `git add .; git commit -m "..."; git push origin develop`
+- For environment variables use: `$env:VAR="value"` not `export VAR=value`
+- For multiline commands, use separate lines — not chained with `&&`
+
+```powershell
+# CORRECT
+git add .
+git commit -m "[OLGA] fix(match-create): convert isLoading to signal ref Mjosuex85/gameon-api#61 | size: S"
+git push origin develop
+
+# WRONG — never do this
+git add . && git commit -m "..." && git push origin develop
+```
+
+---
+
 ## ISSUE READING
 
 Every Orion issue has three parts:
@@ -55,6 +76,7 @@ If any part is missing → **"Blocked: issue incomplete"**
 - Touch `main` directly
 - Change issue scope without notifying Orion
 - Explain what was done — just say "Ready to test"
+- Use `&&` in terminal commands — use `;` or separate lines instead
 
 ---
 
