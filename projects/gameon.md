@@ -37,7 +37,7 @@ DB local:   Docker port 5434
 
 ### Frontend — `Mjosuex85/gameon`
 ```
-Framework:  Angular 17+ (100% standalone components)
+Framework:  Angular 21 (100% standalone components)
 Styles:     TailwindCSS + SCSS
 State:      Angular Signals
 Deploy:     Vercel
@@ -45,7 +45,33 @@ Deploy:     Vercel
 
 ---
 
-## GAMEON-SPECIFIC RULES
+## BUSINESS RULES
+
+> These rules come from product decisions. Orion injects the relevant ones into issues when needed.
+
+### Matches
+- **Free users can create maximum 1 match per day**
+  - Backend error message: `"Regular users can only create 1 match per day"`
+  - Frontend must detect: `msg.includes('only create 1 match per day')`
+  - User-facing message: `"Ya creaste un partido hoy, podrás crear otro mañana"`
+- Match date must always be in the future
+  - Backend error message includes: `"must be in the future"`
+- Only the match creator can edit or delete their match
+- Cannot join a full match
+- Cancellation window controlled by `cancellationWindowHours` field
+
+### Users
+- User roles: `USER` (free), `ADMIN`
+- Future roles planned: `organizer`, `referee` (issue #6)
+- Google OAuth users cannot change password (no local password)
+
+### Pricing
+- Matches have a `price` field (decimal, default 0)
+- Free matches = price 0
+
+---
+
+## GAMEON-SPECIFIC TECHNICAL RULES
 
 - All issues live in `gameon-api` — including frontend ones
 - GitHub Project: "GameOn" — Kanban with Todo / In Progress / Done
@@ -55,6 +81,8 @@ Deploy:     Vercel
   ```powershell
   $env:DATABASE_URL="your_neon_url"; npm run db:migrate
   ```
+- Module name is `matchs` (with s) — do not rename, referenced throughout codebase
+- `MatchParticipant` is its own entity — NOT simple ManyToMany
 
 ---
 
@@ -64,8 +92,10 @@ Deploy:     Vercel
 - ✅ Frontend in production (Vercel)
 - ✅ Migrations executed (roles, cities, price)
 - ✅ Refresh token working with email/password
-- 🔴 Google OAuth refresh token fails in production (issue #66)
-- 🔴 admin.component.scss oversized (issue #64)
+- ✅ Match limit error messages working in frontend
+- 🔴 #61 — isLoading not a signal in match-create (NG0100 error)
+- 🔴 #64 — admin.component.scss oversized
+- 🔴 #66 — Google OAuth refresh token fails in production
 
 ---
 
