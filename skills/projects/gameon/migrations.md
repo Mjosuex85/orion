@@ -1,46 +1,46 @@
-# Skill: Migraciones en GameOn — Específico de proyecto
+# Skill: Migrations in GameOn — Project Specific
 
-> Cómo crear y correr migraciones específicamente en GameOn.
+> How to create and run migrations specifically in GameOn.
 
 ---
 
-## Flujo para crear una migración
+## Flow to create a migration
 
 ```bash
-# 1. Compilar
+# 1. Build
 npm run build
 
-# 2. Generar
-npx typeorm migration:generate src/migrations/NombreDescriptivo -d dist/database.config.js
+# 2. Generate
+npx typeorm migration:generate src/migrations/DescriptiveName -d dist/database.config.js
 
-# 3. Revisar el archivo en src/migrations/
-# 4. Compilar de nuevo para incluir la migración
+# 3. Review the file in src/migrations/
+# 4. Build again to include the migration
 npm run build
 
-# 5. Correr en local
+# 5. Run locally
 npm run db:migrate
 ```
 
-## Correr en producción (OBLIGATORIO antes de cada deploy con migraciones)
+## Run in production (MANDATORY before each deploy with migrations)
 
 ```powershell
-# PowerShell — con URL de Neon
+# PowerShell — with Neon URL
 $env:DATABASE_URL="postgresql://..."; npm run db:migrate
 ```
 
-## Migraciones existentes en orden
+## Existing migrations in order
 
-1. `InitialSchema` — schema base
+1. `InitialSchema` — base schema
 2. `AddIsFirstLoginToUser` — onboarding
-3. `AddRoleToUser` — roles USER/ADMIN
-4. `AddPriceToMatch` — precio de partidos
-5. `CreateCitiesAndDistricts` — ciudades y distritos (Madrid por defecto)
-6. `AddCityDistrictToMatch` — reemplaza columna `location` por `cityId` + `districtId` + `address`
+3. `AddRoleToUser` — USER/ADMIN roles
+4. `AddPriceToMatch` — match pricing
+5. `CreateCitiesAndDistricts` — cities and districts (Madrid as default)
+6. `AddCityDistrictToMatch` — replaces `location` column with `cityId` + `districtId` + `address`
 
-## Reglas críticas en GameOn
+## Critical rules in GameOn
 
-- `migrationsRun: true` en producción pero NO es confiable en Vercel serverless
-- Siempre correr migraciones manualmente antes del deploy
-- NUNCA modificar migraciones que ya corrieron en producción
-- El path de migraciones en `app.module.ts`: `__dirname + '/../migrations/*.js'`
-- Ver issue #65 para el flujo completo documentado
+- `migrationsRun: true` in production but NOT reliable in Vercel serverless
+- Always run migrations manually before deploying
+- NEVER modify migrations that already ran in production
+- Migrations path in `app.module.ts`: `__dirname + '/../migrations/*.js'`
+- See issue #65 for the full documented flow

@@ -1,29 +1,28 @@
 # Skill: NestJS Patterns — Backend
 
-> Patrones reutilizables para cualquier proyecto NestJS.
+> Reusable patterns for any NestJS project.
 
 ---
 
-## Estructura de módulo estándar
+## Standard module structure
 
 ```
-src/modules/nombre/
-  ├── nombre.module.ts
-  ├── nombre.controller.ts
-  ├── nombre.service.ts
+src/modules/name/
+  ├── name.module.ts
+  ├── name.controller.ts
+  ├── name.service.ts
   ├── entities/
-  │   └── nombre.entity.ts
+  │   └── name.entity.ts
   ├── dtos/
-  │   ├── create-nombre.dto.ts
-  │   └── update-nombre.dto.ts
+  │   ├── create-name.dto.ts
+  │   └── update-name.dto.ts
   └── types/
-      └── nombre.type.ts
+      └── name.type.ts
 ```
 
-## Inyección de dependencias
+## Dependency injection
 
 ```typescript
-// Siempre usar inject() en constructores
 constructor(
   @InjectRepository(Entity)
   private readonly repo: Repository<Entity>,
@@ -31,7 +30,7 @@ constructor(
 ) {}
 ```
 
-## DTOs con validación
+## DTOs with validation
 
 ```typescript
 import { IsString, IsNotEmpty, IsOptional } from 'class-validator';
@@ -50,7 +49,7 @@ export class CreateMatchDto {
 ## Guards
 
 ```typescript
-// Siempre proteger rutas con JwtAuthGuard
+// Always protect routes with JwtAuthGuard
 @UseGuards(JwtAuthGuard)
 @Get('profile')
 async getProfile(@Req() req: AuthenticatedRequest) {
@@ -58,9 +57,9 @@ async getProfile(@Req() req: AuthenticatedRequest) {
 }
 ```
 
-## Reglas
+## Rules
 
-- Nunca usar `any` sin justificación explícita
-- Siempre tipar los retornos de los servicios
-- Los controllers solo llaman servicios — nunca lógica de negocio directa
-- Los servicios nunca llaman a otros controllers
+- Never use `any` without explicit justification
+- Always type service return values
+- Controllers only call services — never direct business logic
+- Services never call other controllers

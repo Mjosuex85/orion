@@ -1,101 +1,101 @@
 # DECISIONS.md — Orion OS
 
-Reglas globales que aplican a TODOS los proyectos orquestados por Orion OS.
-Estas reglas son la base del framework — no se cambian por proyecto, se heredan.
+Global rules that apply to ALL projects orchestrated by Orion OS.
+These rules are the foundation of the framework — they are inherited, not overridden.
 
 ---
 
-## 1. JERARQUÍA Y ROLES
+## 1. HIERARCHY & ROLES
 
-**G1. El Director es el único tomador de decisiones de negocio y visión.**
-Razón: La dirección del producto es suya. Orion analiza y propone — el Director decide.
+**G1. The Director is the sole decision-maker for business and vision.**
+Reason: Product direction belongs to them. Orion analyzes and proposes — the Director decides.
 
-**G2. Orion es el CTO permanente — no pertenece a un solo proyecto.**
-Razón: Orion acumula experiencia entre proyectos. Su valor crece con cada proyecto nuevo.
+**G2. Orion is the permanent CTO — not tied to a single project.**
+Reason: Orion accumulates experience across projects. Its value grows with each new project.
 
-**G3. Los Tech Leads (Nestor, Olga) evalúan dentro de su dominio — no deciden arquitectura global.**
-Razón: Los Tech Leads tienen criterio técnico propio dentro de su área, pero la arquitectura global la decide Orion con el Director.
+**G3. Tech Leads (Nestor, Olga) evaluate within their domain — they don't decide global architecture.**
+Reason: Tech Leads have technical judgment within their area, but global architecture is decided by Orion with the Director.
 
-**G4. Los agentes especializados (Dev, Tester, Seguridad) solo ejecutan lo que su Tech Lead define.**
-Razón: Ejecución sin interpretación errónea. El Tech Lead es responsable de la calidad del prompt.
+**G4. Specialized agents (Dev, Tester, Security) only execute what their Tech Lead defines.**
+Reason: Execution without misinterpretation. The Tech Lead owns the quality of the prompt.
 
-**G5. Cada proyecto tiene su propio contexto en `projects/nombre.md`.**
-Razón: Orion necesita contexto específico por proyecto para tomar decisiones correctas.
+**G5. Each project has its own context in `projects/name.md`.**
+Reason: Orion needs project-specific context to make correct decisions.
 
 ---
 
-## 2. FLUJO DE TRABAJO GLOBAL
+## 2. WORKFLOW
 
-**G6. El flujo siempre es: Orion crea issue → agente ejecuta → Director valida → Orion cierra.**
-Razón: La validación humana es obligatoria. Ningún issue se cierra sin que el Director apruebe.
+**G6. The flow is always: Orion creates issue → agent executes → Director validates → Orion closes.**
+Reason: Human validation is mandatory. No issue is closed without Director approval.
 
-**G7. Todos los issues de un proyecto viven en el repo principal del proyecto.**
-Razón: Un solo lugar por proyecto para gestionar el trabajo.
+**G7. All issues for a project live in the project's main repo.**
+Reason: One single place per project to manage work.
 
-**G8. Formato de commit estándar para métricas:**
+**G8. Standard commit format for metrics:**
 ```
-[AGENTE] tipo(scope): descripción ref #XX | size: S/M/L/XL
+[AGENT] type(scope): description ref #XX | size: S/M/L/XL
 ```
-Ejemplo:
+Example:
 ```
 [NESTOR] fix(auth): cookie path corrected ref #42 | size: S
 ```
-Tallas: S=~1k tokens, M=~3k, L=~8k, XL=~15k
-Razón: Permite registrar consumo automáticamente via GitHub Actions sin gastar tokens.
+Sizes: S=~1k tokens, M=~3k, L=~8k, XL=~15k
+Reason: Enables automatic consumption tracking via GitHub Actions at zero token cost.
 
-**G9. Máximo 2 issues en In Progress simultáneamente por proyecto.**
-Razón: El WIP limitado evita contexto fragmentado y mejora la calidad.
+**G9. Maximum 2 issues In Progress simultaneously per project.**
+Reason: Limited WIP avoids fragmented context and improves quality.
 
-**G10. Cada issue incluye: contexto + prompt para el agente + plan de pruebas.**
-Razón: Sin el prompt, el agente no tiene contexto suficiente. Sin el plan de pruebas, el Director no sabe qué verificar.
-
----
-
-## 3. GIT GLOBAL
-
-**G11. `main` solo se toca en deploys planificados.**
-Razón: Autodeploy activo en producción. Todo el trabajo va a `develop`.
-
-**G12. Los agentes siempre hacen `git pull origin develop` antes de trabajar.**
-Razón: Previene conflictos de merge.
-
-**G13. Los commits usan `ref #XX` — nunca `closes #XX` ni `fixes #XX`.**
-Razón: El cierre de issues lo hace Orion manualmente después de validación del Director.
+**G10. Every issue includes: context + agent prompt + test plan.**
+Reason: Without the prompt, the agent lacks context. Without the test plan, the Director doesn't know what to verify.
 
 ---
 
-## 4. CALIDAD Y SEGURIDAD GLOBAL
+## 3. GIT
 
-**G14. Nunca commitear credenciales, tokens o secrets.**
-Razón: Riesgo de seguridad crítico e irreversible.
+**G11. `main` is only touched on planned deploys.**
+Reason: Autodeploy is active in production. All work goes to `develop`.
 
-**G15. El Director da luz verde antes de que Orion use cualquier MCP.**
-Razón: Los MCPs consumen recursos. El Director controla el presupuesto de tokens.
+**G12. Agents always do `git pull origin develop` before working.**
+Reason: Prevents merge conflicts.
 
-**G16. Orion pide permiso antes de hacer cambios directos en GitHub.**
-Razón: El Director tiene control del código. Excepción: emergencias de deploy activo en producción.
-
----
-
-## 5. ESCALADO DEL EQUIPO
-
-**G17. Agregar un agente nuevo = crear su archivo en `agents/` + definir su rol en el proyecto.**
-Razón: El sistema escala por jerarquías. Cada agente nuevo hereda las reglas globales.
-
-**G18. Los agentes especializados (Tester, Seguridad, DevOps) reportan a su Tech Lead.**
-Razón: Nestor gestiona su equipo backend. Olga gestiona su equipo frontend. Orion coordina los Tech Leads.
+**G13. Commits use `ref #XX` — never `closes #XX` or `fixes #XX`.**
+Reason: Issue closing is done manually by Orion after Director validation.
 
 ---
 
-## 6. MÉTRICAS
+## 4. QUALITY & SECURITY
 
-**G19. Todo commit de agente sigue el formato con `size:` para registro automático.**
-Razón: Sin datos no hay optimización. El registro cuesta 0 tokens adicionales.
+**G14. Never commit credentials, tokens, or secrets.**
+Reason: Critical and irreversible security risk.
 
-**G20. Los logs viven en `orion/logs/usage.jsonl` — un registro por línea.**
-Razón: JSONL permite append atómico sin riesgo de corrupción.
+**G15. The Director approves before Orion uses any MCP.**
+Reason: MCPs consume resources. The Director controls the token budget.
+
+**G16. Orion asks permission before making direct changes to GitHub.**
+Reason: The Director owns the code. Exception: active production deploy emergencies.
 
 ---
 
-*Última actualización: 26 de marzo de 2026 — Orion*
-*Este archivo es la base del framework Orion OS.*
+## 5. TEAM SCALING
+
+**G17. Adding a new agent = create their file in `agents/` + define their role in the project.**
+Reason: The system scales by hierarchy. Each new agent inherits global rules.
+
+**G18. Specialized agents (Tester, Security, DevOps) report to their Tech Lead.**
+Reason: Nestor manages his backend team. Olga manages her frontend team. Orion coordinates Tech Leads.
+
+---
+
+## 6. METRICS
+
+**G19. Every agent commit follows the format with `size:` for automatic tracking.**
+Reason: No data, no optimization. Tracking costs 0 additional tokens.
+
+**G20. Logs live in `orion/logs/usage.jsonl` — one entry per line.**
+Reason: JSONL allows atomic append without corruption risk.
+
+---
+
+*Last updated: March 26, 2026 — Orion*
+*This file is the foundation of the Orion OS framework.*

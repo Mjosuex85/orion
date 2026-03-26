@@ -7,13 +7,13 @@ on:
 jobs:
   log-activity:
     runs-on: ubuntu-latest
-    # Solo corre si el commit tiene el formato de agente
+    # Only runs if commit follows agent format
     if: |
       startsWith(github.event.head_commit.message, '[NESTOR]') ||
       startsWith(github.event.head_commit.message, '[OLGA]') ||
       startsWith(github.event.head_commit.message, '[TESTER]') ||
       startsWith(github.event.head_commit.message, '[DEVOPS]') ||
-      startsWith(github.event.head_commit.message, '[SEGURIDAD]')
+      startsWith(github.event.head_commit.message, '[SECURITY]')
 
     steps:
       - uses: actions/checkout@v4
@@ -26,16 +26,10 @@ jobs:
         run: |
           MSG="${{ github.event.head_commit.message }}"
 
-          # Extraer agente (entre corchetes)
           AGENT=$(echo "$MSG" | grep -oP '(?<=\[)\w+(?=\])')
-
-          # Extraer número de issue
           ISSUE=$(echo "$MSG" | grep -oP '(?<=#)\d+' | head -1)
-
-          # Extraer talla
           SIZE=$(echo "$MSG" | grep -oP '(?<=size: )[SMLX]+')
 
-          # Mapear talla a tokens estimados
           case $SIZE in
             S)  TOKENS=1000 ;;
             M)  TOKENS=3000 ;;
@@ -48,13 +42,12 @@ jobs:
           echo "issue=$ISSUE" >> $GITHUB_OUTPUT
           echo "size=$SIZE" >> $GITHUB_OUTPUT
           echo "tokens=$TOKENS" >> $GITHUB_OUTPUT
-          echo "repo=${{ github.repository }}" >> $GITHUB_OUTPUT
 
       - name: Append to usage log
         run: |
           mkdir -p logs
 
-          ENTRY="{\"timestamp\": \"$(date -u +%Y-%m-%dT%H:%M:%SZ)\", \"agent\": \"${{ steps.extract.outputs.agent }}\", \"issue\": \"${{ steps.extract.outputs.issue }}\", \"size\": \"${{ steps.extract.outputs.size }}\", \"tokens\": ${{ steps.extract.outputs.tokens }}, \"repo\": \"${{ steps.extract.outputs.repo }}\", \"commit\": \"${{ github.sha }}\"}"
+          ENTRY="{\"timestamp\": \"$(date -u +%Y-%m-%dT%H:%M:%SZ)\", \"agent\": \"${{ steps.extract.outputs.agent }}\", \"issue\": \"${{ steps.extract.outputs.issue }}\", \"size\": \"${{ steps.extract.outputs.size }}\", \"tokens\": ${{ steps.extract.outputs.tokens }}, \"repo\": \"${{ github.repository }}\", \"commit\": \"${{ github.sha }}\"}"
 
           echo $ENTRY >> logs/usage.jsonl
 

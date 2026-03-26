@@ -1,24 +1,24 @@
-# GameOn — Contexto de Proyecto
+# GameOn — Project Context
 
-> Este archivo le da a Orion y a los agentes el contexto específico de GameOn.
-> GameOn es el proyecto laboratorio donde se prueba y refina Orion OS.
+> This file gives Orion and agents the specific context for GameOn.
+> GameOn is the lab project where Orion OS is tested and refined.
 
 ---
 
-## QUÉ ES GAMEON
+## WHAT IS GAMEON
 
-GameOn es una plataforma de **identidad del jugador** para deporte amateur. El diferencial no es gestionar partidos — es que cuando alguien toca tu spot en la cancha, aparece tu FIFA card con foto, país, historia y stats.
+GameOn is a **player identity platform** for amateur sports. The differentiator is not managing matches — it's that when someone touches your spot on the field, your FIFA card appears with your photo, country, history, and stats.
 
-**El pitch correcto:** "Reemplaza el WhatsApp y el papel para organizar partidos."
+**The right pitch:** "Replaces WhatsApp and paper for organizing matches."
 
-### Las dos capas del negocio
+### The two business layers
 ```
-Capa gratuita (gancho social)
-  └ Crear partidos, perfil, cancha táctica, FIFA card
+Free layer (social hook)
+  └ Create matches, profile, tactical field, FIFA card
 
-Capa de pago (monetización)
-  └ Organizadores/empresas gestionan ligas y torneos
-  └ Jugadores desbloquean stats reales
+Paid layer (monetization)
+  └ Organizers/companies manage leagues and tournaments
+  └ Players unlock real stats
 ```
 
 ---
@@ -31,49 +31,49 @@ Runtime:    Node.js + NestJS 10
 ORM:        TypeORM + PostgreSQL (Neon)
 Auth:       JWT (access 15min, refresh 7d) + Google OAuth
 Deploy:     Vercel (serverless)
-DB:         Neon PostgreSQL (producción)
-DB local:   Docker puerto 5434
+DB:         Neon PostgreSQL (production)
+DB local:   Docker port 5434
 ```
 
 ### Frontend — `Mjosuex85/gameon`
 ```
 Framework:  Angular 17+ (100% standalone components)
-Estilos:    TailwindCSS + SCSS
+Styles:     TailwindCSS + SCSS
 State:      Angular Signals
 Deploy:     Vercel
 ```
 
 ---
 
-## REGLAS ESPECÍFICAS DE GAMEON
+## GAMEON-SPECIFIC RULES
 
-- Todos los issues viven en `gameon-api` — incluyendo los del frontend
-- GitHub Project: "GameOn" — Kanban con columnas Todo / In Progress / Done
-- Migraciones se corren manualmente antes de cada deploy (ver issue #65)
-- `migrationsRun: false` en local, `true` en producción (no confiable en serverless — correr manual)
-- Comando de migración en producción (PowerShell):
+- All issues live in `gameon-api` — including frontend ones
+- GitHub Project: "GameOn" — Kanban with Todo / In Progress / Done
+- Migrations must be run manually before each deploy (see issue #65)
+- `migrationsRun: false` locally, `true` in production (not reliable in serverless — run manually)
+- Migration command in production (PowerShell):
   ```powershell
-  $env:DATABASE_URL="tu_url_neon"; npm run db:migrate
+  $env:DATABASE_URL="your_neon_url"; npm run db:migrate
   ```
 
 ---
 
-## ESTADO — 26 de marzo de 2026
+## STATUS — March 26, 2026
 
-- ✅ Backend en producción (Vercel)
-- ✅ Frontend en producción (Vercel)
-- ✅ Migraciones ejecutadas (roles, ciudades, precio)
-- ✅ Refresh token funcionando con email/password
-- 🔴 Refresh token Google OAuth falla en producción (issue #66)
-- 🔴 admin.component.scss sobredimensionado (issue #64)
-
----
-
-## PRIMER USUARIO OBJETIVO
-
-Organizador de comunidad de fútbol en Madrid.
-Hoy usa WhatsApp + papel. GameOn lo reemplaza.
+- ✅ Backend in production (Vercel)
+- ✅ Frontend in production (Vercel)
+- ✅ Migrations executed (roles, cities, price)
+- ✅ Refresh token working with email/password
+- 🔴 Google OAuth refresh token fails in production (issue #66)
+- 🔴 admin.component.scss oversized (issue #64)
 
 ---
 
-*Parte de Orion OS — actualizado el 26 de marzo de 2026*
+## FIRST TARGET USER
+
+Football community organizer in Madrid.
+Currently uses WhatsApp + paper. GameOn replaces that.
+
+---
+
+*Part of Orion OS — updated March 26, 2026*

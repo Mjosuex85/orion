@@ -1,46 +1,46 @@
 # Skill: Git Flow — Universal
 
-> Este skill aplica a TODOS los proyectos y TODOS los agentes.
+> This skill applies to ALL projects and ALL agents.
 
 ---
 
-## Reglas absolutas
+## Absolute rules
 
-- `main` NO SE TOCA — excepto en deploys planificados
-- TODO el trabajo va a `develop`
-- Siempre `git pull origin develop` ANTES de empezar
-- NUNCA usar `closes #XX` — solo `ref #XX`
-- NUNCA hacer commit sin que el Director haya probado
+- `main` is NEVER touched — except on planned deploys
+- ALL work goes to `develop`
+- Always `git pull origin develop` BEFORE starting
+- NEVER use `closes #XX` — only `ref #XX`
+- NEVER commit without Director approval
 
-## Formato de commit obligatorio
+## Mandatory commit format
 
 ```
-[AGENTE] tipo(scope): descripción ref #XX | size: S/M/L/XL
+[AGENT] type(scope): description ref #XX | size: S/M/L/XL
 ```
 
-Ejemplos válidos:
+Valid examples:
 ```
 [NESTOR] fix(auth): cookie path corrected ref #42 | size: S
 [OLGA] feat(profile): add avatar upload component ref #53 | size: M
 [NESTOR] refactor(matches): optimize N+1 queries ref #55 | size: L
 ```
 
-## Tipos de commit
+## Commit types
 
-| Tipo | Uso |
+| Type | Use |
 |------|-----|
-| `feat` | Nueva funcionalidad |
-| `fix` | Corrección de bug |
-| `refactor` | Mejora sin cambiar comportamiento |
-| `style` | Cambios de estilos/formato |
-| `docs` | Documentación |
-| `chore` | Configuración, dependencias |
+| `feat` | New functionality |
+| `fix` | Bug fix |
+| `refactor` | Improvement without behavior change |
+| `style` | Style/format changes |
+| `docs` | Documentation |
+| `chore` | Config, dependencies |
 
-## Tallas (size)
+## Sizes
 
-| Talla | Tokens | Cuándo |
-|-------|--------|--------|
-| S | ~1,000 | 1-5 líneas, config |
-| M | ~3,000 | 1 archivo, feature pequeño |
-| L | ~8,000 | Múltiples archivos |
-| XL | ~15,000 | Arquitectura, sistema nuevo |
+| Size | Tokens | When |
+|------|--------|------|
+| S | ~1,000 | 1-5 lines, config |
+| M | ~3,000 | 1 file, small feature |
+| L | ~8,000 | Multiple files |
+| XL | ~15,000 | Architecture, new system |

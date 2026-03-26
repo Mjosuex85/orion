@@ -1,73 +1,73 @@
-# Template: Nuevo Proyecto
+# Template: New Project
 
-Usa este template para arrancar cualquier proyecto nuevo con Orion OS en menos de 1 hora.
+Use this template to start any new project with Orion OS in under 1 hour.
 
 ---
 
-## 1. Definir el proyecto
+## 1. Define the project
 
 ```
-Nombre del proyecto:
-¿Qué problema resuelve?
-Pitch en una oración:
-Tipo de usuarios:
-Primer usuario objetivo:
-Stack backend:
-Stack frontend:
-DB:
+Project name:
+What problem does it solve?
+One-line pitch:
+User types:
+First target user:
+Backend stack:
+Frontend stack:
+Database:
 Deploy:
 ```
 
 ---
 
-## 2. Checklist de infraestructura
+## 2. Infrastructure checklist
 
-- [ ] Repo backend: `owner/nombre-api`
-- [ ] Repo frontend: `owner/nombre`
+- [ ] Backend repo: `owner/project-api`
+- [ ] Frontend repo: `owner/project`
 - [ ] GitHub Project (Kanban): Todo / In Progress / Done
-- [ ] Crear `projects/nombre.md` en Orion OS con el contexto del proyecto
-- [ ] Copiar `AGENTS.md` base al repo del proyecto
-- [ ] Copiar `DECISIONS.md` base al repo del proyecto y adaptar reglas específicas
-- [ ] Configurar variables de entorno en `.env.example`
+- [ ] Create `projects/name.md` in Orion OS with project context
+- [ ] Copy base `AGENTS.md` to the project repo
+- [ ] Copy base `DECISIONS.md` to the project repo and adapt specific rules
+- [ ] Document environment variables in `.env.example`
 
 ---
 
-## 3. Configurar agentes
+## 3. Configure agents
 
-- [ ] Nestor recibe: `agents/NESTOR.md` + `projects/nombre.md`
-- [ ] Olga recibe: `agents/OLGA.md` + `projects/nombre.md`
-- [ ] Confirmar que ambos entienden el stack y las reglas
+- [ ] Nestor receives: `agents/NESTOR.md` + `projects/name.md` + relevant skills
+- [ ] Olga receives: `agents/OLGA.md` + `projects/name.md` + relevant skills
+- [ ] Confirm both understand the stack and rules
 
 ---
 
-## 4. Primer issue
+## 4. First issue
 
-Orion crea el issue #1 con este formato:
+Orion creates issue #1:
 
 ```markdown
-## Contexto
-Setup inicial del proyecto — estructura de carpetas, configuración base, primer endpoint/componente.
+## Context
+Initial project setup — folder structure, base configuration, first endpoint/component.
 
-## Prompt para [NESTOR/OLGA]
-[Instrucciones específicas del setup inicial]
+## Prompt for [NESTOR/OLGA]
+[Specific setup instructions]
 
-## Plan de pruebas para el Director
-1. El proyecto arranca sin errores
-2. El primer endpoint/componente responde correctamente
-3. Variables de entorno documentadas en .env.example
+## Test plan for the Director
+1. Project starts without errors
+2. First endpoint/component responds correctly
+3. Environment variables documented in .env.example
 ```
 
 ---
 
-## 5. Reglas específicas del proyecto
+## 5. Project-specific rules
 
-Completar en `projects/nombre.md`:
-- Stack completo
-- Reglas específicas que difieren de las globales
-- Variables de entorno necesarias
-- Flujo de deploy
-- Estado inicial
+Complete in `projects/name.md`:
+- Full stack details
+- Rules that differ from global ones
+- Required environment variables
+- Deploy flow
+- Initial state
 
 ---
 
-*Parte de Orion OS — usar este template garantiza consistencia entre proyectos.*
+*Part of Orion OS — using this template ensures consistency across projects.*

@@ -1,27 +1,27 @@
 # Skill: Angular Signals — Frontend
 
-> Patrones de state management con Signals en Angular 17+.
+> State management patterns with Signals in Angular 17+.
 
 ---
 
-## Signals básicos
+## Basic signals
 
 ```typescript
 import { signal, computed, effect } from '@angular/core';
 
-// Signal básico
+// Basic signal
 const count = signal(0);
 const doubled = computed(() => count() * 2);
 
-// Actualizar
+// Update
 count.set(5);
 count.update(v => v + 1);
 
-// Leer
-console.log(count()); // siempre con ()
+// Read — always with ()
+console.log(count());
 ```
 
-## En componentes standalone
+## In standalone components
 
 ```typescript
 @Component({
@@ -46,10 +46,10 @@ export class ProfileComponent {
 }
 ```
 
-## Reglas
+## Rules
 
-- Preferir `signal()` sobre propiedades normales para estado reactivo
-- Usar `computed()` para valores derivados — nunca recalcular en template
-- Los signals en template siempre con `()`: `{{ user() }}` no `{{ user }}`
-- Para evitar `ExpressionChangedAfterChecked` con signals: no necesitas `ChangeDetectorRef`
-- Proyecto es 100% standalone — nunca usar NgModules
+- Prefer `signal()` over plain properties for reactive state
+- Use `computed()` for derived values — never recalculate in template
+- Signals in templates always with `()`: `{{ user() }}` not `{{ user }}`
+- To avoid `ExpressionChangedAfterChecked` with signals: no need for `ChangeDetectorRef`
+- Project is 100% standalone — never use NgModules

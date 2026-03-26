@@ -1,73 +1,78 @@
-# Template: Issue Estándar
+# Template: Standard Issue
 
-Todo issue creado por Orion debe seguir este formato exacto.
-
----
-
-## Título
-```
-tipo: Descripción corta [BACKEND/FRONTEND/FULLSTACK] — Agente
-```
-
-Ejemplos:
-```
-fix: Refresh token no persiste en producción [BACKEND] — Nestor
-feature: Componente de FIFA card con stats reales [FRONTEND] — Olga
-```
+Every issue created by Orion must follow this format exactly.
 
 ---
 
-## Cuerpo del issue
+## Title
+```
+type: Short description [BACKEND/FRONTEND/FULLSTACK] — Agent
+```
+
+Examples:
+```
+fix: Refresh token not persisting in production [BACKEND] — Nestor
+feat: FIFA card component with real stats [FRONTEND] — Olga
+```
+
+---
+
+## Issue body
 
 ```markdown
-## Contexto
-¿Por qué existe este issue? ¿Qué problema resuelve?
+## Context
+Why does this issue exist? What problem does it solve?
 
-## Prompt para [NESTOR/OLGA]
-[Instrucciones exactas y detalladas de qué implementar.
-Incluir: archivos a modificar, código de referencia si aplica, restricciones.]
+## Prompt for [NESTOR/OLGA]
+[Exact and detailed instructions of what to implement.
+Include: files to modify, reference code if applicable, constraints.]
 
-## Archivos a modificar
-- `ruta/archivo.ts`
+## Skills to inject
+- `skills/universal/git-flow.md`
+- `skills/backend/[relevant].md` or `skills/frontend/[relevant].md`
+- `skills/projects/[project]/[relevant].md`
 
-## Commit esperado
-[AGENTE] tipo(scope): descripción ref #XX | size: S/M/L/XL
+## Files to modify
+- `path/to/file.ts`
 
-## Plan de pruebas para el Director
-1. Paso a paso de cómo verificar que funciona
-2. Qué debe ver en pantalla / consola
-3. Casos de error a probar
+## Expected commit
+[AGENT] type(scope): description ref #XX | size: S/M/L/XL
+
+## Test plan for the Director
+1. Step-by-step how to verify it works
+2. What to see on screen / console
+3. Error cases to test
 ```
 
 ---
 
-## Tallas de tokens (size)
+## Token sizes
 
-| Talla | Tokens estimados | Cuándo usarla |
-|-------|-----------------|---------------|
-| S     | ~1,000          | Bug fix simple, cambio de config, 1-5 líneas |
-| M     | ~3,000          | Feature pequeño, refactor, 1 archivo |
-| L     | ~8,000          | Feature complejo, múltiples archivos |
-| XL    | ~15,000         | Arquitectura, análisis profundo, sistema nuevo |
+| Size | Est. tokens | When to use |
+|------|-------------|-------------|
+| S    | ~1,000      | Simple bug fix, config change, 1-5 lines |
+| M    | ~3,000      | Small feature, refactor, 1 file |
+| L    | ~8,000      | Complex feature, multiple files |
+| XL   | ~15,000     | Architecture, deep analysis, new system |
 
 ---
 
-## Labels estándar
+## Standard labels
 
-| Label | Uso |
+| Label | Use |
 |-------|-----|
-| `bug` | Algo no funciona |
-| `feature` | Funcionalidad nueva |
-| `refactor` | Mejora de código sin cambiar comportamiento |
-| `devops` | Infraestructura, deploy, CI/CD |
-| `arquitectura` | Decisiones de diseño de sistema |
-| `nestor` | Asignado a Nestor |
-| `olga` | Asignado a Olga |
-| `Prioridad: alta` | Sprint actual |
-| `Prioridad: media` | Siguiente sprint |
-| `Prioridad: baja` | Cuando haya tiempo |
-| `future` | Documentado para el futuro |
+| `bug` | Something isn't working |
+| `feature` | New functionality |
+| `refactor` | Code improvement without behavior change |
+| `devops` | Infrastructure, deploy, CI/CD |
+| `architecture` | System design decisions |
+| `nestor` | Assigned to Nestor |
+| `olga` | Assigned to Olga |
+| `priority: high` | Current sprint |
+| `priority: medium` | Next sprint |
+| `priority: low` | When there's time |
+| `future` | Documented for the future |
 
 ---
 
-*Parte de Orion OS — seguir este formato garantiza que los agentes tengan el contexto correcto.*
+*Part of Orion OS — following this format ensures agents have the right context.*

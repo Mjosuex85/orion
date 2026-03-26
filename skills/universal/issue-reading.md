@@ -1,49 +1,49 @@
-# Skill: Cómo leer un issue de Orion — Universal
+# Skill: How to Read an Orion Issue — Universal
 
-> Todo issue creado por Orion tiene la misma estructura. Este skill te enseña a leerlo correctamente.
+> Every issue created by Orion has the same structure. This skill teaches you to read it correctly.
 
 ---
 
-## Estructura de un issue
+## Issue structure
 
-Todo issue tiene exactamente tres partes:
+Every issue has exactly three parts:
 
-### 1. Contexto
-Por qué existe este issue. El problema que resuelve. NO es la tarea — es el porqué.
+### 1. Context
+Why this issue exists. The problem it solves. NOT the task — the reason behind it.
 
 ### 2. Prompt
-Exactamente qué implementar. Incluye:
-- Archivos a modificar
-- Código de referencia o ejemplo
-- Restricciones y reglas a seguir
+Exactly what to implement. Includes:
+- Files to modify
+- Reference code or examples
+- Constraints and rules to follow
 
-### 3. Plan de pruebas
-Qué debe verificar el Director para cerrar el issue. Pasos exactos.
-
----
-
-## Si el issue no tiene las tres partes → NO ejecutes
-
-Pide a Orion que complete el issue antes de empezar.
+### 3. Test plan
+What the Director must verify to close the issue. Exact steps.
 
 ---
 
-## Flujo correcto
+## If the issue is missing any of the three parts → DO NOT execute
+
+Ask Orion to complete the issue before starting.
+
+---
+
+## Correct flow
 
 ```
-1. Leer el issue completo
-2. Si algo no está claro → preguntar a Orion ANTES de ejecutar
-3. Implementar exactamente lo que dice el prompt
-4. Avisar al Director que está listo para probar
-5. Esperar aprobación
-6. Solo entonces hacer commit
+1. Read the full issue
+2. If anything is unclear → ask Orion BEFORE executing
+3. Implement exactly what the prompt says
+4. Notify the Director it's ready to test
+5. Wait for approval
+6. Only then commit
 ```
 
 ---
 
-## Lo que NO debes hacer
+## What you must NOT do
 
-- No interpretar el scope más allá de lo que dice el issue
-- No hacer commit antes de la aprobación del Director
-- No cerrar el issue — eso lo hace Orion
-- No asumir que el issue está completo si faltan partes
+- Don't interpret the scope beyond what the issue says
+- Don't commit before Director approval
+- Don't close the issue — that's Orion's job
+- Don't assume the issue is complete if parts are missing

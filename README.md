@@ -1,68 +1,71 @@
 # Orion OS
 
-> El sistema operativo para equipos de desarrollo con IA.
+> The operating system for AI-powered development teams.
 
 ---
 
-## ¿Qué es Orion OS?
+## What is Orion OS?
 
-Orion OS es un framework para construir y orquestar equipos de agentes IA que desarrollan software real. No es un chatbot — es una metodología de trabajo con roles, reglas, memoria y automatización.
+Orion OS is a framework for building and orchestrating AI agent teams that develop real software. It's not a chatbot — it's a working methodology with roles, rules, memory, and automation.
 
-El equipo trabaja como una agencia de desarrollo: cada agente tiene un rol especializado, sigue reglas claras, y se comunica a través de GitHub Issues como capa de estado.
+The team operates like a development agency: each agent has a specialized role, follows clear rules, and communicates through GitHub Issues as the state layer.
 
-## La jerarquía
+## The hierarchy
 
 ```
-Director / Founder (visión y decisiones de negocio)
-  └── Orion (CTO / orquestador permanente)
-        └── Por proyecto:
-              ├── Nestor Senior (tech lead backend)
+Director / Founder (vision & business decisions)
+  └── Orion (CTO / permanent orchestrator)
+        └── Per project:
+              ├── Nestor Senior (backend tech lead)
               │     ├── Dev backend
               │     ├── Tester
-              │     └── Seguridad
-              └── Olga Senior (tech lead frontend)
+              │     └── Security
+              └── Olga Senior (frontend tech lead)
                     ├── Dev frontend
                     └── QA
 ```
 
-## Estructura del repo
+## Repository structure
 
 ```
 orion/
-  ├── README.md              → Este archivo
-  ├── ORION.md               → Identidad y memoria global de Orion
-  ├── DECISIONS.md           → Reglas globales (todos los proyectos)
+  ├── README.md              → This file
+  ├── ORION.md               → Orion's identity and global memory
+  ├── DECISIONS.md           → Global rules (all projects)
   ├── agents/
-  │   ├── NESTOR.md          → System prompt de Nestor (tech lead backend)
-  │   └── OLGA.md            → System prompt de Olga (tech lead frontend)
+  │   ├── NESTOR.md          → Nestor's system prompt (backend tech lead)
+  │   └── OLGA.md            → Olga's system prompt (frontend tech lead)
   ├── projects/
-  │   └── gameon.md          → Contexto específico de GameOn (proyecto lab)
+  │   └── gameon.md          → GameOn project context (lab project)
+  ├── skills/
+  │   ├── universal/         → Apply to all agents and projects
+  │   ├── backend/           → Reusable backend skills
+  │   ├── frontend/          → Reusable frontend skills
+  │   └── projects/          → Project-specific skills
   ├── templates/
-  │   ├── new-project.md     → Cómo arrancar un proyecto nuevo
-  │   └── issue-template.md  → Formato estándar de issues
+  │   ├── new-project.md     → How to start a new project
+  │   └── issue-template.md  → Standard issue format
   └── workflows/
-      └── commit-log.yml     → GitHub Action para métricas de actividad
+      └── commit-log.yml     → GitHub Action for activity metrics
 ```
 
-## Cómo usar Orion OS en un proyecto nuevo
+## How to use Orion OS on a new project
 
-1. Copiar `templates/new-project.md` y rellenar el contexto del proyecto
-2. Crear los repos del proyecto con `AGENTS.md` y `DECISIONS.md`
-3. Configurar GitHub Project (Kanban): Todo / In Progress / Done
-4. Dar a cada agente su system prompt de `agents/` + el contexto del proyecto
-5. Orion coordina — los agentes ejecutan — el Director valida
+1. Copy `templates/new-project.md` and fill in the project context
+2. Create project repos with `AGENTS.md` and `DECISIONS.md`
+3. Set up GitHub Project (Kanban): Todo / In Progress / Done
+4. Give each agent their system prompt from `agents/` + project context
+5. Orion coordinates — agents execute — Director validates
 
-## Escalabilidad
-
-Orion OS crece por fases:
+## Scalability roadmap
 
 ```
-Fase 1 → Framework manual + acompañamiento (hoy)
-Fase 2 → Claude API como motor de orquestación semi-automática
-Fase 3 → Sistema completamente automatizado con supervisión humana
+Phase 1 → Manual framework + guided onboarding (now)
+Phase 2 → Claude API as semi-automatic orchestration engine
+Phase 3 → Fully automated system with human supervision
 ```
 
 ---
 
-*Creado por Mario Vidal + Orion — 26 de marzo de 2026*
-*GameOn es el proyecto laboratorio donde se prueba y refina este framework.*
+*Created by Mario Vidal + Orion — March 26, 2026*
+*GameOn is the lab project where this framework is tested and refined.*

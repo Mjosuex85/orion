@@ -1,10 +1,10 @@
-# Skill: Módulo de Partidos (Matches) en GameOn
+# Skill: Match Module in GameOn — Project Specific
 
-> Cómo funciona el módulo central de GameOn.
+> How GameOn's core module works.
 
 ---
 
-## Entidades
+## Entities
 
 ```
 Match
@@ -15,34 +15,34 @@ Match
   ├── creator (FK → users)
   └── matchParticipants (OneToMany → MatchParticipant)
 
-MatchParticipant (entidad intermedia — NO ManyToMany simple)
+MatchParticipant (intermediate entity — NOT simple ManyToMany)
   ├── id
-  ├── position (índice 0-based del spot en el campo)
+  ├── position (0-based index of spot on the field)
   ├── registeredAt
   ├── match (FK → Match)
   └── user (FK → User)
 ```
 
-## Reglas de negocio críticas
+## Critical business rules
 
-- Máximo 3 partidos por día por usuario
-- No crear partidos en el pasado
-- No unirse a un partido lleno
-- Ventana de cancelación: `cancellationWindowHours` antes del partido
-- Solo el creador puede editar/eliminar su partido
-- `position` es el índice del spot — fallback por orden de array si es `null`
+- Maximum 3 matches per day per user
+- Cannot create matches in the past
+- Cannot join a full match
+- Cancellation window: `cancellationWindowHours` before the match
+- Only the creator can edit/delete their match
+- `position` is the spot index — fallback by array order if `null`
 
-## Por qué MatchParticipant es entidad propia
+## Why MatchParticipant is its own entity
 
-Necesitamos `position` y `registeredAt` como campos propios.
-ManyToMany simple no permite esto. No revertir a ManyToMany.
+We need `position` and `registeredAt` as own fields.
+Simple ManyToMany doesn't allow this. Do not revert to ManyToMany.
 
-## Nombre del módulo
+## Module name
 
-El módulo se llama `matchs` (con s) — no cambiar aunque parezca un typo.
-Hay referencias en toda la codebase.
+The module is called `matchs` (with s) — do not rename even if it looks like a typo.
+There are references throughout the codebase.
 
-## Con @DeleteDateColumn
+## With @DeleteDateColumn
 
-Nunca usar `.where('deletedAt IS NULL')` manual en createQueryBuilder.
-TypeORM filtra los soft-deleted automáticamente.
+Never use `.where('deletedAt IS NULL')` manually in createQueryBuilder.
+TypeORM filters soft-deleted records automatically.

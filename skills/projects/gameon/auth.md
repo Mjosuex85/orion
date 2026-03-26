@@ -1,43 +1,43 @@
-# Skill: Auth en GameOn — Específico de proyecto
+# Skill: Auth in GameOn — Project Specific
 
-> Cómo funciona la autenticación específicamente en GameOn.
+> How authentication works specifically in GameOn.
 
 ---
 
-## Stack de auth
+## Auth stack
 
-- JWT access token: 15 minutos, en header Authorization
-- JWT refresh token: 7 días, en cookie httpOnly
+- JWT access token: 15 minutes, in Authorization header
+- JWT refresh token: 7 days, in httpOnly cookie
 - Google OAuth: passport-google-oauth20
-- Tokens hasheados en DB con bcrypt
+- Tokens hashed in DB with bcrypt
 
-## Entidades relevantes
+## Relevant entities
 
 ```
-User → tiene refreshTokens (OneToMany)
+User → has refreshTokens (OneToMany)
 UserRefreshToken → hashedToken, sessionId, expiresAt, device, ipAddress
-PasswordResetToken → token (hasheado), userId, expiresAt, used
+PasswordResetToken → token (hashed), userId, expiresAt, used
 ```
 
-## Variables de entorno necesarias
+## Required environment variables
 
 ```
 JWT_ACCESS_SECRET
 JWT_REFRESH_SECRET
-JWT_ACCESS_EXPIRES_IN=900       (15 minutos en segundos)
-JWT_REFRESH_EXPIRES_IN=604800   (7 días en segundos)
+JWT_ACCESS_EXPIRES_IN=900       (15 minutes in seconds)
+JWT_REFRESH_EXPIRES_IN=604800   (7 days in seconds)
 GOOGLE_CLIENT_ID
 GOOGLE_CLIENT_SECRET
 GOOGLE_CALLBACK_URL=https://backend/auth/google/callback
 FRONTEND_URL=https://frontend.vercel.app
 ```
 
-## Problema conocido
+## Known issue
 
-Google OAuth en producción falla con `Refresh token is missing` — issue #66.
-El refresh token con email/password funciona correctamente.
+Google OAuth in production fails with `Refresh token is missing` — issue #66.
+Email/password refresh token works correctly.
 
-## Archivos clave
+## Key files
 
 - `src/modules/auth/auth.controller.ts`
 - `src/modules/auth/auth.service.ts`

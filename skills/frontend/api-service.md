@@ -1,16 +1,16 @@
 # Skill: ApiService — Frontend
 
-> Cómo hacer llamadas HTTP en proyectos con ApiService centralizado.
+> How to make HTTP calls in projects with a centralized ApiService.
 
 ---
 
-## Regla fundamental
+## Fundamental rule
 
-TODAS las llamadas HTTP van a través de `ApiService`. Nunca inyectar `HttpClient` directamente en componentes.
+ALL HTTP calls go through `ApiService`. Never inject `HttpClient` directly in components.
 
 ---
 
-## Uso del ApiService
+## Using ApiService
 
 ```typescript
 import { ApiService } from '@core/services/api.service';
@@ -35,9 +35,9 @@ export class MyComponent {
 }
 ```
 
-## La URL base
+## Base URL
 
-Vive en `environment.ts` / `environment.prod.ts` — nunca hardcodear URLs.
+Lives in `environment.ts` / `environment.prod.ts` — never hardcode URLs.
 
 ```typescript
 // environment.ts (local)
@@ -45,16 +45,16 @@ export const environment = {
   apiUrl: 'http://localhost:3000'
 };
 
-// environment.prod.ts (producción)
+// environment.prod.ts (production)
 export const environment = {
   apiUrl: 'https://gameon-api.vercel.app'
 };
 ```
 
-## Reglas
+## Rules
 
-- Nunca usar `HttpClient` directo en componentes
-- Nunca hardcodear URLs — siempre `environment.apiUrl`
-- Los errores los maneja el `error.interceptor` globalmente
-- El 401 lo maneja el `auth.interceptor` — no el componente
-- `withCredentials: true` va en el interceptor — no en cada llamada
+- Never use `HttpClient` directly in components
+- Never hardcode URLs — always use `environment.apiUrl`
+- Errors are handled globally by `error.interceptor`
+- 401 is handled by `auth.interceptor` — not by the component
+- `withCredentials: true` goes in the interceptor — not in each call
