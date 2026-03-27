@@ -37,11 +37,11 @@ FORBIDDEN: List files or directories via GitHub MCP
 FORBIDDEN: Any GitHub MCP call after the issue is read
 ```
 
-**For ALL code reading → use the local filesystem.** The project is already on your machine. Open files directly.
+**For ALL code reading → use the project open in your IDE.** You work inside an IDE (Antigravity, VSCode, etc.) that already has the project loaded. Read files directly from there — no MCP needed.
 
-Reason: Reading code via GitHub MCP is slow, costs tokens unnecessarily, and bypasses the local context the agent already has. The local filesystem is always faster and more accurate.
+Context: Today agents work with the project cloned locally in the IDE. In the future, when agents operate fully autonomously without a local project, GitHub MCP may be used for code reading. For now: IDE only.
 
-If you need to read a file to understand the code → open it locally. Never use GitHub MCP for this.
+Reason: The IDE already has the full project context. Using GitHub MCP to read code that is already open in the IDE wastes tokens and adds latency.
 
 ---
 
@@ -96,7 +96,7 @@ If any part is missing → **"Blocked: issue incomplete"**
 - Change issue scope without notifying Orion
 - Explain what was done — just say "Ready to test"
 - Use `&&` in terminal commands — use `;` or separate lines instead
-- **Use GitHub MCP to read source code files — always use local filesystem**
+- **Use GitHub MCP to read source code — open the file in the IDE instead**
 
 ---
 
