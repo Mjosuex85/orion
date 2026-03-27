@@ -108,6 +108,25 @@ Razón: Causa 500s en producción por columna ambigua en JOINs.
 **D59. `password` field con `select: false` nunca se carga en queries normales.**
 Razón: No usar `!user.password` en condiciones. Solo verificar `user.provider`.
 
+**D69. NO usar SnakeNamingStrategy en TypeORM.**
+Razón: Las entidades existentes tienen columnas en camelCase real en la DB (`emailVerified`, `providerId`, `lastLoginAt`, `birthDate`, `flagUrl`, `avatarUrl`, `phoneNumber`). Activar la strategy rompería esas columnas en producción.
+
+**D70. En entidades nuevas, toda propiedad camelCase DEBE tener `name` explícito en snake_case.**
+```typescript
+// CORRECTO
+@Column({ name: 'logo_url', nullable: true })
+logoUrl?: string;
+
+@Column({ name: 'organization_id', type: 'uuid' })
+organizationId: string;
+
+// INCORRECTO — TypeORM usa el nombre literal de la propiedad
+@Column()
+logoUrl?: string; // busca columna "logoUrl" en DB, no "logo_url"
+```
+Excepción: `@CreateDateColumn()`, `@UpdateDateColumn()`, `@DeleteDateColumn()` generan snake_case automáticamente — no necesitan `name`.
+Razón: Detectado en issue #76 — las migraciones generaban `logo_url` pero TypeORM buscaba `logoUrl` en runtime, fallando silenciosamente sin error en build.
+
 ---
 
 ## 7. ARQUITECTURA — FRONTEND
@@ -128,19 +147,7 @@ Razón: Dos interceptores manejando el 401 causan condición de carrera.
 - TS: máx 200 líneas
 - SCSS: máx 20kB
 
-Si se supera → invocar subagente `angular-component-architecture` antes de continuar.
-Razón: admin.component con 1019 líneas HTML fue el caso que originó esta regla (issue #72).
-
 **D67. Parciales SCSS de un componente viven en una carpeta `styles/` dentro del propio componente.**
-```
-admin/
-  styles/
-    _admin-variables.scss
-    _admin-mixins.scss
-    ...
-  admin.component.scss  ← solo @use de styles/
-```
-Razón: Mantiene los estilos junto a su componente y escala bien cuando el componente tiene diseño diferenciado del global.
 
 ---
 
@@ -186,14 +193,7 @@ RESEND_API_KEY=re_xxxxxxxxxxxx
 **D39. MCP de PostgreSQL local — pendiente (#31). MCP de Notion — pendiente (#33).**
 
 **D68. Nestor y Olga usan el MCP de GitHub SOLO para leer el issue asignado.**
-```
-PERMITIDO:   Leer el issue de GitHub MCP para obtener la descripción de la tarea
-PROHIBIDO:   Leer archivos de código fuente via GitHub MCP
-PROHIBIDO:   Listar directorios via GitHub MCP
-PROHIBIDO:   Cualquier llamada al GitHub MCP después de leer el issue
-```
-Para leer código → filesystem local siempre.
-Razón: Olga usó MCP de GitHub para leer archivos `.ts` durante el issue #73, lo que consumió tokens innecesariamente y fue más lento que leer desde el filesystem local. El agente tiene el proyecto en su máquina — siempre debe usarlo.
+Para leer código → IDE local siempre (VSCode para Nestor, Antigravity para Olga).
 
 ---
 
@@ -205,23 +205,19 @@ Razón: Olga usó MCP de GitHub para leer archivos `.ts` durante el issue #73, l
 - Sonnet no resuelve arquitectura compleja después de dos intentos
 
 **D58. Nestor y Olga deben usar Sonnet 4.6 mínimo.**
-Razón: Haiku 4.5 no sigue reglas complejas.
 
 **D63. Estrategia de tokens: Copilot/Gemini para tareas S/M, Claude CLI para L/XL.**
 
 **D64. El valor del sistema está en el contexto, no en el modelo.**
-Razón: Un agente sin ORION.md + DECISIONS.md + CLAUDE.md es solo un dev que no conoce el proyecto.
 
 **D66. Selección de modelo por complejidad de task:**
 
 | Task | Modelo mínimo |
 |------|--------------|
-| Refactor mecánico con pasos definidos (scss, renombrar, mover) | Gemini Flash / Haiku |
+| Refactor mecánico con pasos definidos | Gemini Flash / Haiku |
 | Bug analysis + diagnóstico | Gemini Pro / Sonnet |
-| Componentizar, arquitectura, features nuevas | Gemini Pro / Sonnet |
+| Arquitectura, features nuevas | Gemini Pro / Sonnet |
 | Decisiones de arquitectura global | Claude Opus / Orion |
-
-Razón: Gemini Flash generó edits malformados en bug de paginación (#73) — Flash equivale a Haiku en razonamiento complejo.
 
 ---
 
@@ -241,9 +237,9 @@ Razón: Gemini Flash generó edits malformados en bug de paginación (#73) — F
 
 **D61. CLAUDE.md en cada repo = cómo trabajar (≤150 líneas). Business Rules en `orion/projects/gameon.md`.**
 
-**D65. Subagentes de Olga viven en `orion/agents/subagents/` — reutilizables en otros proyectos.**
+**D65. Subagentes viven en `orion/agents/subagents/` — reutilizables en otros proyectos.**
 
 ---
 
 *Última actualización: 27 de marzo de 2026 — Orion*
-*Decisiones nuevas esta sesión: D66, D67, D68*
+*Decisiones nuevas esta sesión: D66, D67, D68, D69, D70*
