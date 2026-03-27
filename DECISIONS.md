@@ -129,7 +129,18 @@ Razón: Dos interceptores manejando el 401 causan condición de carrera.
 - SCSS: máx 20kB
 
 Si se supera → invocar subagente `angular-component-architecture` antes de continuar.
-Razón: Componentes grandes son ilegibles para humanos y agentes. El admin.component con 650 líneas HTML fue el caso que originó esta regla (issue #69).
+Razón: admin.component con 1019 líneas HTML fue el caso que originó esta regla (issue #72).
+
+**D67. Parciales SCSS de un componente viven en una carpeta `styles/` dentro del propio componente.**
+```
+admin/
+  styles/
+    _admin-variables.scss
+    _admin-mixins.scss
+    ...
+  admin.component.scss  ← solo @use de styles/
+```
+Razón: Mantiene los estilos junto a su componente, evita confusión con archivos de componentes Angular, y escala bien cuando el componente tiene diseño propio diferenciado del global.
 
 ---
 
@@ -190,7 +201,18 @@ Razón: Haiku 4.5 no sigue reglas complejas.
 Razón: Mario invierte en tres planes (Claude Pro, Copilot Pro, Gemini Pro). Optimizar distribuyendo carga según complejidad.
 
 **D64. El valor del sistema está en el contexto, no en el modelo.**
-Razón: Un agente genérico de aitmpl.com sin ORION.md + DECISIONS.md + CLAUDE.md es solo un dev que no conoce el proyecto. El contexto es el diferencial competitivo.
+Razón: Un agente sin ORION.md + DECISIONS.md + CLAUDE.md es solo un dev que no conoce el proyecto. El contexto es el diferencial competitivo.
+
+**D66. Selección de modelo por complejidad de task:**
+
+| Task | Modelo mínimo |
+|------|--------------|
+| Refactor mecánico con pasos definidos (scss, renombrar, mover) | Gemini Flash / Haiku |
+| Bug analysis + diagnóstico | Gemini Pro / Sonnet |
+| Componentizar, arquitectura, features nuevas | Gemini Pro / Sonnet |
+| Decisiones de arquitectura global | Claude Opus / Orion |
+
+Razón: Gemini Flash generó edits malformados al intentar diagnosticar bug de paginación (#73) — task que requería análisis del código, no ejecución mecánica. Flash equivale a Haiku en capacidad de razonamiento complejo.
 
 ---
 
@@ -216,5 +238,5 @@ Razón: El conocimiento especializado de Angular no pertenece a GameOn — perte
 
 ---
 
-*Última actualización: 26 de marzo de 2026 — Orion*
-*Decisiones nuevas esta sesión: D62, D63, D64, D65*
+*Última actualización: 27 de marzo de 2026 — Orion*
+*Decisiones nuevas esta sesión: D66, D67*
