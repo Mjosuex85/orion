@@ -109,23 +109,23 @@ Razón: Causa 500s en producción por columna ambigua en JOINs.
 Razón: No usar `!user.password` en condiciones. Solo verificar `user.provider`.
 
 **D69. NO usar SnakeNamingStrategy en TypeORM.**
-Razón: Las entidades existentes tienen columnas en camelCase real en la DB (`emailVerified`, `providerId`, `lastLoginAt`, `birthDate`, `flagUrl`, `avatarUrl`, `phoneNumber`). Activar la strategy rompería esas columnas en producción.
+Razón: Las entidades existentes tienen columnas en camelCase real en la DB. Activar la strategy las rompería en producción.
 
 **D70. En entidades nuevas, toda propiedad camelCase DEBE tener `name` explícito en snake_case.**
 ```typescript
-// CORRECTO
 @Column({ name: 'logo_url', nullable: true })
 logoUrl?: string;
-
-@Column({ name: 'organization_id', type: 'uuid' })
-organizationId: string;
-
-// INCORRECTO — TypeORM usa el nombre literal de la propiedad
-@Column()
-logoUrl?: string; // busca columna "logoUrl" en DB, no "logo_url"
 ```
-Excepción: `@CreateDateColumn()`, `@UpdateDateColumn()`, `@DeleteDateColumn()` generan snake_case automáticamente — no necesitan `name`.
-Razón: Detectado en issue #76 — las migraciones generaban `logo_url` pero TypeORM buscaba `logoUrl` en runtime, fallando silenciosamente sin error en build.
+Excepción: `@CreateDateColumn()`, `@UpdateDateColumn()`, `@DeleteDateColumn()` generan snake_case automáticamente.
+
+**D71. `Match.visibility = PRIVATE` significa "no aparece en listados públicos" — NO "solo el creador puede verlo".**
+
+El modelo es Google Doc con link compartido:
+- `GET /matches` — filtra por `creatorId`, el usuario solo ve sus propios partidos
+- `GET /matches/:id` — **público**, cualquiera con el ID puede verlo y registrarse
+- `PRIVATE` solo afecta los listados, nunca el acceso por ID directo
+
+Razón: Un usuario free crea un partido y comparte el link con amigos. Si `GET /matches/:id` requiere ser creador, los amigos reciben 403 y no pueden registrarse — rompe el flujo principal del producto.
 
 ---
 
@@ -192,7 +192,7 @@ RESEND_API_KEY=re_xxxxxxxxxxxx
 
 **D39. MCP de PostgreSQL local — pendiente (#31). MCP de Notion — pendiente (#33).**
 
-**D68. Nestor y Olga usan el MCP de GitHub SOLO para leer el issue asignado.**
+**D68. Nestor y Olga usan el MCP de GitHub para leer el issue asignado (body + comentarios).**
 Para leer código → IDE local siempre (VSCode para Nestor, Antigravity para Olga).
 
 ---
@@ -242,4 +242,4 @@ Para leer código → IDE local siempre (VSCode para Nestor, Antigravity para Ol
 ---
 
 *Última actualización: 27 de marzo de 2026 — Orion*
-*Decisiones nuevas esta sesión: D66, D67, D68, D69, D70*
+*Decisiones nuevas esta sesión: D66, D67, D68, D69, D70, D71*
