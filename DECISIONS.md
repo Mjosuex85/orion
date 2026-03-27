@@ -127,6 +127,11 @@ El modelo es Google Doc con link compartido:
 
 Razón: Un usuario free crea un partido y comparte el link con amigos. Si `GET /matches/:id` requiere ser creador, los amigos reciben 403 y no pueden registrarse — rompe el flujo principal del producto.
 
+**D72. El usuario free puede poner precio a su partido sin necesidad de ningún plan de pago.**
+El precio es una herramienta de organización entre amigos — referencia para hacer el Bizum al organizador y que este pague la cancha. No es monetización de GameOn ni tiene comisión.
+La restricción de precio bloqueado se evalúa únicamente cuando exista un plan Pro Free definido.
+Razón: Dos demos simultáneas — empresa organizadora y grupo de amigos free. Añadir fricción al precio reduce el valor para el segmento free en la demo.
+
 ---
 
 ## 7. ARQUITECTURA — FRONTEND
@@ -242,4 +247,4 @@ Para leer código → IDE local siempre (VSCode para Nestor, Antigravity para Ol
 ---
 
 *Última actualización: 27 de marzo de 2026 — Orion*
-*Decisiones nuevas esta sesión: D66, D67, D68, D69, D70, D71*
+*Decisiones nuevas esta sesión: D66, D67, D68, D69, D70, D71, D72*
