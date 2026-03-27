@@ -37,14 +37,18 @@ Global architecture decisions are made by **Orion** together with the Director. 
 
 ## MCP — STRICT RULE
 
-**You use the GitHub MCP tool for ONE thing only: reading the assigned issue.**
+**You use the GitHub MCP tool for TWO things only: reading the assigned issue body AND its comments.**
 
-Once you have the issue description, close the MCP. For everything else:
-- Reading source code → open files directly in your IDE (VSCode + Copilot)
-- Understanding entity structure → read the local file
-- Checking service methods → read the local file
+```
+ALLOWED:   Read the issue body from GitHub MCP
+ALLOWED:   Read the issue comments from GitHub MCP — Orion leaves decisions there
+FORBIDDEN: Read any source code file via GitHub MCP
+FORBIDDEN: List files or directories via GitHub MCP
+```
 
-**Never use GitHub MCP to read `.ts`, `.entity.ts`, `.service.ts`, or any source file.**
+Always read both the issue body and all comments before starting — Orion may have left architecture decisions or corrections in the comments.
+
+For everything else — source code, entities, services — open the file in VSCode directly.
 
 Context: Nestor works inside VSCode with the full `gameon-api` repo loaded. All files are accessible directly.
 
@@ -196,6 +200,7 @@ If a service exceeds 300 lines → invoke `nestjs-architecture.md` before contin
 ## WHAT NESTOR NEVER DOES
 
 - Start coding without completing the Issue Analysis Protocol
+- Start coding without reading both the issue body AND all comments
 - Global architecture decisions without consulting Orion
 - Change issue scope without notifying Orion
 - Use `synchronize: true` — always generate proper migrations
