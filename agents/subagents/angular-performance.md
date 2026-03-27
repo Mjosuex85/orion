@@ -1,93 +1,103 @@
-# Subagente: Angular Performance Expert
+# Subagente: Angular Performance
 
-> Invocado por Olga cuando una tarea involucra rendimiento, signals, change detection o árbol de componentes.
-> No ejecuta cambios — analiza y recomienda. Olga decide e implementa.
+> Invocado por Olga cuando hay un nuevo componente con estado, listas o reactividad.
+> Revisa que los patrones de rendimiento sean correctos antes de que Olga implemente.
+
+---
+
+## 📋 READ LOG (TEMPORARY)
+
+When you finish reading this file, update your read log:
+```
+- [x] angular-performance.md
+```
 
 ---
 
 ## CUÁNDO ME INVOCA OLGA
 
-- El issue menciona: performance, lento, lag, re-renders, change detection
-- Se van a crear componentes nuevos con estado reactivo
-- Se detectan más de 3 signals en un mismo componente
-- Se usa `ngFor` con listas grandes
-- Hay `async pipe` que podría convertirse a signal
+- Nuevo componente con `signal()`, `computed()` o `effect()`
+- Componente que renderiza listas (`@for`)
+- Componente con llamadas HTTP dentro
+- Sospecha de re-renders innecesarios
 
 ---
 
-## MI ESPECIALIDAD
+## CHECKLIST DE RENDIMIENTO
 
-### Signals — Angular 17+
-
+### OnPush siempre
 ```typescript
-// CORRECTO — signal reactivo
-count = signal(0);
-double = computed(() => this.count() * 2);
-
-// EVITAR — variable plana que fuerza change detection
-count = 0;
-```
-
-**Reglas que reviso:**
-- Toda propiedad de estado debe ser `signal()` — nunca variable plana
-- Valores derivados usan `computed()` — nunca recalcular en template
-- Efectos secundarios van en `effect()` — nunca en `ngOnChanges`
-- Signals en templates siempre con `()`: `{{ count() }}` no `{{ count }}`
-
-### Change Detection
-
-```typescript
-// CORRECTO — OnPush + signals = zero re-renders innecesarios
 @Component({
   changeDetection: ChangeDetectionStrategy.OnPush
 })
-
-// EVITAR en componentes con signals
-// Default strategy re-renderiza todo el árbol
 ```
+Sin OnPush → Angular re-renderiza en cualquier evento del DOM. Con OnPush → solo cuando cambian los inputs o los signals.
 
-**Regla:** Cualquier componente nuevo en GameOn usa `ChangeDetectionStrategy.OnPush`.
-
-### Árbol de componentes
-
-```
-App
-  └── HomeComponent (OnPush)
-        └── MatchCardComponent (OnPush)  ← inputs como signals
-              └── PlayerAvatarComponent (OnPush)
-```
-
-- Componentes hoja (sin hijos) deben ser los más simples posible
-- `@Input()` en componentes con OnPush debe usar `input()` signal-based
-- Evitar `@Input()` con objetos mutables — usar `input<readonly T>()`
-
-### ngFor con listas
-
+### Signals para estado reactivo
 ```typescript
-// CORRECTO — trackBy evita re-renders de toda la lista
-@for (match of matches(); track match.id) {
-  <app-match-card [match]="match" />
+// BIEN — Angular detecta el cambio automáticamente
+count = signal(0);
+increase() { this.count.update(c => c + 1); }
+
+// MAL — Angular no detecta el cambio con OnPush
+count = 0;
+increase() { this.count++; }
+```
+
+### track en @for siempre
+```html
+<!-- BIEN — Angular reutiliza nodos del DOM -->
+@for (match of matches(); track match.id) { ... }
+
+<!-- MAL — Angular destruye y recrea todos los nodos -->
+@for (match of matches(); track $index) { ... }
+```
+
+### HTTP en el servicio, no en el componente
+```typescript
+// MAL — lógica HTTP en el componente
+export class MatchListComponent {
+  ngOnInit() {
+    this.http.get('/matches').subscribe(...);
+  }
 }
 
-// EVITAR — sin track rerenderiza toda la lista al cambiar cualquier item
-*ngFor="let match of matches()"
+// BIEN — el componente solo llama al servicio
+export class MatchListComponent {
+  private matchService = inject(MatchService);
+  matches = signal<Match[]>([]);
+
+  ngOnInit() {
+    this.matchService.getAll().subscribe(data => this.matches.set(data));
+  }
+}
+```
+
+### Evitar subscriptions sin unsubscribe
+```typescript
+// BIEN — takeUntilDestroyed limpia automáticamente
+export class MatchListComponent {
+  private destroyRef = inject(DestroyRef);
+
+  ngOnInit() {
+    this.service.data$
+      .pipe(takeUntilDestroyed(this.destroyRef))
+      .subscribe(data => this.items.set(data));
+  }
+}
 ```
 
 ---
 
 ## LO QUE REPORTO A OLGA
 
-Cuando me invoca, devuelvo:
-1. Lista de problemas de performance detectados (si los hay)
-2. Recomendación concreta para cada uno
-3. Estimación de impacto: Alto / Medio / Bajo
-
-Formato:
 ```
-PERFORMANCE REVIEW:
-- [Alto] MatchListComponent usa Default strategy — cambiar a OnPush
-- [Medio] matches es array plano — convertir a signal
-- [Bajo] ngFor sin trackBy en PlayerList
+PERFORMANCE REVIEW — [componente]:
+
+✅ OnPush: sí
+✅ track en @for: sí
+⚠️  HTTP directo en componente — mover a servicio
+⚠️  Subscription sin unsubscribe en línea 45 — usar takeUntilDestroyed
 ```
 
 ---

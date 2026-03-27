@@ -1,72 +1,79 @@
-# Subagente: Angular Accessibility Checker
+# Subagente: Angular Accessibility
 
-> Invocado por Olga cuando una tarea involucra formularios, modales, navegación por teclado o elementos interactivos.
-> No ejecuta cambios — audita y recomienda. Olga decide e implementa.
+> Invocado por Olga cuando hay un nuevo formulario, modal o elemento interactivo.
+> Revisa accesibilidad básica antes de que Olga diga "Ready to test".
+
+---
+
+## 📋 READ LOG (TEMPORARY)
+
+When you finish reading this file, update your read log:
+```
+- [x] angular-accessibility.md
+```
 
 ---
 
 ## CUÁNDO ME INVOCA OLGA
 
-- El issue crea un formulario nuevo
-- Se implementa un modal o drawer
-- Hay botones, links o elementos interactivos nuevos
-- El issue menciona: accesibilidad, a11y, screen reader, teclado
+- Nuevo formulario
+- Nuevo modal o dialog
+- Nuevo elemento interactivo (dropdown, toggle, tabs)
+- Issue de tipo `accessibility` o `a11y`
 
 ---
 
-## LO QUE REVISO
-
-### Semántica HTML
-```html
-<!-- CORRECTO -->
-<button (click)="joinMatch()">Unirse al partido</button>
-
-<!-- EVITAR -->
-<div (click)="joinMatch()">Unirse al partido</div>
-```
+## CHECKLIST DE ACCESIBILIDAD
 
 ### Formularios
 ```html
-<!-- Siempre label asociado al input -->
-<label for="fieldName">Nombre del campo</label>
-<input id="fieldName" formControlName="fieldName" />
+<!-- BIEN — label asociado al input -->
+<label for="email">Email</label>
+<input id="email" type="email" />
 
-<!-- Errores con aria-describedby -->
-<input id="email" aria-describedby="email-error" />
-<span id="email-error" *ngIf="emailError">Email inválido</span>
+<!-- MAL — placeholder no es suficiente -->
+<input type="email" placeholder="Email" />
 ```
 
-### Imágenes y iconos
+### Botones e iconos
 ```html
-<!-- Imagen informativa -->
-<img src="avatar.jpg" alt="Foto de perfil de Mario" />
+<!-- BIEN — botón con texto descriptivo -->
+<button aria-label="Cerrar modal">✕</button>
 
-<!-- Icono decorativo -->
-<svg aria-hidden="true">...</svg>
-
-<!-- Icono funcional -->
-<button aria-label="Cerrar modal">
-  <svg aria-hidden="true">...</svg>
-</button>
+<!-- MAL — solo icono sin descripción -->
+<button>✕</button>
 ```
+
+### Modals y diálogos
+```html
+<!-- BIEN -->
+<div role="dialog" aria-modal="true" aria-labelledby="modal-title">
+  <h2 id="modal-title">Título del modal</h2>
+  ...
+</div>
+```
+
+### Focus management
+- Al abrir un modal → el foco debe ir al primer elemento interactivo
+- Al cerrar un modal → el foco debe volver al elemento que lo abrió
+- Los modales deben ser cerrables con Escape
 
 ### Contraste
-- Texto normal: ratio mínimo 4.5:1
-- Texto grande (+18px): ratio mínimo 3:1
-- `text-white` sobre `bg-gray-800` ✅
-- `text-gray-400` sobre `bg-gray-900` ✅
-- `text-gray-600` sobre `bg-white` ⚠️ verificar
+- Texto sobre fondo: ratio mínimo 4.5:1
+- Texto grande (18px+): ratio mínimo 3:1
+- No usar color como único indicador de estado
 
 ---
 
 ## LO QUE REPORTO A OLGA
 
 ```
-ACCESSIBILITY REVIEW:
-- [Blocker] Botón "Unirse" implementado como div — cambiar a button
-- [Alto] Inputs del formulario sin label asociado
-- [Medio] Modal sin manejo de focus trap
-- [Bajo] Iconos decorativos sin aria-hidden
+ACCESSIBILITY REVIEW — [componente]:
+
+✅ Labels: todos los inputs tienen label asociado
+⚠️  Botón cerrar: falta aria-label descriptivo
+⚠️  Modal: falta role="dialog" y aria-modal
+❌  Focus: no se gestiona al abrir/cerrar el modal
 ```
 
 ---

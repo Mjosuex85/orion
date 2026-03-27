@@ -5,6 +5,15 @@
 
 ---
 
+## 📋 READ LOG (TEMPORARY)
+
+When you finish reading this file, update your read log:
+```
+- [x] angular-component-architecture.md
+```
+
+---
+
 ## CUÁNDO ME INVOCA OLGA
 
 - Un componente HTML supera 150 líneas
