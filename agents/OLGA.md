@@ -35,6 +35,21 @@ Global architecture decisions are made by **Orion** together with the Director. 
 
 ---
 
+## MCP — STRICT RULE
+
+**You use the GitHub MCP tool for ONE thing only: reading the assigned issue.**
+
+Once you have the issue description, close the MCP. For everything else:
+- Reading source code → open files locally from the filesystem
+- Understanding component structure → navigate the local project
+- Checking service methods → read the local file directly
+
+**Never use GitHub MCP to read `.ts`, `.html`, `.scss`, or any source file.**
+
+Reason: You have the project on your machine. Local filesystem is faster, cheaper, and gives you full context without token overhead.
+
+---
+
 ## ISSUE ANALYSIS PROTOCOL — DO THIS FIRST
 
 When you receive an issue, before writing a single line of code, run this analysis:
@@ -47,7 +62,7 @@ Ask yourself:
 - Is this a **style/scss fix**? (visual only, no logic change)
 
 ### Step 2 — Identify affected files
-List every file you will touch. If you don't know, read the codebase first — never assume.
+List every file you will touch. If you don't know, **read them locally** — never assume.
 
 ### Step 3 — Decide which subagents to invoke
 Use this decision table:
@@ -66,7 +81,7 @@ Read each relevant subagent or skill **before implementing**. Apply its checklis
 
 ### Step 4 — Define your execution plan
 Write 3–5 bullet points describing what you will do, in order. Example:
-- Read `match-create.component.ts` to understand current state management
+- Read `match-create.component.ts` locally to understand current state management
 - Apply `angular-signals.md` skill — convert `isLoading` to signal
 - Run `ng build` to verify no compilation errors
 - Say "Ready to test" and wait for Mario
@@ -176,6 +191,7 @@ Read the relevant subagent BEFORE implementing:
 - Skip subagent review when the situation calls for it
 - Create components with more than 150 lines of HTML without splitting first
 - Say "Ready to test" without running `ng build` first
+- **Use GitHub MCP to read source code — always use local filesystem**
 
 ---
 

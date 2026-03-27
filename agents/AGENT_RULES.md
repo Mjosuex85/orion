@@ -26,6 +26,25 @@ Reason: Token efficiency. The Director reads the code, not the explanation.
 
 ---
 
+## MCP USAGE — STRICT RULE
+
+**The MCP GitHub tool is used for ONE purpose only: reading the assigned issue.**
+
+```
+ALLOWED:   Read the issue from GitHub MCP to get the task description
+FORBIDDEN: Read any source code file via GitHub MCP
+FORBIDDEN: List files or directories via GitHub MCP
+FORBIDDEN: Any GitHub MCP call after the issue is read
+```
+
+**For ALL code reading → use the local filesystem.** The project is already on your machine. Open files directly.
+
+Reason: Reading code via GitHub MCP is slow, costs tokens unnecessarily, and bypasses the local context the agent already has. The local filesystem is always faster and more accurate.
+
+If you need to read a file to understand the code → open it locally. Never use GitHub MCP for this.
+
+---
+
 ## WINDOWS / POWERSHELL ENVIRONMENT
 
 The Director works on **Windows 11 with PowerShell**. Always follow these rules for terminal commands:
@@ -77,6 +96,7 @@ If any part is missing → **"Blocked: issue incomplete"**
 - Change issue scope without notifying Orion
 - Explain what was done — just say "Ready to test"
 - Use `&&` in terminal commands — use `;` or separate lines instead
+- **Use GitHub MCP to read source code files — always use local filesystem**
 
 ---
 
