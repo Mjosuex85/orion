@@ -95,6 +95,11 @@ Olga           → Frontend Tech Lead (Antigravity, Sonnet 4.6 mínimo)
 - `ui-design-reviewer.md` — paleta GameOn, UX, mobile first
 - `angular-accessibility.md` — HTML semántico, formularios, contraste
 
+**Subagentes de Nestor (en `orion/agents/subagents/`):**
+- `nestjs-architecture.md` — estructura de módulos, entidades, relaciones
+- `typeorm-migrations.md` — migraciones, enums PostgreSQL, orden de ejecución
+- `backend-security.md` — guards, roles, ownership, validación de DTOs
+
 ---
 
 ## REPOS
@@ -112,26 +117,20 @@ Todos los issues viven en `gameon-api` — incluyendo los de frontend.
 ## ESTRATEGIA DE TOKENS
 
 ```
-Tareas S/M simples  → Copilot Pro (Nestor) + Gemini (Olga) — sin costo extra
+Tareas S/M simples  → Copilot Pro (Nestor) + Gemini Flash (Olga) — sin costo extra
+Bugs / análisis     → Gemini Pro (Olga) / Sonnet (Nestor)
 Tareas L/XL         → Claude CLI — cuando se necesita más razonamiento
 Orion               → Claude.ai Pro — aquí, coordinando
 ```
 
+**Selección de modelo por complejidad (D66):**
+- Refactor mecánico → Gemini Flash / Haiku
+- Bug analysis → Gemini Pro / Sonnet mínimo
+- Arquitectura / features nuevas → Gemini Pro / Sonnet
+- Decisiones globales → Opus / Orion
+
 **El valor diferencial NO está en el modelo — está en el contexto.**
 `ORION.md + DECISIONS.md + CLAUDE.md` es lo que hace poderoso al sistema.
-Un agente genérico de aitmpl.com sin ese contexto es solo un dev que no conoce el proyecto.
-
----
-
-## HERRAMIENTAS DESCUBIERTAS
-
-**aitmpl.com** — librería de +1000 componentes para Claude CLI:
-- Hooks: triggers automáticos (PostToolUse, pre-commit, etc.)
-- Agentes especializados instalables con `npx claude-code-templates@latest`
-- MCPs de integración (Figma, Vercel, etc.)
-- ClaudeKit: setup completo battle-tested, 4000+ devs en 109 países
-
-**Estrategia:** usar componentes de aitmpl para potenciar a Nestor/Olga, pero siempre con nuestro contexto (CLAUDE.md) como base. No reemplaza a los agentes — los potencia.
 
 ---
 
@@ -147,36 +146,64 @@ Un agente genérico de aitmpl.com sin ese contexto es solo un dev que no conoce 
 
 ### Sesión 7 — 26 de marzo de 2026
 
-**Primera mitad:**
 - Orion OS framework completo creado en `Mjosuex85/orion`
 - CLAUDE.md en gameon-api y gameon
 - Primer flujo completo con Olga (#61) y Nestor (#36) ✅
 - Issues cerrados: #32, #36, #61, #62, #65
-- Error detectado: ORION.md nunca fue creado en el repo orion — corregido
-- DECISIONS.md restaurado completo (D1-D61) desde historial de gameon-api
+- Olga potenciada con 4 subagentes especializados
+- D62-D65 documentadas
 
-**Segunda mitad:**
-- Olga potenciada con 4 subagentes especializados en `orion/agents/subagents/`
-- Olga redefinida como Angular expert (no generalista): OnPush, signals, nueva sintaxis
-- Límites de tamaño documentados: HTML ≤150 líneas, TS ≤200, SCSS ≤20kB
-- Issue #69 creado: refactor admin.component (650 líneas → 8 componentes)
-- Descubrimiento: aitmpl.com como librería de componentes para Claude CLI
-- Estrategia de tokens definida: Copilot/Gemini para S/M, Claude CLI para L/XL
-- D62 añadida: límites de tamaño de componentes Angular
-
-**Issues abiertos al cerrar sesión:**
-- 🔴 #10 — Waitlist system (próximo grande, Nestor + Olga)
-- 🔴 #64 — admin scss (se resuelve con #69)
+**Issues abiertos al cerrar sesión 7:**
 - 🔴 #66 — Google OAuth refresh token producción
-- 🔴 #69 — refactor admin.component (Olga, XL)
-- 🔴 #67 — WhatsApp bot N8N (futuro)
+- 🔴 #64 — admin scss oversized
 
-**Estado del stack:**
+---
+
+### Sesión 8 — 27 de marzo de 2026
+
+**Orion OS — Olga mejorada:**
+- Protocolo de análisis de issue añadido a `OLGA.md` (4 pasos antes de codear)
+- Read logs temporales añadidos a Olga y los 4 sub-agentes para validar protocolo
+- Regla MCP corregida: solo para leer el issue, no para leer código — el IDE ya tiene el proyecto
+- D66 (modelo por complejidad), D67 (parciales SCSS en carpeta styles/), D68 (MCP solo para issues)
+
+**Issues cerrados:**
+- ✅ #64 — admin.component.scss reducido a <20kB (Olga con Gemini Flash)
+- ✅ #73 — paginación admin matches (causa: backend + reset state en frontend)
+- ✅ #75 — schema base: ORGANIZER role + Match visibility + PLAN_LIMITS (Nestor)
+
+**Issues nuevos:**
+- #70 — design system GameOn (pendiente, después de demo)
+- #71 — profile.component.scss supera budget
+- #72 — componentizar admin HTML 1019 líneas
+- #74 — Google OAuth abre popup en vez de redirigir (Olga)
+
+**Orion OS — Nestor optimizado:**
+- `NESTOR.md` reescrito con protocolo de análisis completo + read log + regla MCP
+- 3 sub-agentes nuevos: `nestjs-architecture.md`, `typeorm-migrations.md`, `backend-security.md`
+- Primer issue con nuevo protocolo (#75) — Nestor siguió todo: read log ✅, plan ✅, migraciones ✅, Ready to test ✅
+
+**Plan de negocio definido — modelo Organizations:**
+- Usuario FREE: 1 partido/día, privado por defecto, puede ver empresas y sus partidos
+- ORGANIZER: 4 partidos/día, 2 torneos/semana, 1 liga/mes
+- Match.visibility: PRIVATE | PUBLIC | ORGANIZATION
+- PLAN_LIMITS como constante en código (no DB por ahora — issue #70 a futuro)
+- Organizations como entidad separada, ORGANIZER como rol en User
+
+**Próximos issues del plan (en orden de dependencia):**
+- 🔴 #76 — Módulo Organizations: entidad, CRUD, endpoints (Nestor) — NEXT
+- 🔴 #77 — Visibilidad en match: filtros por rol en endpoints (Nestor)
+- 🔴 #78 — Módulo Tournament (Nestor)
+- 🔴 #79 — Módulo League (Nestor)
+
+**Estado al cerrar sesión 8:**
 - ✅ Backend + Frontend en producción (Vercel)
-- ✅ Resend funcionando
-- ✅ Orion OS live — subagentes de Olga activos
+- ✅ Schema base listo: ORGANIZER + visibility + PLAN_LIMITS
+- ✅ Orion OS — Nestor y Olga con protocolo completo
+- 🔴 #66 — Google OAuth refresh token producción (pendiente)
+- 🔴 #74 — Google OAuth popup (Olga)
 
 ---
 
 *Orion OS — construido por Mario Vidal + Orion*
-*Última actualización: 26 de marzo de 2026 — Sesión 7 completa*
+*Última actualización: 27 de marzo de 2026 — Sesión 8 completa*
