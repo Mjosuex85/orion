@@ -140,7 +140,7 @@ admin/
     ...
   admin.component.scss  ← solo @use de styles/
 ```
-Razón: Mantiene los estilos junto a su componente, evita confusión con archivos de componentes Angular, y escala bien cuando el componente tiene diseño propio diferenciado del global.
+Razón: Mantiene los estilos junto a su componente y escala bien cuando el componente tiene diseño diferenciado del global.
 
 ---
 
@@ -185,6 +185,16 @@ RESEND_API_KEY=re_xxxxxxxxxxxx
 
 **D39. MCP de PostgreSQL local — pendiente (#31). MCP de Notion — pendiente (#33).**
 
+**D68. Nestor y Olga usan el MCP de GitHub SOLO para leer el issue asignado.**
+```
+PERMITIDO:   Leer el issue de GitHub MCP para obtener la descripción de la tarea
+PROHIBIDO:   Leer archivos de código fuente via GitHub MCP
+PROHIBIDO:   Listar directorios via GitHub MCP
+PROHIBIDO:   Cualquier llamada al GitHub MCP después de leer el issue
+```
+Para leer código → filesystem local siempre.
+Razón: Olga usó MCP de GitHub para leer archivos `.ts` durante el issue #73, lo que consumió tokens innecesariamente y fue más lento que leer desde el filesystem local. El agente tiene el proyecto en su máquina — siempre debe usarlo.
+
 ---
 
 ## 11. AGENTES Y MODELOS
@@ -198,10 +208,9 @@ RESEND_API_KEY=re_xxxxxxxxxxxx
 Razón: Haiku 4.5 no sigue reglas complejas.
 
 **D63. Estrategia de tokens: Copilot/Gemini para tareas S/M, Claude CLI para L/XL.**
-Razón: Mario invierte en tres planes (Claude Pro, Copilot Pro, Gemini Pro). Optimizar distribuyendo carga según complejidad.
 
 **D64. El valor del sistema está en el contexto, no en el modelo.**
-Razón: Un agente sin ORION.md + DECISIONS.md + CLAUDE.md es solo un dev que no conoce el proyecto. El contexto es el diferencial competitivo.
+Razón: Un agente sin ORION.md + DECISIONS.md + CLAUDE.md es solo un dev que no conoce el proyecto.
 
 **D66. Selección de modelo por complejidad de task:**
 
@@ -212,14 +221,13 @@ Razón: Un agente sin ORION.md + DECISIONS.md + CLAUDE.md es solo un dev que no 
 | Componentizar, arquitectura, features nuevas | Gemini Pro / Sonnet |
 | Decisiones de arquitectura global | Claude Opus / Orion |
 
-Razón: Gemini Flash generó edits malformados al intentar diagnosticar bug de paginación (#73) — task que requería análisis del código, no ejecución mecánica. Flash equivale a Haiku en capacidad de razonamiento complejo.
+Razón: Gemini Flash generó edits malformados en bug de paginación (#73) — Flash equivale a Haiku en razonamiento complejo.
 
 ---
 
 ## 12. FUTURO
 
 **D40. Orion como arquitecto multi-proyecto.**
-Razón: El framework de GameOn es replicable. Orion OS.
 
 **D41. Kubernetes cuando GameOn tenga +500 usuarios activos o hosting > $50/mes.**
 
@@ -234,9 +242,8 @@ Razón: El framework de GameOn es replicable. Orion OS.
 **D61. CLAUDE.md en cada repo = cómo trabajar (≤150 líneas). Business Rules en `orion/projects/gameon.md`.**
 
 **D65. Subagentes de Olga viven en `orion/agents/subagents/` — reutilizables en otros proyectos.**
-Razón: El conocimiento especializado de Angular no pertenece a GameOn — pertenece a Orion OS.
 
 ---
 
 *Última actualización: 27 de marzo de 2026 — Orion*
-*Decisiones nuevas esta sesión: D66, D67*
+*Decisiones nuevas esta sesión: D66, D67, D68*
