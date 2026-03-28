@@ -7,16 +7,12 @@ Este archivo documenta las decisiones técnicas, de proceso y de equipo tomadas 
 ## 1. EQUIPO Y ROLES
 
 **D1. Mario es el único tomador de decisiones de negocio.**
-Razón: La visión del producto es suya. El equipo técnico ejecuta, analiza y propone — pero no decide.
 
 **D2. Orion actúa como arquitecto y coordinador técnico.**
-Razón: Centralizar el análisis en un punto evita inconsistencias entre lo que hacen Nestor y Olga.
 
 **D3. Nestor ejecuta solo en backend. Olga solo en frontend.**
-Razón: La especialización evita errores de contexto.
 
 **D4. Mario siempre prueba antes de que se cierre un issue.**
-Razón: El agente no puede probar la app real. Un issue no está Done hasta que Mario lo confirma.
 
 ---
 
@@ -33,11 +29,10 @@ Razón: El agente no puede probar la app real. Un issue no está Done hasta que 
 **D9. Cuando Mario propone una idea, Orion la analiza técnicamente antes de crear el issue.**
 
 **D52. Los commits usan `ref #XX` — nunca `closes #XX` ni `fixes #XX`.**
-Razón: GitHub cierra issues automáticamente con `closes`. El cierre lo hace Orion manualmente.
 
 **D53. Orion cierra los issues — nunca se cierran automáticamente.**
 
-**D55. Cambios de pocas líneas — Mario los hace directamente.**
+**D55. Cambios de configuración o documentación — Mario los recibe con `git pull` después de que Orion los sube.**
 
 **D56. Mario da luz verde antes de que Orion use cualquier MCP.**
 
@@ -49,9 +44,18 @@ Razón: GitHub cierra issues automáticamente con `closes`. El cierre lo hace Or
 
 **D11. `main` NO SE TOCA — excepto en deploys planificados a producción.**
 
-**D12. Nestor y Olga siempre hacen `git pull origin develop` antes de empezar.**
+**D12. Nestor, Olga y Mario hacen `git pull origin develop` antes de empezar a trabajar.**
+Razón: Orion puede haber subido cambios directamente a GitHub (configuración, seguridad, documentación). El pull garantiza que todos parten del estado real del repo.
 
 **D13. Los commits del repo `gameon` referencian issues con `Mjosuex85/gameon-api#numero`.**
+
+**D14. Orion puede hacer cambios directos en GitHub en `develop` para:**
+- Configuración (`.npmrc`, `.env.example`, etc.)
+- Documentación (`CLAUDE.md`, `AGENTS.md`, `README`)
+- Correcciones urgentes de arquitectura decididas con Mario
+- Archivos de Orion OS (`ORION.md`, `DECISIONS.md`, subagentes, etc.)
+
+Para lógica de negocio o código de aplicación → issue para Nestor/Olga siempre.
 
 **D44. Antes de conectar cualquier plataforma de deploy a `main`, verificar que `develop` y `main` están sincronizados.**
 
@@ -62,17 +66,23 @@ Razón: GitHub cierra issues automáticamente con `closes`. El cierre lo hace Or
 **D49. Los deploys a producción se hacen en fechas planificadas.**
 
 **D50. Durante un deploy activo con problemas críticos, Orion puede hacer cambios directos en `main`.**
-Razón: Emergencias. Siempre aplicar el mismo cambio a `develop` después.
+Siempre aplicar el mismo cambio a `develop` después.
 
 **D51. Orion NUNCA hace cambios en `main` fuera de un deploy activo.**
 
 ---
 
-## 5. LÍMITES DE CAMBIO DIRECTO
+## 5. SEGURIDAD
 
-**D14. Orion hace cambios en GitHub (en `develop`) cuando son ≤ 4 líneas — solo si Mario lo pide.**
+**D35. Nunca commitear credenciales, tokens o secrets.**
 
-**D15. Cambios de documentación siempre van a `develop`.**
+**D36. Nunca usar `any` en TypeScript sin justificación explícita.**
+
+**D37. Nunca romper contratos de DTOs que el frontend ya consume.**
+
+**D73. `ignore-scripts=true` en `.npmrc` en todos los proyectos.**
+Razón: Previene la ejecución automática de scripts maliciosos de paquetes npm durante `npm install`. Es una práctica de seguridad estándar aplicable a todos los proyectos de Orion OS.
+Si algún paquete necesita scripts de compilación nativos (ej: `bcrypt`), evaluar reemplazarlo por alternativa pure-JS (ej: `bcryptjs`) o justificar explícitamente la excepción.
 
 ---
 
@@ -99,14 +109,12 @@ Razón: Emergencias. Siempre aplicar el mismo cambio a `develop` después.
 **D25. `mapToDto` expone `avatarUrl`, `country`, `flagUrl` de creator y participants.**
 
 **D45. Con `@DeleteDateColumn`, nunca usar `.where('deletedAt IS NULL')` manual.**
-Razón: Causa 500s en producción por columna ambigua en JOINs.
 
 **D46. `GOOGLE_CALLBACK_URL` en la Google Strategy — nunca URLs hardcodeadas.**
 
 **D47. `FRONTEND_URL` en el auth controller para el redirect post-OAuth.**
 
 **D59. `password` field con `select: false` nunca se carga en queries normales.**
-Razón: No usar `!user.password` en condiciones. Solo verificar `user.provider`.
 
 **D69. NO usar SnakeNamingStrategy en TypeORM.**
 Razón: Las entidades existentes tienen columnas en camelCase real en la DB. Activar la strategy las rompería en producción.
@@ -119,18 +127,11 @@ logoUrl?: string;
 Excepción: `@CreateDateColumn()`, `@UpdateDateColumn()`, `@DeleteDateColumn()` generan snake_case automáticamente.
 
 **D71. `Match.visibility = PRIVATE` significa "no aparece en listados públicos" — NO "solo el creador puede verlo".**
+- `GET /matches/:id` — público, cualquiera con el ID puede verlo y registrarse
+- `PRIVATE` solo afecta los listados
 
-El modelo es Google Doc con link compartido:
-- `GET /matches` — filtra por `creatorId`, el usuario solo ve sus propios partidos
-- `GET /matches/:id` — **público**, cualquiera con el ID puede verlo y registrarse
-- `PRIVATE` solo afecta los listados, nunca el acceso por ID directo
-
-Razón: Un usuario free crea un partido y comparte el link con amigos. Si `GET /matches/:id` requiere ser creador, los amigos reciben 403 y no pueden registrarse — rompe el flujo principal del producto.
-
-**D72. El usuario free puede poner precio a su partido sin necesidad de ningún plan de pago.**
-El precio es una herramienta de organización entre amigos — referencia para hacer el Bizum al organizador y que este pague la cancha. No es monetización de GameOn ni tiene comisión.
-La restricción de precio bloqueado se evalúa únicamente cuando exista un plan Pro Free definido.
-Razón: Dos demos simultáneas — empresa organizadora y grupo de amigos free. Añadir fricción al precio reduce el valor para el segmento free en la demo.
+**D72. El usuario free puede poner precio a su partido sin plan de pago.**
+Es una herramienta organizativa (Bizum entre amigos), no monetización de GameOn.
 
 ---
 
@@ -145,12 +146,9 @@ Razón: Dos demos simultáneas — empresa organizadora y grupo de amigos free. 
 **D29. Fallback para participantes con `position == null` — asignar por orden de array.**
 
 **D57. El manejo del 401 vive únicamente en `auth.interceptor.ts`.**
-Razón: Dos interceptores manejando el 401 causan condición de carrera.
 
-**D62. Límites de tamaño de componentes Angular — obligatorio para Olga:**
-- HTML: máx 150 líneas
-- TS: máx 200 líneas
-- SCSS: máx 20kB
+**D62. Límites de tamaño de componentes Angular:**
+- HTML: máx 150 líneas / TS: máx 200 líneas / SCSS: máx 20kB
 
 **D67. Parciales SCSS de un componente viven en una carpeta `styles/` dentro del propio componente.**
 
@@ -172,26 +170,12 @@ DATABASE_URL
 JWT_ACCESS_SECRET, JWT_REFRESH_SECRET
 JWT_ACCESS_EXPIRES_IN=900, JWT_REFRESH_EXPIRES_IN=604800
 GOOGLE_CLIENT_ID, GOOGLE_CLIENT_SECRET
-GOOGLE_CALLBACK_URL=https://<backend>.vercel.app/auth/google/callback
-FRONTEND_URL=https://<frontend>.vercel.app
-ORIGIN=https://<frontend>.vercel.app
-NODE_ENV=production
-RESEND_API_KEY=re_xxxxxxxxxxxx
+GOOGLE_CALLBACK_URL, FRONTEND_URL, ORIGIN, NODE_ENV, RESEND_API_KEY
 ```
 
 ---
 
-## 9. CALIDAD Y SEGURIDAD
-
-**D35. Nunca commitear credenciales, tokens o secrets.**
-
-**D36. Nunca usar `any` en TypeScript sin justificación explícita.**
-
-**D37. Nunca romper contratos de DTOs que el frontend ya consume.**
-
----
-
-## 10. HERRAMIENTAS Y MCPS
+## 9. HERRAMIENTAS Y MCPS
 
 **D38. GitHub MCP conectado a Claude.**
 
@@ -202,11 +186,10 @@ Para leer código → IDE local siempre (VSCode para Nestor, Antigravity para Ol
 
 ---
 
-## 11. AGENTES Y MODELOS
+## 10. AGENTES Y MODELOS
 
 **D54. Escalar de Sonnet 4.6 a Opus 4.6 cuando:**
 - El codebase supera los 500k tokens
-- Queremos paralelizar trabajo en un feature grande
 - Sonnet no resuelve arquitectura compleja después de dos intentos
 
 **D58. Nestor y Olga deben usar Sonnet 4.6 mínimo.**
@@ -226,7 +209,7 @@ Para leer código → IDE local siempre (VSCode para Nestor, Antigravity para Ol
 
 ---
 
-## 12. FUTURO
+## 11. FUTURO
 
 **D40. Orion como arquitecto multi-proyecto.**
 
@@ -236,7 +219,7 @@ Para leer código → IDE local siempre (VSCode para Nestor, Antigravity para Ol
 
 ---
 
-## 13. ORION OS
+## 12. ORION OS
 
 **D60. ORION.md vive en `Mjosuex85/orion` (main) — no en `gameon-api`.**
 
@@ -246,5 +229,5 @@ Para leer código → IDE local siempre (VSCode para Nestor, Antigravity para Ol
 
 ---
 
-*Última actualización: 27 de marzo de 2026 — Orion*
-*Decisiones nuevas esta sesión: D66, D67, D68, D69, D70, D71, D72*
+*Última actualización: 28 de marzo de 2026 — Orion*
+*Decisiones nuevas esta sesión: D73, D14 redefinida*
