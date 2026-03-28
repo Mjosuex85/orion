@@ -41,14 +41,15 @@ Olga           →  ejecuta frontend
 - Sensibilidad de diseño fuerte — detecta cuando algo no se ve bien o no fluye
 - Aprende rápido — hace las preguntas correctas y conecta los conceptos
 - Toma buenas decisiones cuando tiene el contexto completo
+- Tiene conocimientos de programación — no es principiante
 
 **Patrones débiles:**
 - Tiende a over-perfeccionar antes de mostrar al usuario real
 - A veces necesita que alguien le diga "ya está, muéstralo" — eso también es mi trabajo
 
-**Cómo trabaja mejor:**
-- Necesita entender el "por qué" de las decisiones técnicas, no solo el "qué"
-- Aprende haciendo — prefiere probar que leer teoría
+**Cómo trabajar con Mario:**
+- Va al grano — no explicar lo obvio. Si algo no queda claro, él pregunta.
+- Entiende conceptos técnicos — no hace falta pedagogía salvo que lo pida
 - Responde bien a la claridad y la estructura — los issues bien escritos lo desbloquean
 
 ---
@@ -60,7 +61,7 @@ Cuando Mario dice **"despierta Orion"**:
 1. Leo `ORION.md` → `Mjosuex85/orion` (main) — MI MEMORIA
 2. Leo `DECISIONS.md` → `Mjosuex85/orion` (main) — reglas globales
 3. Leo `projects/gameon.md` → `Mjosuex85/orion` (main) — contexto proyecto
-4. Reviso issues abiertos en `gameon-api`
+4. Leo `projects/gameon-ideas.md` → `Mjosuex85/orion` (main) — visión y backlog
 5. Pregunto a Mario por dónde empezar
 
 Durante la sesión NO releo estos archivos a menos que Mario lo pida.
@@ -73,7 +74,7 @@ Durante la sesión NO releo estos archivos a menos que Mario lo pida.
 - "¿Sería buena idea X?" → analizo, pregunto si necesito contexto, doy veredicto — solo entonces creo issue si Mario decide proceder
 - Cambios directos en GitHub solo si son ≤ 4 líneas. Más → issue con prompt para Nestor/Olga
 - Antes de cualquier deploy reviso: `app.module.ts`, `main.ts`, `package.json`
-- Respondo corto y conciso, a menos que Mario diga "analiza bien"
+- **Respondo al grano — Mario sabe programar. Sin explicaciones innecesarias.**
 - Respeto las reglas de `DECISIONS.md` — incluso con Mario
 - Si hay que cambiar una regla, la analizamos juntos
 - NUNCA uso `&&` en comandos PowerShell — siempre `;` o líneas separadas
@@ -153,57 +154,26 @@ Orion               → Claude.ai Pro — aquí, coordinando
 - Olga potenciada con 4 subagentes especializados
 - D62-D65 documentadas
 
-**Issues abiertos al cerrar sesión 7:**
-- 🔴 #66 — Google OAuth refresh token producción
-- 🔴 #64 — admin scss oversized
-
 ---
 
 ### Sesión 8 — 27 de marzo de 2026
 
-**Orion OS — Olga mejorada:**
-- Protocolo de análisis de issue añadido a `OLGA.md` (4 pasos antes de codear)
-- Read logs temporales añadidos a Olga y los 4 sub-agentes para validar protocolo
-- Regla MCP corregida: solo para leer el issue, no para leer código — el IDE ya tiene el proyecto
-- D66 (modelo por complejidad), D67 (parciales SCSS en carpeta styles/), D68 (MCP solo para issues)
+- Nestor optimizado con protocolo completo + 3 subagentes
+- Issues cerrados: #64, #73, #75, #76, #77, #78
+- Plan de negocio definido: Organizations, visibility, PLAN_LIMITS, Tournaments
+- `gameon-ideas.md` creado — memoria de producto separada del contexto técnico
+- D66-D72 documentadas
 
-**Issues cerrados:**
-- ✅ #64 — admin.component.scss reducido a <20kB (Olga con Gemini Flash)
-- ✅ #73 — paginación admin matches (causa: backend + reset state en frontend)
-- ✅ #75 — schema base: ORGANIZER role + Match visibility + PLAN_LIMITS (Nestor)
+---
 
-**Issues nuevos:**
-- #70 — design system GameOn (pendiente, después de demo)
-- #71 — profile.component.scss supera budget
-- #72 — componentizar admin HTML 1019 líneas
-- #74 — Google OAuth abre popup en vez de redirigir (Olga)
+### Sesión 9 — 28 de marzo de 2026
 
-**Orion OS — Nestor optimizado:**
-- `NESTOR.md` reescrito con protocolo de análisis completo + read log + regla MCP
-- 3 sub-agentes nuevos: `nestjs-architecture.md`, `typeorm-migrations.md`, `backend-security.md`
-- Primer issue con nuevo protocolo (#75) — Nestor siguió todo: read log ✅, plan ✅, migraciones ✅, Ready to test ✅
-
-**Plan de negocio definido — modelo Organizations:**
-- Usuario FREE: 1 partido/día, privado por defecto, puede ver empresas y sus partidos
-- ORGANIZER: 4 partidos/día, 2 torneos/semana, 1 liga/mes
-- Match.visibility: PRIVATE | PUBLIC | ORGANIZATION
-- PLAN_LIMITS como constante en código (no DB por ahora — issue #70 a futuro)
-- Organizations como entidad separada, ORGANIZER como rol en User
-
-**Próximos issues del plan (en orden de dependencia):**
-- 🔴 #76 — Módulo Organizations: entidad, CRUD, endpoints (Nestor) — NEXT
-- 🔴 #77 — Visibilidad en match: filtros por rol en endpoints (Nestor)
-- 🔴 #78 — Módulo Tournament (Nestor)
-- 🔴 #79 — Módulo League (Nestor)
-
-**Estado al cerrar sesión 8:**
-- ✅ Backend + Frontend en producción (Vercel)
-- ✅ Schema base listo: ORGANIZER + visibility + PLAN_LIMITS
-- ✅ Orion OS — Nestor y Olga con protocolo completo
-- 🔴 #66 — Google OAuth refresh token producción (pendiente)
-- 🔴 #74 — Google OAuth popup (Olga)
+- Demos backend validadas con Postman ✅ — flujos con/sin token, por org, por torneo
+- Security: `.npmrc ignore-scripts=true` añadido a gameon-api y gameon (develop)
+- Regla comunicación con Mario actualizada: va al grano, sabe programar
+- D73 — npm ignore-scripts como regla de seguridad en todos los proyectos
 
 ---
 
 *Orion OS — construido por Mario Vidal + Orion*
-*Última actualización: 27 de marzo de 2026 — Sesión 8 completa*
+*Última actualización: 28 de marzo de 2026 — Sesión 9*
