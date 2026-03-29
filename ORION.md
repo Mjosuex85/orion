@@ -74,8 +74,8 @@ Cuando Mario dice **"despierta Orion"**:
 ```
 Mario          → Director (visión, pruebas, decisiones de negocio)
 Orion          → CTO (arquitectura, coordinación, issues, cierra issues)
-Nestor         → Backend Tech Lead (VSCode + Copilot Pro, Sonnet 4.6 mínimo) ✅ funciona bien
-Olga           → Frontend Tech Lead (Antigravity + GitHub MCP) ✅ reset sesión 10
+Nestor         → Backend Tech Lead (VSCode + Copilot Pro + GitHub MCP) ✅
+Olga           → Frontend Tech Lead (Antigravity + GitHub MCP) ✅
 ```
 
 **Subagentes de Olga:** angular-component-architecture, angular-performance, ui-design-reviewer, angular-accessibility
@@ -86,27 +86,52 @@ Olga           → Frontend Tech Lead (Antigravity + GitHub MCP) ✅ reset sesi�
 
 ## CÓMO RECIBE CONTEXTO CADA AGENTE
 
-Cada agente tiene un `CLAUDE.md` en su repo — se carga automáticamente al abrir el proyecto en el IDE.
+### Punto de entrada — CLAUDE.md automático
+Cada repo tiene un `CLAUDE.md` en la raíz que el IDE carga automáticamente:
+```
+gameon-api/CLAUDE.md  →  Nestor lo lee al abrir el proyecto en VSCode
+gameon/CLAUDE.md      →  Olga lo lee al abrir el proyecto en Antigravity
+```
+Ese archivo les dice quién son y qué leer a continuación via GitHub MCP.
+
+### Qué lee cada uno via GitHub MCP
 
 ```
-CLAUDE.md (gameon-api)  →  Nestor lee automáticamente al abrir en VSCode/Claude Code
-CLAUDE.md (gameon)      →  Olga lee automáticamente al abrir en Antigravity
+Orion:   ORION.md + DECISIONS.md + gameon.md + gameon-ideas.md  (repo: orion)
+Nestor:  NESTOR.md + AGENT_RULES.md                              (repo: orion)
+Olga:    OLGA.md + AGENT_RULES.md                                (repo: orion)
 ```
 
-Ese archivo les dice quién son y qué leer a continuación:
+**Ni Nestor ni Olga leen ORION.md ni DECISIONS.md** — ese es contexto de CTO, no de ejecutor.
+Las reglas de negocio ya están en los CLAUDE.md de cada repo.
 
+Los subagentes y skills los leen solo si el issue lo requiere (ver tabla en NESTOR.md / OLGA.md).
+
+### Herramientas de cada agente
 ```
-Orion lee:    ORION.md + DECISIONS.md + gameon.md + gameon-ideas.md  (GitHub MCP)
-Nestor lee:   NESTOR.md + AGENT_RULES.md  (vía HTTP — Claude Code puede hacer fetch)
-Olga lee:     OLGA.md + AGENT_RULES.md + gameon.md  (vía GitHub MCP — Antigravity no hace fetch HTTP)
+Nestor:  VSCode + Copilot Pro + GitHub MCP
+         → MCP: leer issue (body + comments)
+         → código: abre archivos en VSCode directamente
+
+Olga:    Antigravity + GitHub MCP
+         → MCP: leer issue (body + comments) + leer archivos de Orion OS
+         → código: abre archivos en Antigravity directamente
 ```
 
-**Regla clave:** Olga usa GitHub MCP para leer archivos de Orion OS, no URLs HTTP.
+### Prompt de inicialización — sesión nueva
 
-### Prompt de inicialización para Olga (sesión nueva en Antigravity)
+**Para Nestor** (nueva sesión en VSCode/Copilot):
+```
+Eres Nestor, Backend Tech Lead del equipo Orion OS.
 
-Cuando Mario abre una sesión nueva con Olga, el primer mensaje debe ser:
+Lee estos archivos en orden usando tu GitHub MCP antes de hacer cualquier cosa:
+1. Repo: Mjosuex85/orion, archivo: agents/NESTOR.md (branch: main)
+2. Repo: Mjosuex85/orion, archivo: agents/AGENT_RULES.md (branch: main)
 
+Cuando termines, escribe el Read Log con los checkboxes marcados y confirma que estás listo para recibir un issue.
+```
+
+**Para Olga** (nueva sesión en Antigravity):
 ```
 Eres Olga, Frontend Tech Lead del equipo Orion OS.
 
@@ -114,11 +139,10 @@ Lee estos archivos en orden usando tu GitHub MCP antes de hacer cualquier cosa:
 1. Repo: Mjosuex85/orion, archivo: agents/OLGA.md (branch: main)
 2. Repo: Mjosuex85/orion, archivo: agents/AGENT_RULES.md (branch: main)
 
-Cuando termines, escribe el Read Log con los checkboxes marcados y confirma que estás lista para recibir un issue. No hagas nada más.
+Cuando termines, escribe el Read Log con los checkboxes marcados y confirma que estás lista para recibir un issue.
 ```
 
-Olga debe responder con el Read Log completo antes de recibir ningún issue.
-Si no lo hace → sesión fallida, empezar de nuevo.
+Si el agente no responde con el Read Log completo → sesión fallida, empezar de nuevo.
 
 ---
 
@@ -158,34 +182,23 @@ Mjosuex85/gameon       → Frontend Angular 21 (develop)
 - `gameon-ideas.md` creado, D66-D72
 
 ### Sesión 9 — 28 de marzo de 2026
-
-**Logros:**
-- ✅ Demos backend validadas con Postman (flujos con/sin token, orgs, torneos)
+- ✅ Demos backend validadas con Postman
 - ✅ `.npmrc ignore-scripts=true` en ambos repos — D73
-- ✅ D14 redefinida — Orion puede hacer cambios directos en GitHub para config/docs/seguridad
-- ✅ `agents/DIRECTOR.md` creado — perfil del founder, personalizable para otros usuarios de Orion OS
-- ✅ #80 cerrado — admin SCSS consolidado en un archivo, build pasando
-- ✅ #81 creado — reset configuración Olga en Antigravity (pendiente)
-
-**Estado al cerrar sesión 9:**
-- ✅ Backend + Frontend en producción
-- ✅ Build pasando en frontend
-- 🔴 #66 — Google OAuth refresh token producción
-- 🔴 #74 — Google OAuth popup (Olga)
-- 🔴 #81 — reset Olga configuración
+- ✅ D14 redefinida — Orion puede hacer cambios directos en GitHub
+- ✅ `agents/DIRECTOR.md` creado
+- ✅ #80 cerrado — admin SCSS consolidado
+- ✅ #81 creado — reset Olga
 
 ### Sesión 10 — 29 de marzo de 2026
+- ✅ Flujo de contexto de agentes clarificado y documentado definitivamente
+- ✅ Ambos agentes usan GitHub MCP (Nestor: VSCode+Copilot, Olga: Antigravity)
+- ✅ Prompts de inicialización correctos para Nestor y Olga en ORION.md
 
-**Logros:**
-- ✅ #81 — reset Olga en Antigravity con prompt correcto (GitHub MCP, no HTTP)
-- ✅ Flujo de contexto de agentes documentado en ORION.md — cómo recibe contexto cada uno
-- ✅ Aclarado: Olga usa GitHub MCP para leer Orion OS; Nestor usa HTTP fetch desde Claude Code
-
-**Pendiente:**
-- #74 — Google OAuth popup → Olga (primer issue post-reset)
+**Pendiente sesión 10:**
+- #81 — reset Olga + mandarle #74
 - #71 — profile.component.scss over budget
 - #79 — dos flujos creación partido (bloqueado por GET /organizations/my)
-- Cleanup: eliminar parciales `_admin-*.scss` sueltos + carpeta `styles/` en gameon/develop
+- Cleanup: `_admin-*.scss` sueltos + carpeta `styles/` en gameon/develop
 
 ---
 
