@@ -75,12 +75,50 @@ Cuando Mario dice **"despierta Orion"**:
 Mario          → Director (visión, pruebas, decisiones de negocio)
 Orion          → CTO (arquitectura, coordinación, issues, cierra issues)
 Nestor         → Backend Tech Lead (VSCode + Copilot Pro, Sonnet 4.6 mínimo) ✅ funciona bien
-Olga           → Frontend Tech Lead (Antigravity) ⚠️ pendiente reset configuración (#81)
+Olga           → Frontend Tech Lead (Antigravity + GitHub MCP) ✅ reset sesión 10
 ```
 
 **Subagentes de Olga:** angular-component-architecture, angular-performance, ui-design-reviewer, angular-accessibility
 
 **Subagentes de Nestor:** nestjs-architecture, typeorm-migrations, backend-security
+
+---
+
+## CÓMO RECIBE CONTEXTO CADA AGENTE
+
+Cada agente tiene un `CLAUDE.md` en su repo — se carga automáticamente al abrir el proyecto en el IDE.
+
+```
+CLAUDE.md (gameon-api)  →  Nestor lee automáticamente al abrir en VSCode/Claude Code
+CLAUDE.md (gameon)      →  Olga lee automáticamente al abrir en Antigravity
+```
+
+Ese archivo les dice quién son y qué leer a continuación:
+
+```
+Orion lee:    ORION.md + DECISIONS.md + gameon.md + gameon-ideas.md  (GitHub MCP)
+Nestor lee:   NESTOR.md + AGENT_RULES.md  (vía HTTP — Claude Code puede hacer fetch)
+Olga lee:     OLGA.md + AGENT_RULES.md + gameon.md  (vía GitHub MCP — Antigravity no hace fetch HTTP)
+```
+
+**Regla clave:** Olga usa GitHub MCP para leer archivos de Orion OS, no URLs HTTP.
+
+### Prompt de inicialización para Olga (sesión nueva en Antigravity)
+
+Cuando Mario abre una sesión nueva con Olga, el primer mensaje debe ser:
+
+```
+Eres Olga, Frontend Tech Lead del equipo Orion OS.
+
+Lee estos archivos en orden usando tu GitHub MCP antes de hacer cualquier cosa:
+1. Repo: Mjosuex85/orion, archivo: agents/OLGA.md (branch: main)
+2. Repo: Mjosuex85/orion, archivo: agents/AGENT_RULES.md (branch: main)
+
+Cuando termines, escribe el Read Log con los checkboxes marcados y confirma que estás lista para recibir un issue. No hagas nada más.
+```
+
+Olga debe responder con el Read Log completo antes de recibir ningún issue.
+Si no lo hace → sesión fallida, empezar de nuevo.
 
 ---
 
@@ -129,15 +167,6 @@ Mjosuex85/gameon       → Frontend Angular 21 (develop)
 - ✅ #80 cerrado — admin SCSS consolidado en un archivo, build pasando
 - ✅ #81 creado — reset configuración Olga en Antigravity (pendiente)
 
-**Problema detectado con Olga:**
-Olga fue configurada antes de Orion OS. No sigue el protocolo consistentemente — no dice "Ready to test", tarda demasiado, consume tokens innecesariamente. Issue #81 creado para resetear su configuración en Antigravity.
-
-**Pendiente próxima sesión:**
-- #81 — reset Olga en Antigravity (Mario hace el reset, Orion verifica OLGA.md)
-- Eliminar parciales `_admin-*.scss` sueltos y carpeta `styles/` en gameon/develop
-- #71 — profile.component.scss over budget
-- GET /organizations/my (Nestor) — desbloquea #79
-
 **Estado al cerrar sesión 9:**
 - ✅ Backend + Frontend en producción
 - ✅ Build pasando en frontend
@@ -145,7 +174,20 @@ Olga fue configurada antes de Orion OS. No sigue el protocolo consistentemente �
 - 🔴 #74 — Google OAuth popup (Olga)
 - 🔴 #81 — reset Olga configuración
 
+### Sesión 10 — 29 de marzo de 2026
+
+**Logros:**
+- ✅ #81 — reset Olga en Antigravity con prompt correcto (GitHub MCP, no HTTP)
+- ✅ Flujo de contexto de agentes documentado en ORION.md — cómo recibe contexto cada uno
+- ✅ Aclarado: Olga usa GitHub MCP para leer Orion OS; Nestor usa HTTP fetch desde Claude Code
+
+**Pendiente:**
+- #74 — Google OAuth popup → Olga (primer issue post-reset)
+- #71 — profile.component.scss over budget
+- #79 — dos flujos creación partido (bloqueado por GET /organizations/my)
+- Cleanup: eliminar parciales `_admin-*.scss` sueltos + carpeta `styles/` en gameon/develop
+
 ---
 
 *Orion OS — construido por Mario Vidal + Orion*
-*Última actualización: 28 de marzo de 2026 — Sesión 9 completa*
+*Última actualización: 29 de marzo de 2026 — Sesión 10*
