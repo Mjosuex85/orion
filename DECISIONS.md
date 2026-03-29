@@ -1,170 +1,170 @@
 # DECISIONS.md — GameOn + Orion OS
 
-Este archivo documenta las decisiones técnicas, de proceso y de equipo tomadas en el proyecto. El **por qué** detrás de cada regla. Lo mantiene Orion y lo lee todo el equipo.
+This file documents the technical, process, and team decisions made in the project. The **why** behind each rule. Maintained by Orion and read by the whole team.
 
 ---
 
-## 1. EQUIPO Y ROLES
+## 1. TEAM AND ROLES
 
-**D1. Mario es el único tomador de decisiones de negocio.**
+**D1. Mario is the sole business decision maker.**
 
-**D2. Orion actúa como arquitecto y coordinador técnico.**
+**D2. Orion acts as technical architect and coordinator.**
 
-**D3. Nestor ejecuta solo en backend. Olga solo en frontend.**
+**D3. Nestor executes backend only. Olga executes frontend only.**
 
-**D4. Mario siempre prueba antes de que se cierre un issue.**
-
----
-
-## 2. FLUJO DE TRABAJO
-
-**D5. Todos los issues viven en `gameon-api`, incluyendo los del frontend.**
-
-**D6. Cada issue incluye: descripción + prompt para el agente + plan de pruebas.**
-
-**D7. Máximo 2 issues en In Progress simultáneamente.**
-
-**D8. Cuando Orion dice "después lo hacemos", se crea un issue en el momento.**
-
-**D9. Cuando Mario propone una idea, Orion la analiza técnicamente antes de crear el issue.**
-
-**D52. Los commits usan `ref #XX` — nunca `closes #XX` ni `fixes #XX`.**
-
-**D53. Orion cierra los issues — nunca se cierran automáticamente.**
-
-**D55. Cambios de configuración o documentación — Mario los recibe con `git pull` después de que Orion los sube.**
-
-**D56. Mario da luz verde antes de que Orion use cualquier MCP.**
+**D4. Mario always tests before an issue is closed.**
 
 ---
 
-## 3. GIT Y RAMAS
+## 2. WORKFLOW
 
-**D10. `develop` es la rama de trabajo activa. `main` es producción.**
+**D5. All issues live in `gameon-api`, including frontend ones.**
 
-**D11. `main` NO SE TOCA — excepto en deploys planificados a producción.**
+**D6. Each issue includes: description + agent prompt + test plan.**
 
-**D12. Nestor, Olga y Mario hacen `git pull origin develop` antes de empezar a trabajar.**
-Razón: Orion puede haber subido cambios directamente a GitHub (configuración, seguridad, documentación). El pull garantiza que todos parten del estado real del repo.
+**D7. Maximum 2 issues In Progress simultaneously.**
 
-**D13. Los commits del repo `gameon` referencian issues con `Mjosuex85/gameon-api#numero`.**
+**D8. When Orion says "we'll do that later", an issue is created immediately.**
 
-**D14. Orion puede hacer cambios directos en GitHub en `develop` para:**
-- Configuración (`.npmrc`, `.env.example`, etc.)
-- Documentación (`CLAUDE.md`, `AGENTS.md`, `README`)
-- Correcciones urgentes de arquitectura decididas con Mario
-- Archivos de Orion OS (`ORION.md`, `DECISIONS.md`, subagentes, etc.)
+**D9. When Mario proposes an idea, Orion analyzes it technically before creating the issue.**
 
-Para lógica de negocio o código de aplicación → issue para Nestor/Olga siempre.
+**D52. Commits use `ref #XX` — never `closes #XX` or `fixes #XX`.**
 
-**D44. Antes de conectar cualquier plataforma de deploy a `main`, verificar que `develop` y `main` están sincronizados.**
+**D53. Orion closes issues — they are never closed automatically.**
 
----
+**D55. Configuration or documentation changes — Mario receives them with `git pull` after Orion pushes them.**
 
-## 4. DEPLOYS A PRODUCCIÓN
-
-**D49. Los deploys a producción se hacen en fechas planificadas.**
-
-**D50. Durante un deploy activo con problemas críticos, Orion puede hacer cambios directos en `main`.**
-Siempre aplicar el mismo cambio a `develop` después.
-
-**D51. Orion NUNCA hace cambios en `main` fuera de un deploy activo.**
+**D56. Mario gives the green light before Orion uses any MCP.**
 
 ---
 
-## 5. SEGURIDAD
+## 3. GIT AND BRANCHES
 
-**D35. Nunca commitear credenciales, tokens o secrets.**
+**D10. `develop` is the active working branch. `main` is production.**
 
-**D36. Nunca usar `any` en TypeScript sin justificación explícita.**
+**D11. `main` is NOT touched — except in planned production deploys.**
 
-**D37. Nunca romper contratos de DTOs que el frontend ya consume.**
+**D12. Nestor, Olga, and Mario do `git pull origin develop` before starting work.**
+Reason: Orion may have pushed changes directly to GitHub (configuration, security, documentation). The pull ensures everyone starts from the real state of the repo.
 
-**D73. `ignore-scripts=true` en `.npmrc` en todos los proyectos.**
-Razón: Previene la ejecución automática de scripts maliciosos de paquetes npm durante `npm install`. Es una práctica de seguridad estándar aplicable a todos los proyectos de Orion OS.
-Si algún paquete necesita scripts de compilación nativos (ej: `bcrypt`), evaluar reemplazarlo por alternativa pure-JS (ej: `bcryptjs`) o justificar explícitamente la excepción.
+**D13. Commits in the `gameon` repo reference issues with `Mjosuex85/gameon-api#number`.**
+
+**D14. Orion can make direct changes in GitHub on `develop` for:**
+- Configuration (`.npmrc`, `.env.example`, etc.)
+- Documentation (`CLAUDE.md`, `AGENTS.md`, `README`)
+- Urgent architecture fixes decided with Mario
+- Orion OS files (`ORION.md`, `DECISIONS.md`, subagents, etc.)
+
+For business logic or application code → issue for Nestor/Olga always.
+
+**D44. Before connecting any deploy platform to `main`, verify that `develop` and `main` are in sync.**
 
 ---
 
-## 6. ARQUITECTURA — BACKEND
+## 4. PRODUCTION DEPLOYS
 
-**D16. `MatchParticipant` es una entidad intermedia propia, no ManyToMany simple.**
+**D49. Production deploys are done on planned dates.**
 
-**D17. `position` en `MatchParticipant` es el índice 0-based del spot en el campo.**
+**D50. During an active deploy with critical issues, Orion can make direct changes to `main`.**
+Always apply the same change to `develop` afterwards.
 
-**D18. `@DeleteDateColumn()` para soft delete — nunca hard delete.**
+**D51. Orion NEVER makes changes to `main` outside of an active deploy.**
 
-**D19. `synchronize: false` en producción. Las migraciones manejan el schema.**
+---
 
-**D20. Las migraciones siempre se versionan en el repo.**
+## 5. SECURITY
 
-**D21. PostgreSQL para usuarios — definitivo.**
+**D35. Never commit credentials, tokens, or secrets.**
 
-**D22. Stats migrarán a Redis en el futuro.**
+**D36. Never use `any` in TypeScript without explicit justification.**
 
-**D23. Reviews irán a microservicio separado.**
+**D37. Never break DTO contracts the frontend already consumes.**
 
-**D24. No cambiar el nombre del módulo `matchs`.**
+**D73. `ignore-scripts=true` in `.npmrc` in all projects.**
+Reason: Prevents automatic execution of malicious scripts from npm packages during `npm install`. Standard security practice applicable to all Orion OS projects.
+If a package needs native build scripts (e.g. `bcrypt`), evaluate replacing it with a pure-JS alternative (e.g. `bcryptjs`) or explicitly justify the exception.
 
-**D25. `mapToDto` expone `avatarUrl`, `country`, `flagUrl` de creator y participants.**
+---
 
-**D45. Con `@DeleteDateColumn`, nunca usar `.where('deletedAt IS NULL')` manual.**
+## 6. ARCHITECTURE — BACKEND
 
-**D46. `GOOGLE_CALLBACK_URL` en la Google Strategy — nunca URLs hardcodeadas.**
+**D16. `MatchParticipant` is its own intermediate entity, not a simple ManyToMany.**
 
-**D47. `FRONTEND_URL` en el auth controller para el redirect post-OAuth.**
+**D17. `position` in `MatchParticipant` is the 0-based index of the spot on the field.**
 
-**D59. `password` field con `select: false` nunca se carga en queries normales.**
+**D18. `@DeleteDateColumn()` for soft delete — never hard delete.**
 
-**D69. NO usar SnakeNamingStrategy en TypeORM.**
-Razón: Las entidades existentes tienen columnas en camelCase real en la DB. Activar la strategy las rompería en producción.
+**D19. `synchronize: false` in production. Migrations manage the schema.**
 
-**D70. En entidades nuevas, toda propiedad camelCase DEBE tener `name` explícito en snake_case.**
+**D20. Migrations are always versioned in the repo.**
+
+**D21. PostgreSQL for users — definitive.**
+
+**D22. Stats will migrate to Redis in the future.**
+
+**D23. Reviews will go to a separate microservice.**
+
+**D24. Do not rename the `matchs` module.**
+
+**D25. `mapToDto` exposes `avatarUrl`, `country`, `flagUrl` from creator and participants.**
+
+**D45. With `@DeleteDateColumn`, never use `.where('deletedAt IS NULL')` manually.**
+
+**D46. `GOOGLE_CALLBACK_URL` in the Google Strategy — never hardcoded URLs.**
+
+**D47. `FRONTEND_URL` in the auth controller for the post-OAuth redirect.**
+
+**D59. `password` field with `select: false` is never loaded in normal queries.**
+
+**D69. Do NOT use SnakeNamingStrategy in TypeORM.**
+Reason: Existing entities have camelCase column names in the real DB. Activating the strategy would break them in production.
+
+**D70. In new entities, every camelCase property MUST have an explicit `name` in snake_case.**
 ```typescript
 @Column({ name: 'logo_url', nullable: true })
 logoUrl?: string;
 ```
-Excepción: `@CreateDateColumn()`, `@UpdateDateColumn()`, `@DeleteDateColumn()` generan snake_case automáticamente.
+Exception: `@CreateDateColumn()`, `@UpdateDateColumn()`, `@DeleteDateColumn()` generate snake_case automatically.
 
-**D71. `Match.visibility = PRIVATE` significa "no aparece en listados públicos" — NO "solo el creador puede verlo".**
-- `GET /matches/:id` — público, cualquiera con el ID puede verlo y registrarse
-- `PRIVATE` solo afecta los listados
+**D71. `Match.visibility = PRIVATE` means "does not appear in public listings" — NOT "only the creator can see it".**
+- `GET /matches/:id` — public, anyone with the ID can view and join
+- `PRIVATE` only affects listings
 
-**D72. El usuario free puede poner precio a su partido sin plan de pago.**
-Es una herramienta organizativa (Bizum entre amigos), no monetización de GameOn.
+**D72. Free users can set a price on their match without a paid plan.**
+It is an organizational tool (splitting costs via Bizum), not GameOn monetization.
 
 ---
 
-## 7. ARQUITECTURA — FRONTEND
+## 7. ARCHITECTURE — FRONTEND
 
-**D26. Todas las llamadas HTTP van a través de `ApiService`.**
+**D26. All HTTP calls go through `ApiService`.**
 
-**D27. La URL del backend vive en `environment.ts` / `environment.prod.ts`.**
+**D27. The backend URL lives in `environment.ts` / `environment.prod.ts`.**
 
-**D28. El proyecto es 100% standalone components — sin NgModules.**
+**D28. The project is 100% standalone components — no NgModules.**
 
-**D29. Fallback para participantes con `position == null` — asignar por orden de array.**
+**D29. Fallback for participants with `position == null` — assign by array order.**
 
-**D57. El manejo del 401 vive únicamente en `auth.interceptor.ts`.**
+**D57. 401 handling lives exclusively in `auth.interceptor.ts`.**
 
-**D62. Límites de tamaño de componentes Angular:**
-- HTML: máx 150 líneas / TS: máx 200 líneas / SCSS: máx 20kB
+**D62. Angular component size limits:**
+- HTML: max 150 lines / TS: max 200 lines / SCSS: max 20kB
 
-**D67. Parciales SCSS de un componente viven en una carpeta `styles/` dentro del propio componente.**
+**D67. SCSS partials for a component live in a `styles/` folder inside the component itself.**
 
 ---
 
 ## 8. DEPLOY
 
-**D30. Backend en Vercel (serverless). Frontend en Vercel (free tier).**
+**D30. Backend on Render. Frontend on Vercel (free tier).**
 
-**D31. Autodeploy activado en `main` en Vercel.**
+**D31. Autodeploy activated on `main` in Vercel.**
 
-**D32. Antes de cualquier deploy, Orion revisa: `app.module.ts`, `main.ts`, `package.json`, strategies de auth y variables de entorno.**
+**D32. Before any deploy, Orion reviews: `app.module.ts`, `main.ts`, `package.json`, auth strategies and environment variables.**
 
-**D33. `migrationsRun: true` en producción — las migraciones corren al arrancar.**
+**D33. `migrationsRun: true` in production — migrations run on startup.**
 
-**D48. Variables de entorno necesarias en producción (Vercel):**
+**D48. Environment variables required in production (Vercel):**
 ```
 DATABASE_URL
 JWT_ACCESS_SECRET, JWT_REFRESH_SECRET
@@ -175,59 +175,59 @@ GOOGLE_CALLBACK_URL, FRONTEND_URL, ORIGIN, NODE_ENV, RESEND_API_KEY
 
 ---
 
-## 9. HERRAMIENTAS Y MCPS
+## 9. TOOLS AND MCPS
 
-**D38. GitHub MCP conectado a Claude.**
+**D38. GitHub MCP connected to Claude.**
 
-**D39. MCP de PostgreSQL local — pendiente (#31). MCP de Notion — pendiente (#33).**
+**D39. Local PostgreSQL MCP — pending (#31). Notion MCP — pending (#33).**
 
-**D68. Nestor y Olga usan el MCP de GitHub para leer el issue asignado (body + comentarios).**
-Para leer código → IDE local siempre (VSCode para Nestor, Antigravity para Olga).
-
----
-
-## 10. AGENTES Y MODELOS
-
-**D54. Escalar de Sonnet 4.6 a Opus 4.6 cuando:**
-- El codebase supera los 500k tokens
-- Sonnet no resuelve arquitectura compleja después de dos intentos
-
-**D58. Nestor y Olga deben usar Sonnet 4.6 mínimo.**
-
-**D63. Estrategia de tokens: Copilot/Gemini para tareas S/M, Claude CLI para L/XL.**
-
-**D64. El valor del sistema está en el contexto, no en el modelo.**
-
-**D66. Selección de modelo por complejidad de task:**
-
-| Task | Modelo mínimo |
-|------|--------------|
-| Refactor mecánico con pasos definidos | Gemini Flash / Haiku |
-| Bug analysis + diagnóstico | Gemini Pro / Sonnet |
-| Arquitectura, features nuevas | Gemini Pro / Sonnet |
-| Decisiones de arquitectura global | Claude Opus / Orion |
+**D68. Nestor and Olga use the GitHub MCP to read the assigned issue (body + comments).**
+For reading code → always local IDE (VSCode for Nestor, Antigravity for Olga).
 
 ---
 
-## 11. FUTURO
+## 10. AGENTS AND MODELS
 
-**D40. Orion como arquitecto multi-proyecto.**
+**D54. Scale from Sonnet 4.6 to Opus 4.6 when:**
+- The codebase exceeds 500k tokens
+- Sonnet cannot resolve complex architecture after two attempts
 
-**D41. Kubernetes cuando GameOn tenga +500 usuarios activos o hosting > $50/mes.**
+**D58. Nestor and Olga must use Sonnet 4.6 minimum.**
 
-**D43. GitHub Actions CI/CD + SonarCloud + Branch protection — después de la demo.**
+**D63. Token strategy: Copilot/Gemini for S/M tasks, Claude CLI for L/XL.**
+
+**D64. The value of the system is in the context, not the model.**
+
+**D66. Model selection by task complexity:**
+
+| Task | Minimum model |
+|------|---------------|
+| Mechanical refactor with defined steps | Gemini Flash / Haiku |
+| Bug analysis + diagnosis | Gemini Pro / Sonnet |
+| Architecture, new features | Gemini Pro / Sonnet |
+| Global architecture decisions | Claude Opus / Orion |
+
+---
+
+## 11. FUTURE
+
+**D40. Orion as multi-project architect.**
+
+**D41. Kubernetes when GameOn has 500+ active users or hosting > $50/month.**
+
+**D43. GitHub Actions CI/CD + SonarCloud + Branch protection — after the demo.**
 
 ---
 
 ## 12. ORION OS
 
-**D60. ORION.md vive en `Mjosuex85/orion` (main) — no en `gameon-api`.**
+**D60. ORION.md lives in `Mjosuex85/orion` (main) — not in `gameon-api`.**
 
-**D61. CLAUDE.md en cada repo = cómo trabajar (≤150 líneas). Business Rules en `orion/projects/gameon.md`.**
+**D61. CLAUDE.md in each repo = how to work (≤150 lines). Business Rules in `orion/projects/gameon.md`.**
 
-**D65. Subagentes viven en `orion/agents/subagents/` — reutilizables en otros proyectos.**
+**D65. Subagents live in `orion/agents/subagents/` — reusable across projects.**
 
 ---
 
-*Última actualización: 28 de marzo de 2026 — Orion*
-*Decisiones nuevas esta sesión: D73, D14 redefinida*
+*Last updated: March 29, 2026 — Orion*
+*New decisions this session: D73, D14 redefined*

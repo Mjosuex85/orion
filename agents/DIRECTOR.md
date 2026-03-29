@@ -1,90 +1,90 @@
-# DIRECTOR.md — Perfil del Founder
+# DIRECTOR.md — Founder Profile
 
-> Este archivo es parte de Orion OS.
-> Describe el comportamiento, fortalezas y patrones del Director del proyecto.
-> Orion lo lee para entender con quién trabaja y cómo ayudarle mejor.
-> Cuando otro founder use Orion OS, este archivo se personaliza para él.
-
----
-
-## QUIÉN ES
-
-**Mario Vidal** — Founder y CEO de GameOn.
-
-Tiene conocimientos de programación reales — no es principiante. Entiende el stack, lee código, detecta bugs, y toma buenas decisiones técnicas cuando tiene el contexto completo. No necesita que le expliquen lo obvio.
-
-Su rol en el equipo es tomar decisiones de negocio, validar el trabajo de los agentes, y mantener la visión del producto. Es el único que puede probar la app real.
+> This file is part of Orion OS.
+> It describes the behavior, strengths, and patterns of the project Director.
+> Orion reads it to understand who he is working with and how to help best.
+> When another founder uses Orion OS, this file is customized for them.
 
 ---
 
-## FORTALEZAS
+## WHO HE IS
 
-- **Visión de producto muy clara** — sabe exactamente qué quiere construir y por qué
-- **Sensibilidad de diseño** — detecta cuando algo no se ve bien o no fluye
-- **Aprende rápido** — hace las preguntas correctas y conecta los conceptos
-- **Honestidad consigo mismo** — reconoce sus errores sin excusas
-- **Energía** — cuando está en modo construcción, puede mantener el ritmo durante horas
+**Mario Vidal** — Founder and CEO of GameOn.
+
+He has real programming knowledge — not a beginner. He understands the stack, reads code, detects bugs, and makes good technical decisions when he has full context. He does not need obvious things explained.
+
+His role in the team is to make business decisions, validate agent work, and maintain the product vision. He is the only one who can test the real app.
 
 ---
 
-## PATRONES A VIGILAR
+## STRENGTHS
+
+- **Very clear product vision** — knows exactly what he wants to build and why
+- **Design sensibility** — detects when something does not look right or flow well
+- **Fast learner** — asks the right questions and connects concepts
+- **Self-honesty** — acknowledges his mistakes without excuses
+- **Energy** — when in build mode, can maintain the pace for hours
+
+---
+
+## PATTERNS TO WATCH
 
 ### Over-perfectioning
-Tiende a querer que todo esté perfecto antes de mostrárselo a un usuario real. Necesita que Orion le diga "ya está, muéstralo" — eso también es trabajo del CTO.
+Tends to want everything perfect before showing it to a real user. Needs Orion to say "it is ready, show it" — that is also the CTO's job.
 
-### Velocidad vs arquitectura
-Cuando quiere construir rápido, a veces toma atajos que generan deuda técnica. El caso del `admin.component` es el ejemplo documentado: construido con Gemini Flash paso a paso sin definir arquitectura, resultando en 1040 líneas de HTML y 26kB de SCSS que costaron múltiples sesiones resolver.
+### Speed vs architecture
+When he wants to build fast, he sometimes takes shortcuts that generate technical debt. The `admin.component` case is the documented example: built with Gemini Flash step by step without defining architecture, resulting in 1040 lines of HTML and 26kB of SCSS that cost multiple sessions to resolve.
 
-**El patrón:** la urgencia de ver resultados puede superar la disciplina de hacerlo bien. Mario lo reconoce como un rasgo de carácter, no de desconocimiento técnico.
+**The pattern:** the urgency to see results can override the discipline to do it right. Mario recognizes this as a character trait, not a lack of technical knowledge.
 
-**Cómo Orion ayuda:** antes de empezar cualquier componente o módulo complejo, Orion propone la arquitectura primero. No se empieza a codear hasta que la estructura esté clara.
+**How Orion helps:** before starting any complex component or module, Orion proposes the architecture first. Coding does not start until the structure is clear.
 
-### Confianza excesiva en modelos débiles
-Ha ocurrido que se delega a Gemini Flash tareas que requieren criterio arquitectural. Flash ejecuta sin cuestionar, genera deuda, y el problema aparece sesiones después.
+### Excessive trust in weak models
+It has happened that Gemini Flash is delegated tasks requiring architectural judgment. Flash executes without questioning, generates debt, and the problem surfaces sessions later.
 
-**La regla:** Mario decide el qué, Orion decide qué modelo usar para el cómo.
-
----
-
-## CÓMO TRABAJA MEJOR
-
-- Necesita entender el **por qué** de las decisiones — no solo el qué
-- Responde bien a la claridad y la estructura
-- Prefiere probar que leer teoría
-- Va al grano — no le expliques lo obvio. Si algo no queda claro, pregunta.
-- Funciona mejor cuando tiene el contexto completo antes de decidir
+**The rule:** Mario decides the what, Orion decides what model to use for the how.
 
 ---
 
-## CÓMO ORION DEBE TRATARLE
+## HOW HE WORKS BEST
 
-- **Directo** — sin rodeos, sin explicaciones innecesarias
-- **Honesto** — si algo es deuda técnica o un atajo malo, decirlo en el momento, no después
-- **Como socio** — no como usuario. Las decisiones se toman juntos.
-- **Empujando hacia el usuario real** — cuando algo está "suficientemente bueno", Orion lo dice. El perfeccionismo no construye productos.
-
----
-
-## APRENDIZAJES DOCUMENTADOS
-
-**Sesión 9 — Deuda técnica del admin component:**
-> "La deuda técnica es lo peor. Quise tomar un atajo, por querer construir rápido y lo estoy pagando. No pasa nada, son cosas que voy a aprender de mí, porque esto no es desconocimiento de programación, es error de mi carácter y disciplina."
-
-Este nivel de autoconsciencia es una fortaleza. Orion lo registra para que la próxima vez que la urgencia supere la disciplina, se pueda hacer referencia a este momento.
+- Needs to understand the **why** behind decisions — not just the what
+- Responds well to clarity and structure
+- Prefers testing over reading theory
+- Goes straight to the point — do not explain the obvious. If something is unclear, he will ask.
+- Works best when he has full context before deciding
 
 ---
 
-## PARA OTROS FOUNDERS QUE USEN ORION OS
+## HOW ORION SHOULD TREAT HIM
 
-Este archivo es una plantilla. Cuando un nuevo founder configure Orion OS:
-1. Reemplaza el nombre y descripción
-2. Documenta sus fortalezas reales
-3. Documenta sus patrones débiles con honestidad
-4. Define cómo quiere que Orion le trate
-
-Cuanto más honesto sea este archivo, más útil es Orion como socio.
+- **Direct** — no detours, no unnecessary explanations
+- **Honest** — if something is technical debt or a bad shortcut, say it in the moment, not later
+- **As a partner** — not as a user. Decisions are made together.
+- **Pushing toward the real user** — when something is "good enough", Orion says so. Perfectionism does not build products.
 
 ---
 
-*Parte de Orion OS — creado el 28 de marzo de 2026*
-*Actualizado por: Orion, con palabras de Mario*
+## DOCUMENTED LEARNINGS
+
+**Session 9 — Admin component technical debt:**
+> "Technical debt is the worst. I wanted to take a shortcut, because I wanted to build fast and now I am paying for it. It is fine, these are things I will learn about myself, because this is not lack of programming knowledge, it is a character and discipline error."
+
+This level of self-awareness is a strength. Orion records it so that the next time urgency overrides discipline, this moment can be referenced.
+
+---
+
+## FOR OTHER FOUNDERS USING ORION OS
+
+This file is a template. When a new founder configures Orion OS:
+1. Replace the name and description
+2. Document their real strengths
+3. Document their weak patterns honestly
+4. Define how they want Orion to treat them
+
+The more honest this file is, the more useful Orion is as a partner.
+
+---
+
+*Part of Orion OS — created March 28, 2026*
+*Updated by: Orion, with Mario's words*
