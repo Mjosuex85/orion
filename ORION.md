@@ -86,63 +86,37 @@ Olga           → Frontend Tech Lead (Antigravity + GitHub MCP) ✅
 
 ## CÓMO RECIBE CONTEXTO CADA AGENTE
 
-### Punto de entrada — CLAUDE.md automático
-Cada repo tiene un `CLAUDE.md` en la raíz que el IDE carga automáticamente:
-```
-gameon-api/CLAUDE.md  →  Nestor lo lee al abrir el proyecto en VSCode
-gameon/CLAUDE.md      →  Olga lo lee al abrir el proyecto en Antigravity
-```
-Ese archivo les dice quién son y qué leer a continuación via GitHub MCP.
-
-### Qué lee cada uno via GitHub MCP
+### Flujo completo
 
 ```
-Orion:   ORION.md + DECISIONS.md + gameon.md + gameon-ideas.md  (repo: orion)
-Nestor:  NESTOR.md + AGENT_RULES.md                              (repo: orion)
-Olga:    OLGA.md + AGENT_RULES.md                                (repo: orion)
+Mario dice "Despierta Nestor" / "Despierta Olga"
+  ↓
+El IDE carga CLAUDE.md automáticamente (está en la raíz del repo)
+  ↓
+CLAUDE.md les dice quiénes son + protocolo de arranque
+  ↓
+Leen NESTOR.md / OLGA.md + AGENT_RULES.md via GitHub MCP (repo: orion)
+  ↓
+Responden con Read Log ✅ y esperan el issue
+```
+
+### Qué lee cada uno
+
+```
+Orion:   ORION.md + DECISIONS.md + gameon.md + gameon-ideas.md  (repo: orion, via GitHub MCP)
+Nestor:  NESTOR.md + AGENT_RULES.md                              (repo: orion, via GitHub MCP)
+Olga:    OLGA.md + AGENT_RULES.md                                (repo: orion, via GitHub MCP)
 ```
 
 **Ni Nestor ni Olga leen ORION.md ni DECISIONS.md** — ese es contexto de CTO, no de ejecutor.
-Las reglas de negocio ya están en los CLAUDE.md de cada repo.
 
-Los subagentes y skills los leen solo si el issue lo requiere (ver tabla en NESTOR.md / OLGA.md).
+### Token de acceso
+Nestor y Olga tienen fine-grained tokens con acceso **read-only** a:
+- `Mjosuex85/gameon-api`
+- `Mjosuex85/gameon`
+- `Mjosuex85/orion`
 
-### Herramientas de cada agente
-```
-Nestor:  VSCode + Copilot Pro + GitHub MCP
-         → MCP: leer issue (body + comments)
-         → código: abre archivos en VSCode directamente
-
-Olga:    Antigravity + GitHub MCP
-         → MCP: leer issue (body + comments) + leer archivos de Orion OS
-         → código: abre archivos en Antigravity directamente
-```
-
-### Prompt de inicialización — sesión nueva
-
-**Para Nestor** (nueva sesión en VSCode/Copilot):
-```
-Eres Nestor, Backend Tech Lead del equipo Orion OS.
-
-Lee estos archivos en orden usando tu GitHub MCP antes de hacer cualquier cosa:
-1. Repo: Mjosuex85/orion, archivo: agents/NESTOR.md (branch: main)
-2. Repo: Mjosuex85/orion, archivo: agents/AGENT_RULES.md (branch: main)
-
-Cuando termines, escribe el Read Log con los checkboxes marcados y confirma que estás listo para recibir un issue.
-```
-
-**Para Olga** (nueva sesión en Antigravity):
-```
-Eres Olga, Frontend Tech Lead del equipo Orion OS.
-
-Lee estos archivos en orden usando tu GitHub MCP antes de hacer cualquier cosa:
-1. Repo: Mjosuex85/orion, archivo: agents/OLGA.md (branch: main)
-2. Repo: Mjosuex85/orion, archivo: agents/AGENT_RULES.md (branch: main)
-
-Cuando termines, escribe el Read Log con los checkboxes marcados y confirma que estás lista para recibir un issue.
-```
-
-Si el agente no responde con el Read Log completo → sesión fallida, empezar de nuevo.
+### Si un agente no responde con el Read Log → sesión fallida, empezar de nuevo.
 
 ---
 
@@ -191,8 +165,9 @@ Mjosuex85/gameon       → Frontend Angular 21 (develop)
 
 ### Sesión 10 — 29 de marzo de 2026
 - ✅ Flujo de contexto de agentes clarificado y documentado definitivamente
-- ✅ Ambos agentes usan GitHub MCP (Nestor: VSCode+Copilot, Olga: Antigravity)
-- ✅ Prompts de inicialización correctos para Nestor y Olga en ORION.md
+- ✅ Nestor y Olga tienen read-only en `orion` — leen Orion OS via GitHub MCP
+- ✅ CLAUDE.md actualizado en ambos repos — trigger "Despierta X", sin prompt manual
+- ✅ ORION.md refleja el flujo real y limpio
 
 **Pendiente sesión 10:**
 - #81 — reset Olga + mandarle #74
