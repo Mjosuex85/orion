@@ -91,22 +91,25 @@ Olga           → Frontend Tech Lead (Antigravity + GitHub MCP) ✅
 ```
 Mario dice "Despierta Nestor" / "Despierta Olga"
   ↓
-El IDE carga CLAUDE.md automáticamente (está en la raíz del repo)
+El IDE detecta CLAUDE.md automáticamente — está en la raíz del repo
+(NO se lee via MCP — el IDE lo carga de forma nativa al abrir el proyecto)
   ↓
-CLAUDE.md les dice quiénes son + protocolo de arranque
+CLAUDE.md les dice quiénes son + que lean su .md via GitHub MCP
   ↓
 Leen NESTOR.md / OLGA.md + AGENT_RULES.md via GitHub MCP (repo: orion)
   ↓
 Responden con Read Log ✅ y esperan el issue
 ```
 
-### Qué lee cada uno
+### Qué se lee cómo
 
-```
-Orion:   ORION.md + DECISIONS.md + gameon.md + gameon-ideas.md  (repo: orion, via GitHub MCP)
-Nestor:  NESTOR.md + AGENT_RULES.md                              (repo: orion, via GitHub MCP)
-Olga:    OLGA.md + AGENT_RULES.md                                (repo: orion, via GitHub MCP)
-```
+| Archivo | Cómo se lee |
+|---------|-------------|
+| `CLAUDE.md` (gameon-api / gameon) | IDE lo carga nativo — nunca via MCP |
+| `NESTOR.md` + `AGENT_RULES.md` | GitHub MCP → repo `orion` |
+| `OLGA.md` + `AGENT_RULES.md` | GitHub MCP → repo `orion` |
+| Issue asignado | GitHub MCP → repo `gameon-api` |
+| Subagentes / skills | GitHub MCP → repo `orion` (solo si el issue lo requiere) |
 
 **Ni Nestor ni Olga leen ORION.md ni DECISIONS.md** — ese es contexto de CTO, no de ejecutor.
 
@@ -164,13 +167,15 @@ Mjosuex85/gameon       → Frontend Angular 21 (develop)
 - ✅ #81 creado — reset Olga
 
 ### Sesión 10 — 29 de marzo de 2026
-- ✅ Flujo de contexto de agentes clarificado y documentado definitivamente
-- ✅ Nestor y Olga tienen read-only en `orion` — leen Orion OS via GitHub MCP
-- ✅ CLAUDE.md actualizado en ambos repos — trigger "Despierta X", sin prompt manual
-- ✅ ORION.md refleja el flujo real y limpio
+- ✅ Flujo de contexto clarificado definitivamente:
+  CLAUDE.md = IDE nativo / OLGA.md + NESTOR.md = GitHub MCP desde orion
+- ✅ Nestor y Olga tienen read-only en `orion`
+- ✅ CLAUDE.md actualizado en ambos repos con trigger "Despierta X"
+- ✅ #81 completado — Olga reseteada, flujo verificado
+- 🔄 #74 en progreso — Olga ejecutando
 
-**Pendiente sesión 10:**
-- #81 — reset Olga + mandarle #74
+**Pendiente:**
+- #74 — Google OAuth popup (Olga, en progreso)
 - #71 — profile.component.scss over budget
 - #79 — dos flujos creación partido (bloqueado por GET /organizations/my)
 - Cleanup: `_admin-*.scss` sueltos + carpeta `styles/` en gameon/develop
