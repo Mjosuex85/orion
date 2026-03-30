@@ -86,40 +86,37 @@ Olga           → Frontend Tech Lead (Antigravity + GitHub MCP) ✅
 
 ## HOW EACH AGENT RECEIVES CONTEXT
 
-### Full flow
+### Nestor (VSCode + Copilot + GitHub MCP)
+```
+1. Copilot reads CLAUDE.md natively on project open
+2. CLAUDE.md instructs: read NESTOR.md + AGENT_RULES.md via GitHub MCP from orion
+3. Nestor confirms Read Log and waits for issue
+```
+CLAUDE.md works well with Copilot — keep this flow.
+
+### Olga (Antigravity + GitHub MCP)
+```
+Antigravity does NOT process CLAUDE.md the same way as Copilot.
+Olga's full context lives in the issue prompt — every issue must be self-contained.
+The issue prompt includes: who she is, rules, files to touch, execution plan.
+```
+**CLAUDE.md in `gameon` repo is kept as passive reference only — Olga does not rely on it.**
+
+All context Olga needs is in the issue body. Orion writes self-contained issue prompts for Olga.
+
+### What each one reads
 
 ```
-Mario says "Despierta Nestor" / "Despierta Olga"
-  ↓
-IDE detects CLAUDE.md automatically — it is in the root of the repo
-(NOT read via MCP — the IDE loads it natively when opening the project)
-  ↓
-CLAUDE.md tells them who they are + to read their .md via GitHub MCP
-  ↓
-They read NESTOR.md / OLGA.md + AGENT_RULES.md via GitHub MCP (repo: orion)
-  ↓
-They respond with Read Log ✅ and wait for the issue
+Orion:   ORION.md + DECISIONS.md + gameon.md + gameon-ideas.md  (orion repo, GitHub MCP)
+Nestor:  CLAUDE.md (Copilot native) + NESTOR.md + AGENT_RULES.md (orion repo, GitHub MCP)
+Olga:    Issue prompt only — full context embedded in each issue by Orion
 ```
-
-### What is read and how
-
-| File | How it is read |
-|------|----------------|
-| `CLAUDE.md` (gameon-api / gameon) | IDE loads natively — never via MCP |
-| `NESTOR.md` + `AGENT_RULES.md` | GitHub MCP → `orion` repo |
-| `OLGA.md` + `AGENT_RULES.md` | GitHub MCP → `orion` repo |
-| Assigned issue | GitHub MCP → `gameon-api` repo |
-| Subagents / skills | GitHub MCP → `orion` repo (only if issue requires it) |
-
-**Neither Nestor nor Olga read ORION.md or DECISIONS.md** — that is CTO context, not executor context.
 
 ### Access tokens
 Nestor and Olga have fine-grained tokens with **read-only** access to:
 - `Mjosuex85/gameon-api`
 - `Mjosuex85/gameon`
 - `Mjosuex85/orion`
-
-### If an agent does not respond with the Read Log → session failed, start over.
 
 ---
 
@@ -167,23 +164,22 @@ Mjosuex85/gameon       → Frontend Angular 21 (develop)
 - ✅ #81 created — Olga reset
 
 ### Session 10 — March 29, 2026
-- ✅ Agent context flow clarified and documented definitively:
-  CLAUDE.md = IDE native / OLGA.md + NESTOR.md = GitHub MCP from orion
-- ✅ Nestor and Olga have read-only on `orion`
-- ✅ CLAUDE.md updated in both repos with "Despierta X" trigger
+- ✅ Agent context flow clarified: Nestor uses CLAUDE.md, Olga uses issue prompt only
+- ✅ Antigravity does not process CLAUDE.md natively — documented, flow adjusted
 - ✅ ORION.md, DECISIONS.md, DIRECTOR.md translated to English
-- ✅ AGENT_RULES.md rewritten — mandatory protocol sequence, no ambiguity
-- ✅ #81 completed — Olga reset, flow verified
-- ✅ #74 completed — Google OAuth redirect fixed
-- 🔄 #71 in progress — Olga executing
+- ✅ AGENT_RULES.md rewritten — mandatory protocol, no ambiguity on commit/push
+- ✅ #74 closed — Google OAuth redirect fixed
+- ✅ #71 closed — admin + profile SCSS replaced with minimal stubs, build passing
+- ✅ #82 created — Organizations public page (critical path to demo)
+- ✅ DB checked — 6 orgs + 3 matches in local, ready for demo testing
 
 **Pending:**
-- #71 — profile.component.scss over budget (Olga, in progress)
-- #79 — two match creation flows (blocked by GET /organizations/my)
+- #82 — Organizations public list + detail (Olga, next)
+- #79 — two match creation flows (blocked by GET /organizations/my — Nestor)
 - Cleanup: loose `_admin-*.scss` partials + `styles/` folder in gameon/develop
-- angular.json budget: lower to 15kB warning / 20kB error after #71 closes
+- angular.json budget: lower to 15kB warning / 20kB error (now that budgets pass)
 
 ---
 
 *Orion OS — built by Mario Vidal + Orion*
-*Last updated: March 29, 2026 — Session 10*
+*Last updated: March 30, 2026 — Session 10*
