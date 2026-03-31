@@ -18,6 +18,74 @@ The short-term hook: replace WhatsApp and paper for organizing matches.
 
 ---
 
+## USER TIERS — DEFINITION (March 31, 2026)
+
+This is a foundational product decision. Three distinct user types with different needs, different value, and different monetization paths.
+
+### The three tiers
+
+```
+FREE USER       Individual player. Creates matches, has a profile, socializes.
+                No payment, no organization. The base of the funnel.
+
+COMMUNITY       Organized group of people around a sport. Informal — could be
+                a group of friends, a neighborhood league, a recurring match crew.
+                Has a public page, members, history. Free or low-cost.
+                The growth layer — communities that scale become businesses.
+
+BUSINESS        Entity that offers sport as a service. Manages fields, charges
+                inscription fees, runs tournaments, needs statistics and tools.
+                Pays for the platform. The monetization layer.
+```
+
+### Why this distinction matters
+
+"Organization" in the code is the technical container — it holds both communities and businesses. But the **product experience and pricing should be differentiated**:
+
+- A community does not identify with the word "empresa" — they are a group of friends or neighbors
+- A business needs invoicing, advanced stats, professional tools — things a community does not need
+- Mixing them creates a product that serves neither well
+
+### The business model — Community → Business funnel
+
+```
+FREE USER
+  → discovers GameOn through a match link or social
+  → creates their profile, starts playing
+
+COMMUNITY (free or freemium)
+  → group organizes regularly, creates a community page
+  → players find them, join matches, build history together
+  → community grows → needs more tools → natural upgrade moment
+
+BUSINESS (paid)
+  → pays for advanced management tools
+  → tournaments, leagues, player stats, field templates
+  → can appear highlighted in GameOn discovery
+  → early business partners get competitive advantage in the app
+```
+
+**The insight:** GameOn does not sell to businesses cold. Businesses grow inside GameOn from communities. By the time they upgrade, they are already dependent on the platform. The upgrade is not a sales pitch — it is a natural next step.
+
+### What this changes in the product (pending design)
+
+- **Onboarding:** Ask "are you a player, organizing a community, or running a sport business?" — route accordingly
+- **Organization creation flow:** Two paths — "Create community" (casual, free) vs "Set up business" (professional, paid)
+- **Public page:** Community page feels social. Business page feels professional — logo, services, booking CTA
+- **Naming in the UI:** Use "comunidad" and "empresa" in Spanish UI — not "organización" which is too generic
+- **Plan limits:** Communities get generous free limits. Businesses get pro tools on payment.
+
+### Technical implication
+
+The `Organization` entity already supports this — `plan: FREE | PRO` is the toggle. What we need:
+- A `type` field: `COMMUNITY | BUSINESS` (or handled via plan)
+- Differentiated UI per type (Olga)
+- Differentiated onboarding flow (post-demo)
+
+**Decision: do not add `type` field yet.** Design the UX first, then decide if it's a DB field or purely a plan flag. Create issue when post-demo design session happens.
+
+---
+
 ## DECISIONS MADE (March 27-28, 2026)
 
 - **Free user price** — can set a price on their match. It's an organizational tool (Bizum), not monetization. No plan required. Revisit when Pro Free plan is defined. (D72)
@@ -47,8 +115,6 @@ The admin component was built incrementally with Gemini Flash without stopping t
 - Components with multiple sections (tabs, views) → must be componentized from day 1, not after the fact
 - The cost of fixing architectural debt is 3-5x the cost of doing it right initially
 
-**Status:** SCSS resolved in #80 (Olga + Opus). HTML componentization pending (#81 — create when #80 is closed and build is stable).
-
 ---
 
 ## BACKLOG IDEAS — ANALYZED
@@ -72,11 +138,11 @@ The admin component was built incrementally with Gemini Flash without stopping t
 |------|-------|
 | Email to user when they join a match | Resend already integrated. Nestor adds trigger in joinMatch() |
 | Modal when free user hits 1 match/day limit — offer organizer plan | Olga UI + copy |
-| Vercel pre-production environment (develop → staging) | Vercel config only, no code change |
-| Two match creation flows: free (simple) vs organizer (full) | Issue #79 created. Blocked on GET /organizations/my |
+| Staging environment (develop → staging → main) | Issue #94. Vercel config. |
 | Football positions by game mode | Requires design session before implementing |
 | Teams in match: team 1 vs team 2 | Add `team: 1 | 2` to MatchParticipant. Needs UX definition |
 | Professional i18n system (ngx-translate or Angular i18n) | Large Olga task. Post-demo |
+| Community vs Business onboarding flow | Design session needed first. See User Tiers section above. |
 
 ### Large — strategic, post-demo
 
@@ -88,23 +154,7 @@ The admin component was built incrementally with Gemini Flash without stopping t
 | GameOn Academy — youth academies, scouts, revenue sharing | New business model. Define before touching code. |
 | Anti-DDoS / server protection | Cloudflare + advanced rate limiting. Investment when there's traction. |
 | Profitability calculator (cost − revenue) | Requires real payment integration first. |
-| First org partners get competitive advantage in app | Business/pricing decision. Define before implementing. |
-
----
-
-## UPCOMING ISSUES — SESSION 9 STATUS
-
-**In progress:**
-- 🟡 #80 — admin SCSS cleanup (Olga + Opus) — build passing, pending visual validation
-
-**Next to create (in order):**
-1. **#81** — componentize admin HTML 1040 lines (Olga + Gemini Pro) — after #80 closed
-2. **Backend** — `GET /organizations/my` (Nestor) — unblocks #79
-3. **Frontend** — #79 two match creation flows (Olga) — needs GET /organizations/my first
-4. **Backend** — Leagues module (Nestor)
-5. **Frontend** — Organizations page public listing + detail (Olga)
-6. **Frontend** — Tournaments page public view (Olga)
-7. **Deploy** — migrate develop → main, production deploy
+| First org partners get competitive advantage in app | Business/pricing decision. See User Tiers funnel above. |
 
 ---
 
@@ -112,7 +162,6 @@ The admin component was built incrementally with Gemini Flash without stopping t
 
 - Strategies and position changes in 7vs7 and 11vs11
 - Football position standards by game mode (5v5, 7v7, 11v11)
-- First organizations get visibility advantages in the app
 - Pro Free plan — what does it unlock?
 
 ---
@@ -128,8 +177,9 @@ GameOn vs existing platforms:
 - Mobile-first, simple UX
 - Free entry point with real value
 - FIFA card differentiator — nobody else does player identity at amateur level
+- Community → Business funnel: no cold sales, growth happens inside the platform
 
 ---
 
-*Part of Orion OS — updated March 28, 2026*
+*Part of Orion OS — updated March 31, 2026*
 *Technical context → `projects/gameon.md`*
