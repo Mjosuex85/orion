@@ -43,6 +43,7 @@ See `agents/DIRECTOR.md` for the full founder profile.
 - Has real programming knowledge — not a beginner
 - Understands the why behind technical decisions
 - Pattern to watch: speed vs architecture — tends to take shortcuts under pressure
+- Tendency to want to do things "the right way" even for the demo — balance this with shipping
 
 ---
 
@@ -67,6 +68,7 @@ When Mario says **"despierta Orion"**:
 - **Respond to the point — Mario knows how to code. No unnecessary explanations.**
 - NEVER use `&&` in PowerShell — always `;` or separate lines
 - **Render is NOT in the stack.** Never reference it in documentation or commands.
+- Migrations MUST be run manually before every production deploy (Vercel serverless — D33)
 
 ---
 
@@ -185,10 +187,21 @@ Mjosuex85/gameon       → Frontend Angular 21 (develop)
 - ✅ D74 — branch protection on main
 - ✅ D75 — Render removed from stack
 - ✅ D76 — local stack documented
-- ✅ #81, #84 closed
-- 🔜 Deploy PR develop → main pending (Mario creates PR)
+
+### Session 11 — March 31, 2026
+- ✅ v1.2.0 deployed — API + Frontend in production
+- ✅ 8 migrations run manually against Neon — organizations, tournaments, visibility
+- ✅ `release.yml` workflow in both repos — semantic versioning active
+- ✅ D77 — engineering principles documented (measure, don't guess, simple fails less, data > algorithm)
+- ✅ D33 corrected — migrationsRun does not work on Vercel serverless, manual process documented
+- ✅ CLAUDE.md updated in gameon-api — deploy process documented
+- ✅ `gameon.md` updated to v1.2.0 state
+- ✅ `gameon-ideas.md` — user tiers defined (free / community / business), funnel model, organizer onboarding model
+- ✅ Sprint 1 defined — demo with Jose (SoccerMix)
+- ✅ Issues created: #90 (automated migrations), #91 (CI backend), #92 (CI frontend), #93 (SonarCloud), #94 (sprint system + staging), #95 (CHANGELOG), #96 (organizer panel — DEMO BLOCKER), #97 (match templates), #98 (email verification enforcement), #99 (require complete profile), #100 (UX fixes batch), #101 (backend: description optional + profileBadgeDismissed)
+- 🔜 Tomorrow: review open Kanban, confirm profile complete fields (#99), Mario provides form screenshots (#100 item 7), start Sprint 1
 
 ---
 
 *Orion OS — built by Mario Vidal + Orion*
-*Last updated: March 31, 2026 — Session 10*
+*Last updated: March 31, 2026 — Session 11*
