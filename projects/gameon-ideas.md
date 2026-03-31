@@ -67,6 +67,32 @@ BUSINESS (paid)
 
 **The insight:** GameOn does not sell to businesses cold. Businesses grow inside GameOn from communities. By the time they upgrade, they are already dependent on the platform. The upgrade is not a sales pitch — it is a natural next step.
 
+### How someone becomes an organizer (DECIDED March 31, 2026)
+
+**For the demo (current):**
+Mario assigns `role = ORGANIZER` manually in Neon + creates the organization via Postman.
+This is acceptable while we have zero paying customers.
+
+**Post-demo model:**
+```
+COMMUNITY path  → self-service
+                  User creates a community page from the app (free)
+                  No approval needed — like creating a WhatsApp group
+
+BUSINESS path   → human contact or direct payment
+                  Option A: contact form → Mario calls → onboards manually
+                  Option B: pay the PRO plan → system auto-assigns ORGANIZER role
+```
+
+**Decision: Option B is the target.** Payment triggers role assignment automatically.
+Option A (phone call) is for early enterprise clients who need custom onboarding.
+Both can coexist — they are not mutually exclusive.
+
+**What this requires technically (post-demo):**
+- Payment integration (Stripe) → on successful payment → assign ORGANIZER role → create organization
+- Self-service community creation — no payment, no admin needed
+- These are separate issues to be created when we start the payments sprint
+
 ### What this changes in the product (pending design)
 
 - **Onboarding:** Ask "are you a player, organizing a community, or running a sport business?" — route accordingly
@@ -83,6 +109,35 @@ The `Organization` entity already supports this — `plan: FREE | PRO` is the to
 - Differentiated onboarding flow (post-demo)
 
 **Decision: do not add `type` field yet.** Design the UX first, then decide if it's a DB field or purely a plan flag. Create issue when post-demo design session happens.
+
+---
+
+## SPRINT 1 — DEMO WITH JOSE (SoccerMix)
+
+**Goal:** Jose enters GameOn as an organizer and can manage his organization independently.
+
+**Mario prepares manually:**
+```sql
+UPDATE users SET role = 'ORGANIZER' WHERE email = 'jose@email.com';
+```
+```
+POST /organizations  { name: "SoccerMix", slug: "soccermix", ... }
+POST /organizations/:id/members  { userId: jose_uuid, role: "OWNER" }
+```
+
+**What Jose needs in the frontend:**
+- #96 — Organizer panel: `/organizer` dashboard + `/organizer/matches` + create match with org pre-filled
+
+**Sprint 1 issues:**
+| # | What | Who | Priority |
+|---|------|-----|----------|
+| #96 | Organizer panel (dashboard + matches + create) | Olga | 🔴 DEMO BLOCKER |
+| #95 | CHANGELOG.md | Nestor | 🟡 This session |
+| #91 | CI backend (build + lint) | Nestor | 🟢 Post-demo |
+| #92 | CI frontend (build:prod + lint) | Olga | 🟢 Post-demo |
+| #93 | SonarCloud | Mario + agents | 🟢 Post-demo |
+| #94 | Staging + sprint system | Orion + Mario | 🟢 Post-demo |
+| #90 | Automated migrations via GH Actions | Nestor | 🟢 Post-demo |
 
 ---
 
@@ -143,6 +198,7 @@ The admin component was built incrementally with Gemini Flash without stopping t
 | Teams in match: team 1 vs team 2 | Add `team: 1 | 2` to MatchParticipant. Needs UX definition |
 | Professional i18n system (ngx-translate or Angular i18n) | Large Olga task. Post-demo |
 | Community vs Business onboarding flow | Design session needed first. See User Tiers section above. |
+| Stripe payment → auto ORGANIZER role assignment | Requires payments sprint. See "How someone becomes an organizer". |
 
 ### Large — strategic, post-demo
 
