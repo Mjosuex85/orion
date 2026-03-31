@@ -42,7 +42,7 @@ This file documents the technical, process, and team decisions made in the proje
 
 **D10. `develop` is the active working branch. `main` is production.**
 
-**D11. `main` is NOT touched — except in planned production deploys.**
+**D11. `main` is NOT touched — except in planned production deploys via PR.**
 
 **D12. Nestor, Olga, and Mario do `git pull origin develop` before starting work.**
 Reason: Orion may have pushed changes directly to GitHub (configuration, security, documentation). The pull ensures everyone starts from the real state of the repo.
@@ -59,16 +59,22 @@ For business logic or application code → issue for Nestor/Olga always.
 
 **D44. Before connecting any deploy platform to `main`, verify that `develop` and `main` are in sync.**
 
+**D74. Branch protection is active on `main` in `gameon` and `gameon-api`.**
+- No direct push to `main` — not by Nestor, Olga, Orion, or Mario
+- All production deploys happen via PR from `develop` → `main`
+- Mario is the only one who approves and merges the PR
+- Reason: Vercel autodeploy is connected to `main` — any push triggers a production deploy. A PR-based flow ensures deploys are intentional and reviewed.
+- D50 (emergency direct change to `main`) is superseded — in emergencies, Mario temporarily disables branch protection, applies the fix, then re-enables it.
+
 ---
 
 ## 4. PRODUCTION DEPLOYS
 
 **D49. Production deploys are done on planned dates.**
 
-**D50. During an active deploy with critical issues, Orion can make direct changes to `main`.**
-Always apply the same change to `develop` afterwards.
+**D50. SUPERSEDED by D74. All changes to `main` go through a PR approved by Mario.**
 
-**D51. Orion NEVER makes changes to `main` outside of an active deploy.**
+**D51. Orion NEVER makes changes to `main` outside of a planned deploy PR.**
 
 ---
 
@@ -158,9 +164,9 @@ It is an organizational tool (splitting costs via Bizum), not GameOn monetizatio
 
 **D30. Backend on Render. Frontend on Vercel (free tier).**
 
-**D31. Autodeploy activated on `main` in Vercel.**
+**D31. Autodeploy activated on `main` in Vercel — triggered by PR merge.**
 
-**D32. Before any deploy, Orion reviews: `app.module.ts`, `main.ts`, `package.json`, auth strategies and environment variables.**
+**D32. Before any deploy PR, Orion reviews: `app.module.ts`, `main.ts`, `package.json`, auth strategies and environment variables.**
 
 **D33. `migrationsRun: true` in production — migrations run on startup.**
 
@@ -181,8 +187,8 @@ GOOGLE_CALLBACK_URL, FRONTEND_URL, ORIGIN, NODE_ENV, RESEND_API_KEY
 
 **D39. Local PostgreSQL MCP — pending (#31). Notion MCP — pending (#33).**
 
-**D68. Nestor and Olga use the GitHub MCP to read the assigned issue (body + comments).**
-For reading code → always local IDE (VSCode for Nestor, Antigravity for Olga).
+**D68. Nestor and Olga use the GitHub MCP to read the assigned issue body only — comments are not accessible via MCP.**
+Orion leaves corrections in the issue body, never in comments.
 
 ---
 
@@ -215,7 +221,7 @@ For reading code → always local IDE (VSCode for Nestor, Antigravity for Olga).
 
 **D41. Kubernetes when GameOn has 500+ active users or hosting > $50/month.**
 
-**D43. GitHub Actions CI/CD + SonarCloud + Branch protection — after the demo.**
+**D43. GitHub Actions CI/CD + SonarCloud — after the demo.**
 
 ---
 
@@ -229,5 +235,5 @@ For reading code → always local IDE (VSCode for Nestor, Antigravity for Olga).
 
 ---
 
-*Last updated: March 29, 2026 — Orion*
-*New decisions this session: D73, D14 redefined*
+*Last updated: March 30, 2026 — Orion*
+*New decisions this session: D74, D68 updated*
