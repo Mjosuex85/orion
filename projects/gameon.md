@@ -31,8 +31,8 @@ Paid layer (monetization)
 Runtime:    Node.js + NestJS 10
 ORM:        TypeORM + PostgreSQL (Neon)
 Auth:       JWT (access 15min, refresh 7d) + Google OAuth
-Deploy:     Vercel (serverless)
-DB:         Neon PostgreSQL (production)
+Deploy:     Vercel (serverless) via api/index.ts
+DB prod:    Neon PostgreSQL
 DB local:   Docker port 5434
 ```
 
@@ -41,7 +41,7 @@ DB local:   Docker port 5434
 Framework:  Angular 21 (100% standalone components)
 Styles:     TailwindCSS + SCSS
 State:      Angular Signals
-Deploy:     Vercel
+Deploy:     Vercel (gameon-nu.vercel.app)
 ```
 
 ---
@@ -67,7 +67,8 @@ Deploy:     Vercel
 - Member roles: `OWNER` | `MANAGER` | `STAFF`
 - OWNER created automatically when organization is created
 - Public endpoints: `GET /organizations`, `GET /organizations/:slug`, `GET /organizations/:id/matches`
-- `POST /organizations` requires ADMIN
+- `GET /organizations/my` — returns the organization where the authenticated user is OWNER
+- `POST /organizations` requires ADMIN — manual creation by Mario for early clients
 
 ### Tournaments
 - Belongs to an Organization
@@ -100,6 +101,11 @@ ORGANIZER:  { matchesPerDay: 4, tournamentsPerWeek: 2, leaguesPerMonth: 1 }
 - No commission for GameOn on free matches
 - Price restriction for free users revisited when Pro Free plan is defined
 
+### How someone becomes ORGANIZER
+- **Demo phase:** Mario assigns role manually in Neon + creates org via Postman
+- **Post-demo target:** payment (Stripe) triggers automatic role assignment
+- **Enterprise clients:** manual onboarding via phone/contact
+
 ---
 
 ## TECHNICAL RULES
@@ -109,51 +115,61 @@ ORGANIZER:  { matchesPerDay: 4, tournamentsPerWeek: 2, leaguesPerMonth: 1 }
 - `MatchParticipant` is its own entity — NOT simple ManyToMany
 - No SnakeNamingStrategy — new entities must use explicit `name` in snake_case on camelCase columns (D69, D70)
 - `@CreateDateColumn()`, `@UpdateDateColumn()`, `@DeleteDateColumn()` generate snake_case automatically
-- Migrations always versioned in repo. Never rely on `synchronize: true`
+- `synchronize: false` always — migrations control the schema
+- **Migrations MUST be run manually before every production deploy** (Vercel serverless — migrationsRun does not work)
 - Migration command (PowerShell):
   ```powershell
-  $env:DATABASE_URL="your_neon_url"; npm run db:migrate
+  npm run build
+  $env:DATABASE_URL="your_neon_url"
+  npm run db:migrate
+  $env:DATABASE_URL=""
   ```
+- Automated migrations via GH Actions planned in issue #90 (post-demo)
 
 ---
 
-## STATUS — March 27, 2026
+## STATUS — March 31, 2026 (v1.2.0)
 
 **Production:**
-- ✅ Backend in production (Vercel)
-- ✅ Frontend in production (Vercel)
+- ✅ Backend live on Vercel (serverless)
+- ✅ Frontend live on Vercel (gameon-nu.vercel.app)
+- ✅ Neon PostgreSQL — schema updated with 8 migrations from v1.2.0
 - ✅ Resend working (email)
 
-**Recently closed:**
-- ✅ #61 — isLoading signal
-- ✅ #64 — admin.component.scss
-- ✅ #73 — admin matches pagination
-- ✅ #75 — ORGANIZER role + Match visibility + PLAN_LIMITS
-- ✅ #76 — Organizations module
-- ✅ #77 — Match visibility enforcement
-- ✅ #78 — Tournaments module
+**Closed this cycle (#74–#87):**
+- ✅ #74 — Google OAuth redirect fix
+- ✅ #71 — SCSS budget resolved
+- ✅ #80 — admin SCSS consolidated
+- ✅ #82 — public organization pages
+- ✅ #83 — GET /organizations/my endpoint
+- ✅ #84 — two match creation flows (free vs organizer)
+- ✅ #86, #87 — match DTO bug fixes
 
-**Open — backend:**
-- 🔴 #66 — Google OAuth refresh token fails in production
+**Sprint 1 — Demo with Jose (SoccerMix) — ACTIVE:**
+- 🔴 #96 — Organizer panel: dashboard + matches table + players + create match (Olga, DEMO BLOCKER)
+- 🟡 #95 — CHANGELOG.md (Nestor, this session)
 
-**Open — frontend:**
-- 🔴 #74 — Google OAuth opens popup instead of redirecting
-- 🔴 #79 — Two match creation flows: free (simple) vs organizer (full)
-
-**Open — pending definition:**
-- 📋 #71 — profile.component.scss over budget
-- 💻 #72 — componentize admin HTML (1019 lines)
-- 📊 #70 — design system GameOn
+**Open — post-demo:**
+- 📋 #97 — Match templates (Nestor + Olga)
+- 📋 #85 — Organizer match creation form backend (Nestor)
+- 📋 #91 — CI backend workflow (Nestor)
+- 📋 #92 — CI frontend workflow (Olga)
+- 📋 #93 — SonarCloud integration
+- 📋 #94 — Sprint system + staging environment
+- 📋 #90 — Automated migrations via GH Actions
+- 📋 #35 — Initial proper migration (replace synchronize:true history)
+- 📋 #36 — Email provider integration
+- 📋 #6  — Roles system refinement
 
 ---
 
 ## TARGET USERS
 
-**Demo 1:** Football community organizer in Madrid. Uses WhatsApp + paper today. GameOn replaces that with organizations, public matches, tournaments.
+**Demo 1 — Jose (SoccerMix):** Football community organizer in Madrid. Uses WhatsApp + paper today. Goal: collect honest feedback, not close a sale. Mario prepares account manually before demo.
 
 **Demo 2:** Group of friends who organize casual football matches. Need: create match, share link, friends join, split cost via Bizum.
 
 ---
 
-*Part of Orion OS — updated March 27, 2026*
+*Part of Orion OS — updated March 31, 2026 (Session 11)*
 *Ideas and product roadmap → `projects/gameon-ideas.md`*
