@@ -64,13 +64,13 @@ For business logic or application code → issue for Nestor/Olga always.
 - All production deploys happen via PR from `develop` → `main`
 - Mario is the only one who approves and merges the PR
 - Reason: Vercel autodeploy is connected to `main` — any push triggers a production deploy. A PR-based flow ensures deploys are intentional and reviewed.
-- D50 (emergency direct change to `main`) is superseded — in emergencies, Mario temporarily disables branch protection, applies the fix, then re-enables it.
+- In emergencies: Mario temporarily disables branch protection, applies the fix, then re-enables it.
 
 ---
 
 ## 4. PRODUCTION DEPLOYS
 
-**D49. Production deploys are done on planned dates.**
+**D49. Production deploys are done on planned dates via PR from `develop` → `main`.**
 
 **D50. SUPERSEDED by D74. All changes to `main` go through a PR approved by Mario.**
 
@@ -87,8 +87,8 @@ For business logic or application code → issue for Nestor/Olga always.
 **D37. Never break DTO contracts the frontend already consumes.**
 
 **D73. `ignore-scripts=true` in `.npmrc` in all projects.**
-Reason: Prevents automatic execution of malicious scripts from npm packages during `npm install`. Standard security practice applicable to all Orion OS projects.
-If a package needs native build scripts (e.g. `bcrypt`), evaluate replacing it with a pure-JS alternative (e.g. `bcryptjs`) or explicitly justify the exception.
+Reason: Prevents automatic execution of malicious scripts from npm packages during `npm install`.
+If a package needs native build scripts, evaluate replacing it with a pure-JS alternative or explicitly justify the exception.
 
 ---
 
@@ -123,7 +123,7 @@ If a package needs native build scripts (e.g. `bcrypt`), evaluate replacing it w
 **D59. `password` field with `select: false` is never loaded in normal queries.**
 
 **D69. Do NOT use SnakeNamingStrategy in TypeORM.**
-Reason: Existing entities have camelCase column names in the real DB. Activating the strategy would break them in production.
+Reason: Existing entities have camelCase column names in the real DB.
 
 **D70. In new entities, every camelCase property MUST have an explicit `name` in snake_case.**
 ```typescript
@@ -160,9 +160,14 @@ It is an organizational tool (splitting costs via Bizum), not GameOn monetizatio
 
 ---
 
-## 8. DEPLOY
+## 8. INFRASTRUCTURE & DEPLOY
 
-**D30. Backend on Render. Frontend on Vercel (free tier).**
+**D30. Production stack:**
+- Frontend: Vercel (`gameon-nu.vercel.app`)
+- Backend API: Vercel (serverless)
+- Database: Neon PostgreSQL
+
+**D75. Render is NOT part of the stack.** Any reference to Render in documentation or code is outdated and must be corrected.
 
 **D31. Autodeploy activated on `main` in Vercel — triggered by PR merge.**
 
@@ -178,6 +183,13 @@ JWT_ACCESS_EXPIRES_IN=900, JWT_REFRESH_EXPIRES_IN=604800
 GOOGLE_CLIENT_ID, GOOGLE_CLIENT_SECRET
 GOOGLE_CALLBACK_URL, FRONTEND_URL, ORIGIN, NODE_ENV, RESEND_API_KEY
 ```
+
+**D76. Local development stack:**
+- Backend: NestJS on port 3000
+- Frontend: Angular on port 4200 (`--host 0.0.0.0` for mobile testing via ngrok)
+- Database: Docker PostgreSQL on port 5434
+- `environment.ts` → `localhost:3000`
+- `environment.prod.ts` → Vercel backend URL
 
 ---
 
@@ -235,5 +247,5 @@ Orion leaves corrections in the issue body, never in comments.
 
 ---
 
-*Last updated: March 30, 2026 — Orion*
-*New decisions this session: D74, D68 updated*
+*Last updated: March 31, 2026 — Orion*
+*New decisions this session: D75 (Render removed), D76 (local stack), D74 (branch protection)*

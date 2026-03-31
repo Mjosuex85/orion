@@ -63,9 +63,26 @@ When Mario says **"despierta Orion"**:
 - If I say "we'll do that later" → create an issue immediately, no exceptions
 - "Would X be a good idea?" → analyze, give verdict — only then create issue if Mario decides to proceed
 - Orion can make direct changes in GitHub on `develop` for config/docs/security (D14)
-- Before any deploy, review: `app.module.ts`, `main.ts`, `package.json`
+- Before any deploy PR, review: `app.module.ts`, `main.ts`, `package.json`, env vars
 - **Respond to the point — Mario knows how to code. No unnecessary explanations.**
 - NEVER use `&&` in PowerShell — always `;` or separate lines
+- **Render is NOT in the stack.** Never reference it in documentation or commands.
+
+---
+
+## INFRASTRUCTURE — ALWAYS UP TO DATE
+
+```
+PRODUCTION:
+  Frontend  →  Vercel (gameon-nu.vercel.app)
+  Backend   →  Vercel (serverless)
+  Database  →  Neon PostgreSQL
+
+LOCAL:
+  Backend   →  NestJS port 3000
+  Frontend  →  Angular port 4200 (--host 0.0.0.0 for ngrok)
+  Database  →  Docker PostgreSQL port 5434
+```
 
 ---
 
@@ -92,17 +109,12 @@ Olga           → Frontend Tech Lead (Antigravity + GitHub MCP) ✅
 2. CLAUDE.md instructs: read NESTOR.md + AGENT_RULES.md via GitHub MCP from orion
 3. Nestor confirms Read Log and waits for issue
 ```
-CLAUDE.md works well with Copilot — keep this flow.
 
 ### Olga (Antigravity + GitHub MCP)
 ```
 Antigravity does NOT process CLAUDE.md the same way as Copilot.
 Olga's full context lives in the issue prompt — every issue must be self-contained.
-The issue prompt includes: who she is, rules, files to touch, execution plan.
 ```
-**CLAUDE.md in `gameon` repo is kept as passive reference only — Olga does not rely on it.**
-
-All context Olga needs is in the issue body. Orion writes self-contained issue prompts for Olga.
 
 ### What each one reads
 
@@ -163,23 +175,20 @@ Mjosuex85/gameon       → Frontend Angular 21 (develop)
 - ✅ #80 closed — admin SCSS consolidated
 - ✅ #81 created — Olga reset
 
-### Session 10 — March 29, 2026
+### Session 10 — March 29-30, 2026
 - ✅ Agent context flow clarified: Nestor uses CLAUDE.md, Olga uses issue prompt only
-- ✅ Antigravity does not process CLAUDE.md natively — documented, flow adjusted
 - ✅ ORION.md, DECISIONS.md, DIRECTOR.md translated to English
-- ✅ AGENT_RULES.md rewritten — mandatory protocol, no ambiguity on commit/push
-- ✅ #74 closed — Google OAuth redirect fixed
-- ✅ #71 closed — admin + profile SCSS replaced with minimal stubs, build passing
-- ✅ #82 created — Organizations public page (critical path to demo)
-- ✅ DB checked — 6 orgs + 3 matches in local, ready for demo testing
-
-**Pending:**
-- #82 — Organizations public list + detail (Olga, next)
-- #79 — two match creation flows (blocked by GET /organizations/my — Nestor)
-- Cleanup: loose `_admin-*.scss` partials + `styles/` folder in gameon/develop
-- angular.json budget: lower to 15kB warning / 20kB error (now that budgets pass)
+- ✅ AGENT_RULES.md rewritten — mandatory protocol
+- ✅ #74, #71, #82, #83, #84, #85, #86, #87 resolved
+- ✅ Profile styles written by Orion
+- ✅ Event-card + event-detail updated with org badge
+- ✅ D74 — branch protection on main
+- ✅ D75 — Render removed from stack
+- ✅ D76 — local stack documented
+- ✅ #81, #84 closed
+- 🔜 Deploy PR develop → main pending (Mario creates PR)
 
 ---
 
 *Orion OS — built by Mario Vidal + Orion*
-*Last updated: March 30, 2026 — Session 10*
+*Last updated: March 31, 2026 — Session 10*
