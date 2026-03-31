@@ -173,7 +173,16 @@ It is an organizational tool (splitting costs via Bizum), not GameOn monetizatio
 
 **D32. Before any deploy PR, Orion reviews: `app.module.ts`, `main.ts`, `package.json`, auth strategies and environment variables.**
 
-**D33. `migrationsRun: true` in production — migrations run on startup.**
+**D33. ~~`migrationsRun: true` in production~~ — CORRECTED.**
+Vercel is serverless — there is no persistent startup process. `migrationsRun: true` silently does nothing because TypeORM cannot resolve the migrations path in the Vercel bundle.
+**Migrations MUST be run manually from local before every deploy that includes schema changes:**
+```powershell
+npm run build
+$env:DATABASE_URL="neon_connection_string"
+npm run db:migrate
+$env:DATABASE_URL=""
+```
+Automation via GitHub Actions is planned in issue #90 (post-demo).
 
 **D48. Environment variables required in production (Vercel):**
 ```
@@ -247,5 +256,28 @@ Orion leaves corrections in the issue body, never in comments.
 
 ---
 
+## 13. ENGINEERING PRINCIPLES — ORION OS UNIVERSAL
+
+**D77. Engineering principles — apply to every project under Orion OS.**
+
+These are not rules for a specific stack. They are the foundation of how we build — for GameOn today, and for every future project.
+
+① **Measure before optimizing.**
+Never optimize without data. A perceived bottleneck is an opinion. A measured bottleneck is a fact. Profiling comes before any performance work.
+
+② **Never guess the bottleneck.**
+Assumptions about where the problem is are almost always wrong. Instrument, observe, then act.
+
+③ **Avoid unnecessary complexity.**
+A complex solution is a liability. If a simple approach solves the problem, the complex one is wrong — even if it's more elegant. Complexity has a maintenance cost that compounds over time.
+
+④ **Simple things fail less.**
+The fewer moving parts, the fewer failure modes. This applies to architecture, to code, and to process. When in doubt, choose the option with fewer dependencies.
+
+⑤ **Data matters more than the algorithm.**
+The right data model beats a clever algorithm every time. A well-structured schema, a well-designed DTO, a clear entity relationship — these age well. Clever logic written on top of a poor data model creates permanent debt.
+
+---
+
 *Last updated: March 31, 2026 — Orion*
-*New decisions this session: D75 (Render removed), D76 (local stack), D74 (branch protection)*
+*New decisions this session: D77 (engineering principles), D33 corrected (migrationsRun), issue #90 created (automated migrations)*
