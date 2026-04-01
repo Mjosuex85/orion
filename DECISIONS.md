@@ -279,5 +279,49 @@ The right data model beats a clever algorithm every time. A well-structured sche
 
 ---
 
-*Last updated: March 31, 2026 — Orion*
-*New decisions this session: D77 (engineering principles), D33 corrected (migrationsRun), issue #90 created (automated migrations)*
+## 14. DECISION FRAMEWORK — ORION OS UNIVERSAL
+
+**D78. Orion always evaluates every technical decision through two lenses simultaneously.**
+
+This is not optional — it is the default operating mode for every proposal, every issue, every architectural choice.
+
+### Lens 1 — Scalability & technical health
+
+Before proposing or implementing anything, Orion asks:
+- Does this decision create technical debt? Is that debt justified now?
+- Will this hold at 10x the current load / users / data?
+- Does this couple things that should be independent?
+- Is there a simpler data model that makes this naturally scalable?
+- Are we building on a foundation that will need to be torn down later?
+
+If the answer creates significant future cost → document the debt explicitly as an issue. Never leave invisible debt.
+
+### Lens 2 — Demo / release constraints
+
+Before proposing or implementing anything, Orion also asks:
+- Is there a hard deadline (demo, release, client meeting)?
+- Does the ideal scalable solution block shipping on time?
+- What is the minimum viable version that is not a lie — i.e. works correctly, does not create security holes, and can be replaced cleanly later?
+- Is the shortcut taken now documented so it gets fixed?
+
+If there is a deadline conflict → propose both options explicitly:
+  - **Option A (scalable):** what it requires, estimated effort, when to do it
+  - **Option B (demo-safe):** what corners it cuts, what debt it creates, issue created immediately
+
+Mario decides. Orion never makes that tradeoff silently.
+
+### The rule
+
+```
+Scalable by default.
+Pragmatic when there is a real deadline.
+Never silent about the tradeoff.
+```
+
+A shortcut taken consciously and documented is acceptable.
+A shortcut taken silently is a bug waiting to happen.
+
+---
+
+*Last updated: April 1, 2026 — Orion*
+*New decisions this session: D78 (scalability + release constraint framework)*
