@@ -18,6 +18,86 @@ The short-term hook: replace WhatsApp and paper for organizing matches.
 
 ---
 
+## TERRITORIAL EXPANSION MODEL — "GameOn Madrid" (April 1, 2026)
+
+> Captured before implementation. Do not build until the second territory is real.
+
+### The idea
+
+Mario operates GameOn in Madrid. He controls all organizations (Jose/SoccerMix, etc.) from his admin panel. If someone else wants to operate GameOn in another city or country — say, GameOn Buenos Aires — they would need the same tools Mario has, but scoped to their territory only. They cannot see or touch Madrid's organizations.
+
+This creates a two-level admin hierarchy:
+
+```
+SUPERADMIN (Mario global)
+  └── REGIONAL_ADMIN (Mario = Madrid, someone else = Buenos Aires, etc.)
+        └── ORGANIZER (Jose, SoccerMix, etc.)
+              └── PLAYER
+```
+
+### What this implies architecturally
+
+**New entity needed: `Region` (or `Instance`)**
+```
+Region
+  id
+  name          → "GameOn Madrid"
+  countryCode   → "ES"
+  city          → "Madrid"
+  adminUserId   → FK to the regional admin user
+  createdAt
+```
+
+**Changes to existing entities:**
+- `Organization` gets a `regionId` FK — belongs to a territory
+- `User` with `REGIONAL_ADMIN` role has scope limited to their region
+- `SUPERADMIN` sees everything across all regions
+
+**New role needed:**
+```
+Current:   ADMIN | ORGANIZER | PLAYER
+Future:    SUPERADMIN | REGIONAL_ADMIN | ORGANIZER | PLAYER
+```
+
+The current `ADMIN` role becomes `SUPERADMIN`. `REGIONAL_ADMIN` is a new role with the same tools but scoped to a region.
+
+**Panel implications:**
+- `/admin` → today it's Mario only (SUPERADMIN). In the future it shows cross-region data.
+- `/region-admin` → new panel, same tools as `/admin` but filtered to own region only.
+- `/organizer` → unchanged. Jose doesn't know or care about regions.
+
+### Business model connection
+
+This is how GameOn scales without Mario doing everything:
+- Mario sells a "GameOn franchise" to a regional operator
+- That operator pays a fee (or revenue share) to Mario/GameOn
+- They get a `REGIONAL_ADMIN` account + their own branded territory
+- They onboard their own organizers, manage their own orgs, see their own stats
+- Mario keeps oversight from the SuperAdmin panel
+
+This is the same model Glovo/Uber uses for city expansion — central product, local operators.
+
+### Why we are NOT building this now
+
+Applying D78:
+- **Scalability verdict:** The model is correct. It will be needed.
+- **Demo constraint:** Zero second territories exist today. Building this now would be architecture for a problem we don't have.
+- **Trigger to build:** When the first real regional operator appears — someone willing to pay and operate in a different city. That conversation defines the real requirements.
+- **Debt created by waiting:** The current `ADMIN` role will need to be renamed to `SUPERADMIN` and a migration run. That is a small, clean migration when the time comes.
+
+### What to do when the trigger fires
+
+1. Design session with Mario — define exact scope of regional admin vs superadmin
+2. Create `Region` entity + migration
+3. Add `regionId` to `Organization` + migration
+4. Add `REGIONAL_ADMIN` role + guard
+5. Build `/region-admin` panel (fork of `/organizer` panel at a higher level)
+6. Update `/admin` to show cross-region view
+
+**Estimated size:** L backend + L frontend. Two sprints minimum.
+
+---
+
 ## USER TIERS — DEFINITION (March 31, 2026)
 
 This is a foundational product decision. Three distinct user types with different needs, different value, and different monetization paths.
@@ -131,8 +211,8 @@ POST /organizations/:id/members  { userId: jose_uuid, role: "OWNER" }
 **Sprint 1 issues:**
 | # | What | Who | Priority |
 |---|------|-----|----------|
-| #96 | Organizer panel (dashboard + matches + create) | Olga | 🔴 DEMO BLOCKER |
-| #95 | CHANGELOG.md | Nestor | 🟡 This session |
+| #96 | Organizer panel (dashboard + matches + create) | Orion | ✅ Done |
+| #95 | CHANGELOG.md | Nestor | 🟡 Pending |
 | #91 | CI backend (build + lint) | Nestor | 🟢 Post-demo |
 | #92 | CI frontend (build:prod + lint) | Olga | 🟢 Post-demo |
 | #93 | SonarCloud | Mario + agents | 🟢 Post-demo |
@@ -195,15 +275,17 @@ The admin component was built incrementally with Gemini Flash without stopping t
 | Modal when free user hits 1 match/day limit — offer organizer plan | Olga UI + copy |
 | Staging environment (develop → staging → main) | Issue #94. Vercel config. |
 | Football positions by game mode | Requires design session before implementing |
-| Teams in match: team 1 vs team 2 | Add `team: 1 | 2` to MatchParticipant. Needs UX definition |
+| Teams in match: team 1 vs team 2 | Add `team: 1 \| 2` to MatchParticipant. Needs UX definition |
 | Professional i18n system (ngx-translate or Angular i18n) | Large Olga task. Post-demo |
 | Community vs Business onboarding flow | Design session needed first. See User Tiers section above. |
 | Stripe payment → auto ORGANIZER role assignment | Requires payments sprint. See "How someone becomes an organizer". |
+| Filters on organization public page | #102. Needs backend extension first (Nestor Phase 1), then frontend (Olga Phase 2). |
 
 ### Large — strategic, post-demo
 
 | Idea | Notes |
 |------|-------|
+| **Territorial expansion model** | See full analysis above. Trigger: first real regional operator. |
 | WhatsApp confirmation 24h and 6h before match | WhatsApp Business API + Bull queues. New infrastructure. |
 | Admin saves field/match templates and reschedules | Org "templates" module in backend |
 | Tactical formations with drag & drop (PREMIUM) | Post-launch premium feature |
@@ -234,8 +316,9 @@ GameOn vs existing platforms:
 - Free entry point with real value
 - FIFA card differentiator — nobody else does player identity at amateur level
 - Community → Business funnel: no cold sales, growth happens inside the platform
+- **Territorial franchise model** — scales without Mario doing everything, local operators with central oversight
 
 ---
 
-*Part of Orion OS — updated March 31, 2026*
+*Part of Orion OS — updated April 1, 2026 (Session 12)*
 *Technical context → `projects/gameon.md`*
