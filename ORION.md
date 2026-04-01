@@ -44,6 +44,7 @@ See `agents/DIRECTOR.md` for the full founder profile.
 - Understands the why behind technical decisions
 - Pattern to watch: speed vs architecture — tends to take shortcuts under pressure
 - Tendency to want to do things "the right way" even for the demo — balance this with shipping
+- Captures product and business ideas mid-session — always document them immediately
 
 ---
 
@@ -69,6 +70,9 @@ When Mario says **"despierta Orion"**:
 - NEVER use `&&` in PowerShell — always `;` or separate lines
 - **Render is NOT in the stack.** Never reference it in documentation or commands.
 - Migrations MUST be run manually before every production deploy (Vercel serverless — D33)
+- Every technical decision evaluated through D78: scalability first, pragmatic when there is a real deadline, never silent about the tradeoff
+- Error handling follows D79: interceptor for global errors, component for business logic errors, always rethrow original API message
+- `ChangeDetectionStrategy.OnPush` — always use the enum, never the numeric value (0)
 
 ---
 
@@ -192,16 +196,27 @@ Mjosuex85/gameon       → Frontend Angular 21 (develop)
 - ✅ v1.2.0 deployed — API + Frontend in production
 - ✅ 8 migrations run manually against Neon — organizations, tournaments, visibility
 - ✅ `release.yml` workflow in both repos — semantic versioning active
-- ✅ D77 — engineering principles documented (measure, don't guess, simple fails less, data > algorithm)
-- ✅ D33 corrected — migrationsRun does not work on Vercel serverless, manual process documented
-- ✅ CLAUDE.md updated in gameon-api — deploy process documented
-- ✅ `gameon.md` updated to v1.2.0 state
-- ✅ `gameon-ideas.md` — user tiers defined (free / community / business), funnel model, organizer onboarding model
+- ✅ D77 — engineering principles documented
+- ✅ D33 corrected — migrationsRun does not work on Vercel serverless
 - ✅ Sprint 1 defined — demo with Jose (SoccerMix)
-- ✅ Issues created: #90 (automated migrations), #91 (CI backend), #92 (CI frontend), #93 (SonarCloud), #94 (sprint system + staging), #95 (CHANGELOG), #96 (organizer panel — DEMO BLOCKER), #97 (match templates), #98 (email verification enforcement), #99 (require complete profile), #100 (UX fixes batch), #101 (backend: description optional + profileBadgeDismissed)
-- 🔜 Tomorrow: review open Kanban, confirm profile complete fields (#99), Mario provides form screenshots (#100 item 7), start Sprint 1
+- ✅ Issues created: #90–#101
+
+### Session 12 — April 1, 2026
+- ✅ #96 — Organizer panel built by Orion: layout, dashboard, matches table, match create form
+- ✅ Organizer match create separated from free user form (D85 concept, #85 closed in practice)
+- ✅ `organizerGuard` — ORGANIZER only, ADMIN excluded (uses /admin)
+- ✅ "Mi Panel" link in dropdown — visible only to ORGANIZER role
+- ✅ Error interceptor fixed — rethrows original API message, SILENT_URLS pattern — D79
+- ✅ D78 — scalability + release constraint framework documented
+- ✅ D79 — error handling pattern documented (i18n-ready)
+- ✅ Territorial expansion model documented in gameon-ideas.md (SUPERADMIN / REGIONAL_ADMIN)
+- ✅ #100 closed — UX fixes: email confirm, register toast, returnUrl, profile CTA, description optional
+- ✅ #103 closed — toast for 4 matches/day limit
+- ✅ #102 created — filters on org page (Nestor Phase 1 + Olga Phase 2, post-demo)
+- ✅ `ChangeDetectionStrategy.OnPush` rule — always use enum, never numeric value
+- 🔼 Next: deploy PR develop → main (v1.3.0), prepare Jose's account in Neon + Postman
 
 ---
 
 *Orion OS — built by Mario Vidal + Orion*
-*Last updated: March 31, 2026 — Session 11*
+*Last updated: April 1, 2026 — Session 12*
