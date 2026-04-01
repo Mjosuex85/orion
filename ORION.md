@@ -194,27 +194,34 @@ Mjosuex85/gameon       → Frontend Angular 21 (develop)
 
 ### Session 11 — March 31, 2026
 - ✅ v1.2.0 deployed — API + Frontend in production
-- ✅ 8 migrations run manually against Neon — organizations, tournaments, visibility
-- ✅ `release.yml` workflow in both repos — semantic versioning active
+- ✅ 8 migrations run manually against Neon
+- ✅ `release.yml` workflow in both repos
 - ✅ D77 — engineering principles documented
-- ✅ D33 corrected — migrationsRun does not work on Vercel serverless
 - ✅ Sprint 1 defined — demo with Jose (SoccerMix)
 - ✅ Issues created: #90–#101
 
 ### Session 12 — April 1, 2026
-- ✅ #96 — Organizer panel built by Orion: layout, dashboard, matches table, match create form
-- ✅ Organizer match create separated from free user form (D85 concept, #85 closed in practice)
-- ✅ `organizerGuard` — ORGANIZER only, ADMIN excluded (uses /admin)
-- ✅ "Mi Panel" link in dropdown — visible only to ORGANIZER role
-- ✅ Error interceptor fixed — rethrows original API message, SILENT_URLS pattern — D79
-- ✅ D78 — scalability + release constraint framework documented
-- ✅ D79 — error handling pattern documented (i18n-ready)
-- ✅ Territorial expansion model documented in gameon-ideas.md (SUPERADMIN / REGIONAL_ADMIN)
-- ✅ #100 closed — UX fixes: email confirm, register toast, returnUrl, profile CTA, description optional
+- ✅ #96 — Organizer panel: layout, dashboard, matches, match create (separate from free user)
+- ✅ #99 cancelled — profile complete not required to create match
+- ✅ #100 closed — UX fixes: email confirm, returnUrl, description optional, profile CTA
 - ✅ #103 closed — toast for 4 matches/day limit
-- ✅ #102 created — filters on org page (Nestor Phase 1 + Olga Phase 2, post-demo)
-- ✅ `ChangeDetectionStrategy.OnPush` rule — always use enum, never numeric value
-- 🔼 Next: deploy PR develop → main (v1.3.0), prepare Jose's account in Neon + Postman
+- ✅ #104 closed — payment method on join + organizer payment control panel
+- ✅ #105 closed — Venue entity: saved locations + selector in match create form
+- ✅ organizerGuard — ORGANIZER only (ADMIN excluded)
+- ✅ "Mi Panel" in dropdown — visible only to ORGANIZER
+- ✅ Error interceptor fixed — D79
+- ✅ D78 — scalability + release constraint framework
+- ✅ D79 — error handling pattern (i18n-ready)
+- ✅ Territorial expansion model documented in gameon-ideas.md
+- ✅ #102 created — filters on org page (post-demo)
+- ✅ `ChangeDetectionStrategy.OnPush` rule — always enum, never numeric
+- 🔼 Tomorrow: v1.3.0 deploy + review Kanban before demo with Jose
+
+**Pending migrations for v1.3.0 (run against Neon before PR):**
+- `AddPaymentFieldsToMatchParticipant`
+- `AddAllowedPaymentMethodsToMatch`
+- `CreateVenuesTable`
+- `AddVenueIdToMatch`
 
 ---
 
