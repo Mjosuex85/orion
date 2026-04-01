@@ -158,6 +158,45 @@ It is an organizational tool (splitting costs via Bizum), not GameOn monetizatio
 
 **D67. SCSS partials for a component live in a `styles/` folder inside the component itself.**
 
+**D79. Error handling pattern — interceptor vs component.**
+
+There are two layers of error handling. They must never overlap.
+
+```
+error.interceptor.ts   →  global errors (403, 404, 500, network)
+                          shows toast automatically
+                          always rethrows the ORIGINAL API message
+
+Component              →  business logic errors (rate limits, validation,
+                          domain-specific feedback)
+                          handles its own toast
+                          must be added to SILENT_URLS in the interceptor
+```
+
+**Rule for every new component:**
+- If the component has specific `if (msg.includes(...))` error logic → add its API route to `SILENT_URLS` in `error.interceptor.ts`
+- Never read `err.error?.message` directly — always read `err.message` (the interceptor normalizes this)
+- Never show two toasts for the same error (one from interceptor + one from component)
+
+**Why the interceptor always rethrows the original API message:**
+Components need to match on the real backend string (e.g. `'only create 4 matches'`). If the interceptor rethrows a translated/generic message, component logic breaks silently.
+
+**i18n compatibility:**
+This architecture is i18n-ready. When ngx-translate is introduced:
+- Interceptor: `toastService.showError(translate.instant('errors.' + statusCode))`
+- Components: `if (msg.includes('...')) toastService.showError(translate.instant('errors.match_limit'))`
+All message decisions are already centralized — no scattered hardcoded strings to hunt down.
+
+**Current SILENT_URLS** (in `error.interceptor.ts`):
+```typescript
+const SILENT_URLS = [
+  '/auth/login',
+  '/users/create',
+  '/matches',  // match-create + organizer-match-create
+];
+```
+Update this list whenever a new component with specific error handling is created.
+
 ---
 
 ## 8. INFRASTRUCTURE & DEPLOY
@@ -324,4 +363,4 @@ A shortcut taken silently is a bug waiting to happen.
 ---
 
 *Last updated: April 1, 2026 — Orion*
-*New decisions this session: D78 (scalability + release constraint framework)*
+*New decisions this session: D78 (scalability + release framework), D79 (error handling pattern)*
