@@ -18,6 +18,92 @@ The short-term hook: replace WhatsApp and paper for organizing matches.
 
 ---
 
+## THE IMMERSIVE FIELD — La joya de la corona (April 1, 2026)
+
+> Mario's vision. The single most differentiating feature of GameOn. Nothing like this exists in amateur sports.
+
+### The concept
+
+The current field view (`event-detail`) is already unique — a tactical football field where each player occupies a real position. But it can evolve into something far more powerful: a **fully immersive, living match experience** that replaces every piece of paper and WhatsApp message the organizer currently uses.
+
+### What "professional" means here
+
+Not just visual polish. Professional means the field becomes the **single source of truth** for everything that happens in a match:
+
+```
+Before the match
+  → Players claim their spot on the field
+  → Each spot shows: photo, name, country flag, payment status
+  → Organizer sees at a glance who confirmed, who paid, who’s missing
+  → Formations: organizer can drag players between positions
+
+During the match (live mode)
+  → QR code at the entrance — players scan to confirm attendance
+  → Real-time presence: spot glows when player checks in
+  → Referee uses field to track events: goal, yellow card, substitution
+
+After the match
+  → Stats automatically generated from field events
+  → Player FIFA card updates: goals, assists, participations
+  → Match summary shareable as a card (social)
+```
+
+### Evolution layers (in order of priority)
+
+**Layer 1 — Visual polish (post-demo)**
+- Player avatars on spots with proper photo crop
+- Payment status indicator on each spot (green = paid, orange = pending)
+- Smooth animations when players join/leave
+- Better field proportions per game mode (5v5 vs 11v11 look different)
+
+**Layer 2 — Organizer control (Sprint 2)**
+- Drag & drop to move players between positions
+- Tap player spot → see full FIFA card + payment method + contact
+- Mark attendance per player from the field view
+- Substitution management: bench area below the field
+
+**Layer 3 — Live match mode (future)**
+- QR code check-in at the entrance
+- Real-time presence — WebSockets
+- Goal / card / substitution tracking by referee role
+- Live scoreboard overlay
+
+**Layer 4 — Stats engine (future, requires org tournaments)**
+- Events on the field feed into player stats automatically
+- FIFA card numbers become real: goals, assists, rating
+- Match history visible on player profile
+- Highlight reels (photo/video upload per match event)
+
+### Why this is the crown jewel
+
+No amateur sports app has this. WhatsApp shows a list of names. Paper shows a roster. GameOn shows a **living tactical field** where every player has an identity, a status, and a history.
+
+When Jose shows this to his players, they don’t see a management tool. They see **their name on a football field**. That’s the emotional hook that makes GameOn irreplaceable.
+
+### Technical foundation already in place
+
+- Field rendering with position calculations per game mode ✅
+- Player spots with avatar, name, flag ✅
+- Click on spot → FIFA card modal ✅
+- `paymentMethod` + `paymentStatus` per participant ✅
+- `event-detail` as universal component (matches, tournaments, leagues) ✅
+
+### What’s needed to evolve it
+
+- Layer 1: CSS/UX work only — Olga, no backend needed
+- Layer 2: Drag & drop (Angular CDK), attendance endpoint (Nestor)
+- Layer 3: WebSockets infrastructure (new), QR generation (simple)
+- Layer 4: Stats engine — largest investment, requires tournament data
+
+### When to build
+
+- Layer 1: right after demo with Jose — show him what’s coming
+- Layer 2: Sprint 2, when Jose has real players using it
+- Layer 3: when we have 3+ active organizers and real match days
+- Layer 4: when first tournament completes with real data
+
+---
+
 ## TERRITORIAL EXPANSION MODEL — "GameOn Madrid" (April 1, 2026)
 
 > Captured before implementation. Do not build until the second territory is real.
@@ -285,10 +371,11 @@ The admin component was built incrementally with Gemini Flash without stopping t
 
 | Idea | Notes |
 |------|-------|
+| **Immersive field — La joya de la corona** | See full vision above. Layer 1 right after demo. |
 | **Territorial expansion model** | See full analysis above. Trigger: first real regional operator. |
 | WhatsApp confirmation 24h and 6h before match | WhatsApp Business API + Bull queues. New infrastructure. |
 | Admin saves field/match templates and reschedules | Org "templates" module in backend |
-| Tactical formations with drag & drop (PREMIUM) | Post-launch premium feature |
+| Tactical formations with drag & drop (PREMIUM) | Part of immersive field Layer 2. |
 | GameOn Academy — youth academies, scouts, revenue sharing | New business model. Define before touching code. |
 | Anti-DDoS / server protection | Cloudflare + advanced rate limiting. Investment when there's traction. |
 | Profitability calculator (cost − revenue) | Requires real payment integration first. |
@@ -314,6 +401,7 @@ GameOn vs WhatsApp groups:
 GameOn vs existing platforms:
 - Mobile-first, simple UX
 - Free entry point with real value
+- **Immersive field — nobody else has this at amateur level**
 - FIFA card differentiator — nobody else does player identity at amateur level
 - Community → Business funnel: no cold sales, growth happens inside the platform
 - **Territorial franchise model** — scales without Mario doing everything, local operators with central oversight
