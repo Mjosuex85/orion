@@ -69,9 +69,11 @@ When Mario says **"despierta Orion"** or **"hola Orion"**:
 - NEVER use `&&` in PowerShell — always `;` or separate lines
 - **Render is NOT in the stack.** Never reference it in documentation or commands.
 - Migrations run automatically via `migrate.yml` on merge to `main` (since Session 13 — #90 closed)
+- Migrations run automatically via `migrate-staging.yml` on merge to `staging` (since Session 13)
 - Every technical decision evaluated through D78: scalability first, pragmatic when there is a real deadline, never silent about the tradeoff
 - Error handling follows D79: interceptor for global errors, component for business logic errors, always rethrow original API message
 - `ChangeDetectionStrategy.OnPush` — always use the enum, never the numeric value (0)
+- `environment.staging.ts` only exists in `staging` branch — never merge it to `main`
 
 ---
 
@@ -79,19 +81,33 @@ When Mario says **"despierta Orion"** or **"hola Orion"**:
 
 ```
 PRODUCTION:
-  Frontend  →  Vercel (gameon-nu.vercel.app)
-  Backend   →  Vercel (serverless)
+  Frontend  →  Vercel (gameon-nu.vercel.app) — branch: main
+  Backend   →  Vercel (serverless) — branch: main
   Database  →  Neon PostgreSQL (gameon-db)
 
-STAGING (being set up in Session 13):
-  Frontend  →  Vercel (gameon-staging — pending)
-  Backend   →  Vercel (serverless — pending)
-  Database  →  Neon PostgreSQL (gameon-db-pre) ← Mario already created this
+STAGING:
+  Frontend  →  Vercel Preview (gameon-git-staging-mjosuex85s-projects.vercel.app) — branch: staging
+  Backend   →  Vercel Preview (gameon-api-git-staging-mjosuex85s-projects.vercel.app) — branch: staging
+  Database  →  Neon PostgreSQL (gameon-db-pre)
 
 LOCAL:
   Backend   →  NestJS port 3000
   Frontend  →  Angular port 4200 (--host 0.0.0.0 for ngrok)
   Database  →  Docker PostgreSQL port 5434
+```
+
+### Vercel deploy rules
+```
+develop  →  NO deploy (Ignored Build Step configured in both projects)
+staging  →  Preview deploy (automatic on push)
+main     →  Production deploy (automatic on PR merge)
+```
+
+### Angular build configurations (gameon frontend)
+```
+ng build --configuration=production  →  environment.prod.ts  (main)
+ng build --configuration=staging     →  environment.staging.ts (staging)
+Vercel uses $ANGULAR_CONFIG env var to select configuration per environment
 ```
 
 ---
@@ -171,33 +187,43 @@ Mjosuex85/gameon       → Frontend Angular 21 (develop → staging → main)
 - ✅ D78, D79 documented
 - ✅ Immersive field vision documented in gameon-ideas.md
 
-### Session 13 — April 2, 2026 (IN PROGRESS)
+### Session 13 — April 2, 2026 ✅ COMPLETE
 - ✅ #25 closed — branch protection done
 - ✅ #63 closed — semantic versioning done
 - ✅ #85 closed — separate organizer match create form done
-- ✅ #90 closed — automated migrations via GH Actions (migrate.yml pushed to develop)
-- ✅ DATABASE_URL secret added to gameon-api by Mario
-- 🔼 NEXT: staging environment setup
-  - Mario has `gameon-db-pre` (Neon) ready
-  - Need: `staging` branch in both repos
-  - Need: `migrate-staging.yml` workflow with `DATABASE_URL_STAGING` secret
-  - Need: Mario adds `DATABASE_URL_STAGING` secret to gameon-api
-  - Need: Vercel project `gameon-staging` connected to `staging` branch
-- 🔼 THEN: deploy v1.3.0 (develop → main)
-- 🔼 POST-DEMO sprint: testing (Jest), SonarCloud (#93), CI (#91, #92), QA Agent (#68)
+- ✅ #90 closed — automated migrations via GH Actions (migrate.yml → main)
+- ✅ DATABASE_URL secret added to gameon-api
+- ✅ Staging environment fully operational:
+  - `staging` branch in both repos
+  - `migrate-staging.yml` in gameon-api (triggers on PR merge to staging)
+  - `DATABASE_URL_STAGING` secret in gameon-api
+  - Vercel: `develop` deploy disabled (Ignored Build Step) in both projects
+  - Vercel: `staging` → Preview deploy automatic
+  - Vercel: `$ANGULAR_CONFIG` env var controls Angular build config per environment
+  - `environment.staging.ts` created in gameon `staging` branch only
+  - CORS configured for staging URLs in gameon-api Preview env vars
 
-**Pending migrations for v1.3.0 (migrate.yml will handle these automatically on merge):**
+**Deploy flow from Session 13 onwards:**
+```
+develop  →  work here (no deploy)
+    ↓ PR
+staging  →  Preview deploy + DB migrations staging (automatic)
+    ↓ validate
+    ↓ PR (Mario approves)
+main     →  Production deploy + DB migrations production (automatic)
+```
+
+**Pending migrations for v1.3.0:**
 - `AddPaymentFieldsToMatchParticipant`
 - `AddAllowedPaymentMethodsToMatch`
 - `CreateVenuesTable`
 - `AddVenueIdToMatch`
 
-**Key decision (Session 13):**
-- Staging uses `gameon-db-pre` (separate Neon DB) — professional from day one
-- Testing + SonarCloud + QA to be integrated in Sprint 2 (post-demo) — before project grows further
-- migrate.yml now handles production migrations automatically — no more manual runs
+**Next session:**
+- Deploy v1.3.0 (develop → staging → main) once staging is validated
+- POST-DEMO sprint: testing (Jest), SonarCloud (#93), CI (#91, #92), QA Agent (#68)
 
 ---
 
 *Orion OS — built by Mario Vidal + Orion*
-*Last updated: April 2, 2026 — Session 13*
+*Last updated: April 2, 2026 — Session 13 complete*
