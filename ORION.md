@@ -110,6 +110,17 @@ ng build --configuration=staging     →  environment.staging.ts (staging)
 Vercel uses $ANGULAR_CONFIG env var to select configuration per environment
 ```
 
+### Vercel staging checklist (run once per new project)
+```
+□ Ignored Build Step → Settings → Build & Deployment → custom command to skip develop
+□ NODE_ENV = production → Preview env vars (NestJS requires this for serverless)
+□ ORIGIN + FRONTEND_URL → Preview env vars pointing to staging URLs
+□ GOOGLE_CALLBACK_URL → Preview env vars pointing to staging backend URL
+□ DATABASE_URL → Preview env vars pointing to Neon staging DB
+□ Deployment Protection → Settings → Deployment Protection → disable Vercel Authentication
+□ OPTIONS Allowlist → same section → enable so CORS preflight passes
+```
+
 ---
 
 ## THE TEAM
@@ -198,10 +209,11 @@ Mjosuex85/gameon       → Frontend Angular 21 (develop → staging → main)
   - `migrate-staging.yml` in gameon-api (triggers on PR merge to staging)
   - `DATABASE_URL_STAGING` secret in gameon-api
   - Vercel: `develop` deploy disabled (Ignored Build Step) in both projects
-  - Vercel: `staging` → Preview deploy automatic
+  - Vercel: `staging` → Preview deploy automatic, Deployment Protection disabled
+  - Vercel: OPTIONS Allowlist enabled (CORS preflight passes without auth)
   - Vercel: `$ANGULAR_CONFIG` env var controls Angular build config per environment
   - `environment.staging.ts` created in gameon `staging` branch only
-  - CORS configured for staging URLs in gameon-api Preview env vars
+  - CORS + NODE_ENV + ORIGIN + FRONTEND_URL configured in Preview env vars
 
 **Deploy flow from Session 13 onwards:**
 ```
@@ -220,7 +232,7 @@ main     →  Production deploy + DB migrations production (automatic)
 - `AddVenueIdToMatch`
 
 **Next session:**
-- Deploy v1.3.0 (develop → staging → main) once staging is validated
+- Deploy v1.3.0 (develop → staging → main)
 - POST-DEMO sprint: testing (Jest), SonarCloud (#93), CI (#91, #92), QA Agent (#68)
 
 ---
