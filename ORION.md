@@ -39,7 +39,7 @@ Olga           →  executes frontend
 See `agents/DIRECTOR.md` for the full founder profile.
 
 **Operational summary:**
-- Goes straight to the point — do not explain the obvious
+- Goes straight to the point — do not explain the obvious unless asked
 - Has real programming knowledge — not a beginner
 - Understands the why behind technical decisions
 - Pattern to watch: speed vs architecture — tends to take shortcuts under pressure
@@ -50,13 +50,12 @@ See `agents/DIRECTOR.md` for the full founder profile.
 
 ## HOW I START EACH SESSION
 
-When Mario says **"despierta Orion"**:
+When Mario says **"despierta Orion"** or **"hola Orion"**:
 
 1. Read `ORION.md` → `Mjosuex85/orion` (main)
 2. Read `DECISIONS.md` → `Mjosuex85/orion` (main)
 3. Read `projects/gameon.md` → `Mjosuex85/orion` (main)
-4. Read `projects/gameon-ideas.md` → `Mjosuex85/orion` (main)
-5. Ask Mario where to start
+4. Ask Mario where to start
 
 ---
 
@@ -66,10 +65,10 @@ When Mario says **"despierta Orion"**:
 - "Would X be a good idea?" → analyze, give verdict — only then create issue if Mario decides to proceed
 - Orion can make direct changes in GitHub on `develop` for config/docs/security (D14)
 - Before any deploy PR, review: `app.module.ts`, `main.ts`, `package.json`, env vars
-- **Respond to the point — Mario knows how to code. No unnecessary explanations.**
+- **Respond to the point — Mario knows how to code. No unnecessary explanations unless asked.**
 - NEVER use `&&` in PowerShell — always `;` or separate lines
 - **Render is NOT in the stack.** Never reference it in documentation or commands.
-- Migrations MUST be run manually before every production deploy (Vercel serverless — D33)
+- Migrations run automatically via `migrate.yml` on merge to `main` (since Session 13 — #90 closed)
 - Every technical decision evaluated through D78: scalability first, pragmatic when there is a real deadline, never silent about the tradeoff
 - Error handling follows D79: interceptor for global errors, component for business logic errors, always rethrow original API message
 - `ChangeDetectionStrategy.OnPush` — always use the enum, never the numeric value (0)
@@ -82,7 +81,12 @@ When Mario says **"despierta Orion"**:
 PRODUCTION:
   Frontend  →  Vercel (gameon-nu.vercel.app)
   Backend   →  Vercel (serverless)
-  Database  →  Neon PostgreSQL
+  Database  →  Neon PostgreSQL (gameon-db)
+
+STAGING (being set up in Session 13):
+  Frontend  →  Vercel (gameon-staging — pending)
+  Backend   →  Vercel (serverless — pending)
+  Database  →  Neon PostgreSQL (gameon-db-pre) ← Mario already created this
 
 LOCAL:
   Backend   →  NestJS port 3000
@@ -122,14 +126,6 @@ Antigravity does NOT process CLAUDE.md the same way as Copilot.
 Olga's full context lives in the issue prompt — every issue must be self-contained.
 ```
 
-### What each one reads
-
-```
-Orion:   ORION.md + DECISIONS.md + gameon.md + gameon-ideas.md  (orion repo, GitHub MCP)
-Nestor:  CLAUDE.md (Copilot native) + NESTOR.md + AGENT_RULES.md (orion repo, GitHub MCP)
-Olga:    Issue prompt only — full context embedded in each issue by Orion
-```
-
 ### Access tokens
 Nestor and Olga have fine-grained tokens with **read-only** access to:
 - `Mjosuex85/gameon-api`
@@ -142,8 +138,8 @@ Nestor and Olga have fine-grained tokens with **read-only** access to:
 
 ```
 Mjosuex85/orion        → Orion OS + memory
-Mjosuex85/gameon-api   → Backend NestJS (develop)
-Mjosuex85/gameon       → Frontend Angular 21 (develop)
+Mjosuex85/gameon-api   → Backend NestJS (develop → staging → main)
+Mjosuex85/gameon       → Frontend Angular 21 (develop → staging → main)
 ```
 
 ---
@@ -161,69 +157,47 @@ Mjosuex85/gameon       → Frontend Angular 21 (develop)
 
 ## SESSION LOG
 
-### Sessions 1-6 (before March 26, 2026)
-- Full production deploy, critical bugs resolved, first agent flow
-
-### Session 7 — March 26, 2026
-- Orion OS framework created, first full Olga + Nestor flow, D62-D65
-
-### Session 8 — March 27, 2026
-- Nestor optimized with protocol + 3 subagents
-- Issues closed: #64, #73, #75, #76, #77, #78
-- Business plan: Organizations, visibility, PLAN_LIMITS, Tournaments
-- `gameon-ideas.md` created, D66-D72
-
-### Session 9 — March 28, 2026
-- ✅ Backend demos validated with Postman
-- ✅ `.npmrc ignore-scripts=true` in both repos — D73
-- ✅ D14 redefined — Orion can make direct changes in GitHub
-- ✅ `agents/DIRECTOR.md` created
-- ✅ #80 closed — admin SCSS consolidated
-- ✅ #81 created — Olga reset
-
-### Session 10 — March 29-30, 2026
-- ✅ Agent context flow clarified: Nestor uses CLAUDE.md, Olga uses issue prompt only
-- ✅ ORION.md, DECISIONS.md, DIRECTOR.md translated to English
-- ✅ AGENT_RULES.md rewritten — mandatory protocol
-- ✅ #74, #71, #82, #83, #84, #85, #86, #87 resolved
-- ✅ Profile styles written by Orion
-- ✅ Event-card + event-detail updated with org badge
-- ✅ D74 — branch protection on main
-- ✅ D75 — Render removed from stack
-- ✅ D76 — local stack documented
-
-### Session 11 — March 31, 2026
-- ✅ v1.2.0 deployed — API + Frontend in production
-- ✅ 8 migrations run manually against Neon
-- ✅ `release.yml` workflow in both repos
-- ✅ D77 — engineering principles documented
-- ✅ Sprint 1 defined — demo with Jose (SoccerMix)
-- ✅ Issues created: #90–#101
+### Sessions 1-11 (before April 1, 2026)
+- Full production deploy, Orion OS, agent flows, v1.2.0, organizations, tournaments, visibility
 
 ### Session 12 — April 1, 2026
-- ✅ #96 — Organizer panel: layout, dashboard, matches, match create (separate from free user)
-- ✅ #99 cancelled — profile complete not required to create match
-- ✅ #100 closed — UX fixes: email confirm, returnUrl, description optional, profile CTA
-- ✅ #103 closed — toast for 4 matches/day limit
-- ✅ #104 closed — payment method on join + organizer payment control panel
-- ✅ #105 closed — Venue entity: saved locations + selector in match create form
-- ✅ organizerGuard — ORGANIZER only (ADMIN excluded)
-- ✅ "Mi Panel" in dropdown — visible only to ORGANIZER
-- ✅ Error interceptor fixed — D79
-- ✅ D78 — scalability + release constraint framework
-- ✅ D79 — error handling pattern (i18n-ready)
-- ✅ Territorial expansion model documented in gameon-ideas.md
-- ✅ #102 created — filters on org page (post-demo)
-- ✅ `ChangeDetectionStrategy.OnPush` rule — always enum, never numeric
-- 🔼 Tomorrow: v1.3.0 deploy + review Kanban before demo with Jose
+- ✅ #96 — Organizer panel complete (layout, dashboard, matches, match create)
+- ✅ #100 — UX fixes: email confirm, returnUrl, description optional
+- ✅ #103 — toast for 4 matches/day limit
+- ✅ #104 — payment method on join + organizer payment control panel
+- ✅ #105 — Venue entity: saved locations + selector in match create
+- ✅ #106 created — auto-assign ORGANIZER when adding OWNER (Nestor, XS)
+- ✅ organizerGuard, "Mi Panel" dropdown, error interceptor D79
+- ✅ D78, D79 documented
+- ✅ Immersive field vision documented in gameon-ideas.md
 
-**Pending migrations for v1.3.0 (run against Neon before PR):**
+### Session 13 — April 2, 2026 (IN PROGRESS)
+- ✅ #25 closed — branch protection done
+- ✅ #63 closed — semantic versioning done
+- ✅ #85 closed — separate organizer match create form done
+- ✅ #90 closed — automated migrations via GH Actions (migrate.yml pushed to develop)
+- ✅ DATABASE_URL secret added to gameon-api by Mario
+- 🔼 NEXT: staging environment setup
+  - Mario has `gameon-db-pre` (Neon) ready
+  - Need: `staging` branch in both repos
+  - Need: `migrate-staging.yml` workflow with `DATABASE_URL_STAGING` secret
+  - Need: Mario adds `DATABASE_URL_STAGING` secret to gameon-api
+  - Need: Vercel project `gameon-staging` connected to `staging` branch
+- 🔼 THEN: deploy v1.3.0 (develop → main)
+- 🔼 POST-DEMO sprint: testing (Jest), SonarCloud (#93), CI (#91, #92), QA Agent (#68)
+
+**Pending migrations for v1.3.0 (migrate.yml will handle these automatically on merge):**
 - `AddPaymentFieldsToMatchParticipant`
 - `AddAllowedPaymentMethodsToMatch`
 - `CreateVenuesTable`
 - `AddVenueIdToMatch`
 
+**Key decision (Session 13):**
+- Staging uses `gameon-db-pre` (separate Neon DB) — professional from day one
+- Testing + SonarCloud + QA to be integrated in Sprint 2 (post-demo) — before project grows further
+- migrate.yml now handles production migrations automatically — no more manual runs
+
 ---
 
 *Orion OS — built by Mario Vidal + Orion*
-*Last updated: April 1, 2026 — Session 12*
+*Last updated: April 2, 2026 — Session 13*
