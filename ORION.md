@@ -74,6 +74,8 @@ When Mario says **"despierta Orion"** or **"hola Orion"**:
 - Error handling follows D79: interceptor for global errors, component for business logic errors, always rethrow original API message
 - `ChangeDetectionStrategy.OnPush` — always use the enum, never the numeric value (0)
 - `environment.staging.ts` only exists in `staging` branch — never merge it to `main`
+- **Migrations must be self-contained** — never assume seed has run. Any FK dependency must be guaranteed inside the migration itself (D80)
+- **`countriesService.seedCountries()` uses upsert (orUpdate by code)** — never DELETE + save (breaks FK from cities)
 
 ---
 
@@ -85,10 +87,10 @@ PRODUCTION:
   Backend   →  Vercel (serverless) — branch: main
   Database  →  Neon PostgreSQL (gameon-db)
 
-STAGING:
+STAGING: ✅ FULLY OPERATIONAL (Session 13)
   Frontend  →  Vercel Preview (gameon-git-staging-mjosuex85s-projects.vercel.app) — branch: staging
   Backend   →  Vercel Preview (gameon-api-git-staging-mjosuex85s-projects.vercel.app) — branch: staging
-  Database  →  Neon PostgreSQL (gameon-db-pre)
+  Database  →  Neon PostgreSQL (gameon-db-pre) — 250 countries seeded ✅
 
 LOCAL:
   Backend   →  NestJS port 3000
@@ -119,6 +121,13 @@ Vercel uses $ANGULAR_CONFIG env var to select configuration per environment
 □ DATABASE_URL → Preview env vars pointing to Neon staging DB
 □ Deployment Protection → Settings → Deployment Protection → disable Vercel Authentication
 □ OPTIONS Allowlist → same section → enable so CORS preflight passes
+```
+
+### Staging initialization (fresh DB — run once)
+```
+1. npm run db:migrate (against staging DB)
+2. POST /countries/seed (against staging backend)
+   — countriesService uses upsert, safe to re-run anytime
 ```
 
 ---
@@ -203,17 +212,18 @@ Mjosuex85/gameon       → Frontend Angular 21 (develop → staging → main)
 - ✅ #63 closed — semantic versioning done
 - ✅ #85 closed — separate organizer match create form done
 - ✅ #90 closed — automated migrations via GH Actions (migrate.yml → main)
-- ✅ DATABASE_URL secret added to gameon-api
-- ✅ Staging environment fully operational:
+- ✅ Staging environment fully operational (took full session — worth every minute):
   - `staging` branch in both repos
-  - `migrate-staging.yml` in gameon-api (triggers on PR merge to staging)
-  - `DATABASE_URL_STAGING` secret in gameon-api
-  - Vercel: `develop` deploy disabled (Ignored Build Step) in both projects
-  - Vercel: `staging` → Preview deploy automatic, Deployment Protection disabled
-  - Vercel: OPTIONS Allowlist enabled (CORS preflight passes without auth)
-  - Vercel: `$ANGULAR_CONFIG` env var controls Angular build config per environment
-  - `environment.staging.ts` created in gameon `staging` branch only
-  - CORS + NODE_ENV + ORIGIN + FRONTEND_URL configured in Preview env vars
+  - `migrate-staging.yml` — triggers on PR merge to staging
+  - Vercel: develop silent, staging preview, main production
+  - Angular `$ANGULAR_CONFIG` env var + `environment.staging.ts`
+  - CORS, NODE_ENV, ORIGIN, FRONTEND_URL configured in Preview env vars
+  - Deployment Protection disabled + OPTIONS Allowlist enabled
+  - Bugs found and fixed by Nestor:
+    - `CreateCitiesAndDistricts` migration now inserts required countries first (ON CONFLICT DO NOTHING)
+    - `countriesService.seedCountries()` now uses orUpdate upsert instead of DELETE+save
+  - D80 documented: migrations must be self-contained
+  - 250 countries seeded in staging DB ✅
 
 **Deploy flow from Session 13 onwards:**
 ```
@@ -225,17 +235,18 @@ staging  →  Preview deploy + DB migrations staging (automatic)
 main     →  Production deploy + DB migrations production (automatic)
 ```
 
-**Pending migrations for v1.3.0:**
+**Pending migrations for v1.3.0 (will run automatically on merge to main):**
 - `AddPaymentFieldsToMatchParticipant`
 - `AddAllowedPaymentMethodsToMatch`
 - `CreateVenuesTable`
 - `AddVenueIdToMatch`
 
 **Next session:**
+- Validate full staging flow (register, login, create match)
 - Deploy v1.3.0 (develop → staging → main)
 - POST-DEMO sprint: testing (Jest), SonarCloud (#93), CI (#91, #92), QA Agent (#68)
 
 ---
 
 *Orion OS — built by Mario Vidal + Orion*
-*Last updated: April 2, 2026 — Session 13 complete*
+*Last updated: April 2, 2026 — Session 13 fully complete*
