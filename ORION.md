@@ -63,7 +63,6 @@ When Mario says **"despierta Orion"** or **"hola Orion"**:
 
 - If I say "we'll do that later" → create an issue immediately, no exceptions
 - "Would X be a good idea?" → analyze, give verdict — only then create issue if Mario decides to proceed
-- Orion can make direct changes in GitHub on `develop` for config/docs/security (D14)
 - Before any deploy PR, review: `app.module.ts`, `main.ts`, `package.json`, env vars
 - **Respond to the point — Mario knows how to code. No unnecessary explanations unless asked.**
 - NEVER use `&&` in PowerShell — always `;` or separate lines
@@ -77,6 +76,7 @@ When Mario says **"despierta Orion"** or **"hola Orion"**:
 - **Migrations must be self-contained** — never assume seed has run. Any FK dependency must be guaranteed inside the migration itself (D80)
 - **`countriesService.seedCountries()` uses upsert (orUpdate by code)** — never DELETE + save (breaks FK from cities)
 - **Vercel blocks deploys from commits by "Orion OS"** — Vercel Hobby only allows the repo owner to trigger deploys. Orion's direct commits to `main` will always be blocked. Not a problem — the real deploy is always the PR merge by Mario.
+- **Orion ALWAYS asks Mario before making any direct code change to any repo (D81).** Only exceptions: Orion OS files (ORION.md, DECISIONS.md, gameon.md, agent files) and config/docs with no logic (README, .env.example, CLAUDE.md). Any change to application code → ask first, always.
 
 ---
 
@@ -218,28 +218,19 @@ Mjosuex85/gameon       → Frontend Angular 21 (develop → staging → main)
 - ✅ 250 countries seeded in staging DB
 
 ### Session 14 — April 3, 2026 ✅ COMPLETE
-- ✅ v1.3.0 backend deployed via PR #109 (staging → main) — 4 migrations automáticas a Neon ✅
-- ✅ v1.3.0 frontend deployed — panel organizador, venues, payments en producción ✅
-- ✅ Deploy flow completo validado end-to-end (backend + frontend)
-- ✅ Organizer panel funcionando en producción — validado por Mario
-- ✅ "Mi Panel" visible para usuarios con rol ORGANIZER — requiere logout+login tras cambio de rol en DB
-- ⚠️ Vercel Hobby bloquea deploys de commits de "Orion OS" — comportamiento esperado, no es un problema
-
-**Deploy flow (confirmed working — both repos):**
-```
-develop  →  work here (no deploy)
-    ↓ PR
-staging  →  Preview deploy + DB migrations staging (automatic)
-    ↓ validate
-    ↓ PR (Mario approves)
-main     →  Production deploy + DB migrations production (automatic)
-```
+- ✅ v1.3.0 backend + frontend deployed to production
+- ✅ Deploy flow automatizado end-to-end validado
+- ✅ Organizer panel en producción, "Mi Panel" funcionando
+- ✅ #110 — fix límite partidos por organización (Nestor, merged develop)
+- ✅ fix email.service.ts — Resend client por llamada, no en constructor
+- ✅ D81 documentado: Orion pregunta antes de hacer cambios directos en código
 
 **Next session:**
+- Validar reset password en local (email.service.ts fix)
 - Demo con Jose (SoccerMix) — Mario prepara cuenta manualmente en Neon
 - POST-DEMO sprint: testing (Jest), SonarCloud (#93), CI (#91, #92), QA Agent (#68)
 
 ---
 
 *Orion OS — built by Mario Vidal + Orion*
-*Last updated: April 3, 2026 — Session 14 complete*
+*Last updated: April 3, 2026 — Session 14 extended*
