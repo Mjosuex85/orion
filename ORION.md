@@ -83,7 +83,7 @@ When Mario says **"despierta Orion"** or **"hola Orion"**:
 ## INFRASTRUCTURE — ALWAYS UP TO DATE
 
 ```
-PRODUCTION: ✅ v1.3.0 (deployed April 3, 2026)
+PRODUCTION: ✅ v1.3.0 FULLY DEPLOYED (backend + frontend — April 3, 2026)
   Frontend  →  Vercel (gameon-nu.vercel.app) — branch: main
   Backend   →  Vercel (serverless) — branch: main
   Database  →  Neon PostgreSQL (gameon-db)
@@ -218,13 +218,14 @@ Mjosuex85/gameon       → Frontend Angular 21 (develop → staging → main)
 - ✅ 250 countries seeded in staging DB
 
 ### Session 14 — April 3, 2026 ✅ COMPLETE
-- ✅ v1.3.0 deployed to production via PR #109 (staging → main)
-- ✅ migrate.yml ran automatically — 4 migrations applied to Neon production ✅
-- ✅ First fully automated production deploy confirmed end-to-end
-- ✅ Venue selector visible in organizer match create — validated by Mario
-- ⚠️ Documented: Vercel Hobby blocks deploys from non-owner committers ("Orion OS") — expected behavior, not a problem
+- ✅ v1.3.0 backend deployed via PR #109 (staging → main) — 4 migrations automáticas a Neon ✅
+- ✅ v1.3.0 frontend deployed — panel organizador, venues, payments en producción ✅
+- ✅ Deploy flow completo validado end-to-end (backend + frontend)
+- ✅ Organizer panel funcionando en producción — validado por Mario
+- ✅ "Mi Panel" visible para usuarios con rol ORGANIZER — requiere logout+login tras cambio de rol en DB
+- ⚠️ Vercel Hobby bloquea deploys de commits de "Orion OS" — comportamiento esperado, no es un problema
 
-**Deploy flow (confirmed working):**
+**Deploy flow (confirmed working — both repos):**
 ```
 develop  →  work here (no deploy)
     ↓ PR
@@ -235,10 +236,10 @@ main     →  Production deploy + DB migrations production (automatic)
 ```
 
 **Next session:**
+- Demo con Jose (SoccerMix) — Mario prepara cuenta manualmente en Neon
 - POST-DEMO sprint: testing (Jest), SonarCloud (#93), CI (#91, #92), QA Agent (#68)
-- Demo with Jose (SoccerMix) — Mario prepares account manually in Neon
 
 ---
 
 *Orion OS — built by Mario Vidal + Orion*
-*Last updated: April 3, 2026 — Session 14*
+*Last updated: April 3, 2026 — Session 14 complete*
