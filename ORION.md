@@ -76,13 +76,14 @@ When Mario says **"despierta Orion"** or **"hola Orion"**:
 - `environment.staging.ts` only exists in `staging` branch — never merge it to `main`
 - **Migrations must be self-contained** — never assume seed has run. Any FK dependency must be guaranteed inside the migration itself (D80)
 - **`countriesService.seedCountries()` uses upsert (orUpdate by code)** — never DELETE + save (breaks FK from cities)
+- **Vercel blocks deploys from commits by "Orion OS"** — Vercel Hobby only allows the repo owner to trigger deploys. Orion's direct commits to `main` will always be blocked. Not a problem — the real deploy is always the PR merge by Mario.
 
 ---
 
 ## INFRASTRUCTURE — ALWAYS UP TO DATE
 
 ```
-PRODUCTION:
+PRODUCTION: ✅ v1.3.0 (deployed April 3, 2026)
   Frontend  →  Vercel (gameon-nu.vercel.app) — branch: main
   Backend   →  Vercel (serverless) — branch: main
   Database  →  Neon PostgreSQL (gameon-db)
@@ -94,7 +95,7 @@ STAGING: ✅ FULLY OPERATIONAL (Session 13)
 
 LOCAL:
   Backend   →  NestJS port 3000
-  Frontend  →  Angular port 4200 (--host 0.0.0.0 for ngrok)
+  Frontend  →  Angular port 4200 (--host 0.0.0.0 for mobile testing via ngrok)
   Database  →  Docker PostgreSQL port 5434
 ```
 
@@ -102,7 +103,7 @@ LOCAL:
 ```
 develop  →  NO deploy (Ignored Build Step configured in both projects)
 staging  →  Preview deploy (automatic on push)
-main     →  Production deploy (automatic on PR merge)
+main     →  Production deploy (automatic on PR merge by Mario)
 ```
 
 ### Angular build configurations (gameon frontend)
@@ -212,20 +213,18 @@ Mjosuex85/gameon       → Frontend Angular 21 (develop → staging → main)
 - ✅ #63 closed — semantic versioning done
 - ✅ #85 closed — separate organizer match create form done
 - ✅ #90 closed — automated migrations via GH Actions (migrate.yml → main)
-- ✅ Staging environment fully operational (took full session — worth every minute):
-  - `staging` branch in both repos
-  - `migrate-staging.yml` — triggers on PR merge to staging
-  - Vercel: develop silent, staging preview, main production
-  - Angular `$ANGULAR_CONFIG` env var + `environment.staging.ts`
-  - CORS, NODE_ENV, ORIGIN, FRONTEND_URL configured in Preview env vars
-  - Deployment Protection disabled + OPTIONS Allowlist enabled
-  - Bugs found and fixed by Nestor:
-    - `CreateCitiesAndDistricts` migration now inserts required countries first (ON CONFLICT DO NOTHING)
-    - `countriesService.seedCountries()` now uses orUpdate upsert instead of DELETE+save
-  - D80 documented: migrations must be self-contained
-  - 250 countries seeded in staging DB ✅
+- ✅ Staging environment fully operational
+- ✅ D80 documented: migrations must be self-contained
+- ✅ 250 countries seeded in staging DB
 
-**Deploy flow from Session 13 onwards:**
+### Session 14 — April 3, 2026 ✅ COMPLETE
+- ✅ v1.3.0 deployed to production via PR #109 (staging → main)
+- ✅ migrate.yml ran automatically — 4 migrations applied to Neon production ✅
+- ✅ First fully automated production deploy confirmed end-to-end
+- ✅ Venue selector visible in organizer match create — validated by Mario
+- ⚠️ Documented: Vercel Hobby blocks deploys from non-owner committers ("Orion OS") — expected behavior, not a problem
+
+**Deploy flow (confirmed working):**
 ```
 develop  →  work here (no deploy)
     ↓ PR
@@ -235,18 +234,11 @@ staging  →  Preview deploy + DB migrations staging (automatic)
 main     →  Production deploy + DB migrations production (automatic)
 ```
 
-**Pending migrations for v1.3.0 (will run automatically on merge to main):**
-- `AddPaymentFieldsToMatchParticipant`
-- `AddAllowedPaymentMethodsToMatch`
-- `CreateVenuesTable`
-- `AddVenueIdToMatch`
-
 **Next session:**
-- Validate full staging flow (register, login, create match)
-- Deploy v1.3.0 (develop → staging → main)
 - POST-DEMO sprint: testing (Jest), SonarCloud (#93), CI (#91, #92), QA Agent (#68)
+- Demo with Jose (SoccerMix) — Mario prepares account manually in Neon
 
 ---
 
 *Orion OS — built by Mario Vidal + Orion*
-*Last updated: April 2, 2026 — Session 13 fully complete*
+*Last updated: April 3, 2026 — Session 14*
