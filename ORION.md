@@ -79,6 +79,7 @@ When Mario says **"despierta Orion"** or **"hola Orion"**:
 - **Vercel blocks deploys from commits by "Orion OS"** — Vercel Hobby only allows the repo owner to trigger deploys. Orion's direct commits to `main` will always be blocked. Not a problem — the real deploy is always the PR merge by Mario.
 - **Orion ALWAYS asks Mario before making any direct code change to any repo (D81).** Only exceptions: Orion OS files (ORION.md, DECISIONS.md, gameon.md, agent files) and config/docs with no logic (README, .env.example, CLAUDE.md). Any change to application code → ask first, always.
 - **Every new feature issue must include its unit tests** — testing grows organically with the product, never as separate debt.
+- **GitHub MCP tool rules (D82):** `update_issue` for issues, `create_or_update_file` for repo files — never mix them.
 
 ---
 
@@ -166,11 +167,6 @@ Conectado: ✅ (Session 15)
 Analysis method: GitHub Actions (Automatic Analysis desactivado)
 SONAR_TOKEN: configurado en GitHub Secrets ✅
 sonar-project.properties: en repo root (develop + staging) ✅
-Security issues resueltos:
-  - agent-log.yml: script injection fix (COMMIT_MSG env var) ✅
-  - agent-log.yml: contents:write permission añadido ✅
-  - release.yml: script injection fix (PR_TITLE env var) ✅
-  - .env.forgot-password: False Positive marcado (placeholders, no real credentials) ✅
 ```
 
 ---
@@ -192,6 +188,7 @@ src/app/shared/
 - No btn-primary, stat-card, empty-state classes in feature templates
 
 **Issue #115** — Olga executing Atomic Design refactor (Session 16, in progress)
+**Issue #92** — CI frontend (Olga, after #115 is approved)
 
 ---
 
@@ -315,29 +312,28 @@ Mjosuex85/gameon       → Frontend Angular 21 (develop → staging → main)
 ### Session 15 — April 4, 2026 ✅ COMPLETE
 - ✅ #112 closed — OrganizationsService tests (76%+, 13/13) — Nestor
 - ✅ #91 closed — CI workflow: lint + build + test:cov + SonarCloud (develop + staging + main)
-- ✅ #93 closed — SonarCloud conectado, SONAR_TOKEN en GitHub Secrets, sonar-project.properties (develop + staging)
-- ✅ Security fixes: script injection en agent-log.yml y release.yml (3 ramas)
-- ✅ agent-log.yml: contents:write permission fix
-- ✅ GitFlow definido y probado en práctica: PR #114 develop → staging pasó ✅
-- ✅ #113 creado — GitHub Team para enforcement de branch protection (post primer cliente)
-- ✅ projects/gameon-architecture.md creado — onboarding document completo
-- ✅ templates/architecture.md creado — plantilla reutilizable para futuros proyectos Orion OS
+- ✅ #93 closed — SonarCloud conectado, SONAR_TOKEN en GitHub Secrets
+- ✅ Security fixes: script injection en agent-log.yml y release.yml
+- ✅ GitFlow definido y probado: PR #114 develop → staging pasó ✅
+- ✅ #113 creado — GitHub Team para enforcement de branch protection
+- ✅ projects/gameon-architecture.md + templates/architecture.md creados
 
 ### Session 16 — April 4, 2026 ✅ COMPLETE
 - ✅ features/admin eliminado de gameon (develop) — será repo separado en el futuro
-- ✅ admin.service.ts eliminado de gameon (develop)
-- ✅ styles.scss limpio — bloque admin global eliminado
-- ✅ Atomic Design system definido — estructura ui/atoms/ + ui/molecules/ + layouts/
-- ✅ OLGA.md actualizado — sección GAMEON DESIGN SYSTEM completa con reglas no negociables
-- ✅ ui-design-reviewer.md actualizado — 5 checklists incluyendo Atomic Design enforcement
-- ✅ #115 creado — refactor Atomic Design para Olga (L, en progreso)
-- ✅ OLGA.md bootstrap creado en raíz de gameon — protocolo de arranque para Antigravity
-- ✅ Protocolo Olga definido: MCP only, no gh CLI, parar y avisar si falla
+- ✅ admin.service.ts eliminado
+- ✅ styles.scss limpio — bloque admin eliminado
+- ✅ Atomic Design system definido — ui/atoms/ + ui/molecules/ + layouts/
+- ✅ OLGA.md + ui-design-reviewer.md actualizados con reglas de diseño no negociables
+- ✅ #115 creado — refactor Atomic Design (Olga, en progreso)
+- ✅ OLGA.md bootstrap creado en raíz de gameon
+- ✅ Protocolo Olga validado: bootstrap funcionó correctamente en sesión real
+- ✅ D82 documentado — GitHub MCP tool usage rules
 
 **Próxima sesión — PRIORIDAD:**
-- Validar que Olga ejecuta #115 correctamente con el nuevo bootstrap
-- CI frontend (#92)
-- Demo con Jose (SoccerMix) — preparar cuenta en Neon
+- Sesión de estrategia: IA + desarrollo + Orion OS como sistema replicable
+- Validar y aprobar #115 cuando Olga diga "Listo para revisar"
+- CI frontend #92 (Olga, después de aprobar #115)
+- Demo con Jose (SoccerMix) — sin fecha aún, ventaja para pulir el producto
 
 ---
 
