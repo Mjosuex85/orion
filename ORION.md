@@ -165,12 +165,24 @@ CI automático                 → #91  ✅ COMPLETE (lint + build + tests + Son
 Conectado: ✅ (Session 15)
 Analysis method: GitHub Actions (Automatic Analysis desactivado)
 SONAR_TOKEN: configurado en GitHub Secrets ✅
-sonar-project.properties: en repo root (develop) ✅
+sonar-project.properties: en repo root (develop + staging) ✅
 Security issues resueltos:
   - agent-log.yml: script injection fix (COMMIT_MSG env var) ✅
+  - agent-log.yml: contents:write permission añadido ✅
   - release.yml: script injection fix (PR_TITLE env var) ✅
   - .env.forgot-password: False Positive marcado (placeholders, no real credentials) ✅
 ```
+
+---
+
+## ORION OS — ARCHITECTURE TEMPLATES
+
+```
+projects/gameon-architecture.md  →  GameOn full architecture document ✅ (Session 15)
+templates/architecture.md        →  Generic template for any new project ✅ (Session 15)
+```
+
+**Standard:** every new project in Orion OS gets an architecture document from day one.
 
 ---
 
@@ -260,17 +272,20 @@ Mjosuex85/gameon       → Frontend Angular 21 (develop → staging → main)
 ### Session 15 — April 4, 2026 ✅ COMPLETE
 - ✅ #112 closed — OrganizationsService tests (76%+, 13/13) — Nestor
 - ✅ #91 closed — CI workflow: lint + build + test:cov + SonarCloud (develop + staging + main)
-- ✅ #93 closed — SonarCloud conectado, SONAR_TOKEN en GitHub Secrets, sonar-project.properties
+- ✅ #93 closed — SonarCloud conectado, SONAR_TOKEN en GitHub Secrets, sonar-project.properties (develop + staging)
 - ✅ Security fixes: script injection en agent-log.yml y release.yml (3 ramas)
-- ✅ GitFlow definido: develop → PR → staging (CI) → PR → main (CI)
+- ✅ agent-log.yml: contents:write permission fix
+- ✅ GitFlow definido y probado en práctica: PR #114 develop → staging pasó ✅
 - ✅ #113 creado — GitHub Team para enforcement de branch protection (post primer cliente)
+- ✅ projects/gameon-architecture.md creado — onboarding document completo
+- ✅ templates/architecture.md creado — plantilla reutilizable para futuros proyectos Orion OS
 
 **Próxima sesión — PRIORIDAD:**
+- Frontend con Olga (Mario tiene cosas que comentar)
 - SESIÓN DE ESTRATEGIA: IA + desarrollo + Orion OS como sistema replicable
 - Demo con Jose (SoccerMix) — preparar cuenta en Neon
-- Primer PR real de develop → staging para activar el CI en la práctica
 
 ---
 
 *Orion OS — built by Mario Vidal + Orion*
-*Last updated: April 4, 2026 — Session 15 complete*
+*Last updated: April 4, 2026 — Session 15 final*
