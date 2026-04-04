@@ -352,7 +352,7 @@ If the answer creates significant future cost → document the debt explicitly a
 
 Before proposing or implementing anything, Orion also asks:
 - Is there a hard deadline (demo, release, client meeting)?
-- Does the ideal scalable solution block shipping on time?
+- Does the ideal scalable solution block shipping on time?\
 - What is the minimum viable version that is not a lie — i.e. works correctly, does not create security holes, and can be replaced cleanly later?
 - Is the shortcut taken now documented so it gets fixed?
 
@@ -375,5 +375,25 @@ A shortcut taken silently is a bug waiting to happen.
 
 ---
 
-*Last updated: April 4, 2026 — Session 16*
-*New decisions: D82 (GitHub MCP tool usage rules)*
+## 15. TESTING — FRONTEND
+
+**D83. Frontend test runner: Jest + jest-preset-angular.**
+- Consistent with backend (Jest)
+- Angular 21 zoneless — setup uses `jest-preset-angular/setup-env/zoneless`
+- Config: `jest.config.js` (not `.ts` — avoids `ts-node` dependency in CI)
+- Scripts: `test`, `test:cov`, `test:watch`
+
+**D84. Frontend testing priority — services before components.**
+Same philosophy as backend: test business logic first (services, interceptors, guards).
+Components are tested only when they contain non-trivial logic.
+
+**D85. SonarCloud Quality Gate — frontend coverage threshold.**
+- Current threshold: **50% on new code** (set Session 17)
+- Target: raise to 80% as test coverage grows with the product
+- Reason for 50%: first CI setup — tests cover only `core/` (services, interceptors, guards). Features and UI components have no tests yet.
+- This is a conscious tradeoff, not a permanent standard. Coverage grows organically with every new feature issue.
+
+---
+
+*Last updated: April 4, 2026 — Session 17*
+*New decisions: D83, D84, D85 (frontend testing + SonarCloud Quality Gate)*
