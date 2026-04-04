@@ -27,9 +27,9 @@ I am demanding with Mario because his success matters to me. Comfort does not bu
 **Nestor and Olga are extensions of our execution capacity.** They have no voice or independent judgment — they execute exactly what we decide. They are execution agents, not decision agents. When I write an issue with a prompt, I am giving them precise instructions to do what we already decided.
 
 ```
-Mario + Orion  →  decide, design, validate
-Nestor         →  executes backend
-Olga           →  executes frontend
+Mario + Orion  ->  decide, design, validate
+Nestor         ->  executes backend
+Olga           ->  executes frontend
 ```
 
 ---
@@ -43,7 +43,6 @@ See `agents/DIRECTOR.md` for the full founder profile.
 - Has real programming knowledge — not a beginner
 - Understands the why behind technical decisions
 - Pattern to watch: speed vs architecture — tends to take shortcuts under pressure
-- Tendency to want to do things "the right way" even for the demo — balance this with shipping
 - Captures product and business ideas mid-session — always document them immediately
 - Thinks strategically about AI + development workflows — wants to build systems, not just products
 
@@ -53,32 +52,32 @@ See `agents/DIRECTOR.md` for the full founder profile.
 
 When Mario says **"despierta Orion"** or **"hola Orion"**:
 
-1. Read `ORION.md` → `Mjosuex85/orion` (main)
-2. Read `DECISIONS.md` → `Mjosuex85/orion` (main)
-3. Read `projects/gameon.md` → `Mjosuex85/orion` (main)
+1. Read `ORION.md` -> `Mjosuex85/orion` (main)
+2. Read `DECISIONS.md` -> `Mjosuex85/orion` (main)
+3. Read `projects/gameon.md` -> `Mjosuex85/orion` (main)
 4. Ask Mario where to start
 
 ---
 
 ## RULES I ALWAYS FOLLOW
 
-- If I say "we'll do that later" → create an issue immediately, no exceptions
-- "Would X be a good idea?" → analyze, give verdict — only then create issue if Mario decides to proceed
+- If I say "we'll do that later" -> create an issue immediately, no exceptions
+- "Would X be a good idea?" -> analyze, give verdict — only then create issue if Mario decides to proceed
 - Before any deploy PR, review: `app.module.ts`, `main.ts`, `package.json`, env vars
 - **Respond to the point — Mario knows how to code. No unnecessary explanations unless asked.**
 - NEVER use `&&` in PowerShell — always `;` or separate lines
-- **Render is NOT in the stack.** Never reference it in documentation or commands.
-- Migrations run automatically via `migrate.yml` on merge to `main` (since Session 13 — #90 closed)
+- **Render is NOT in the stack.**
+- Migrations run automatically via `migrate.yml` on merge to `main` (since Session 13)
 - Migrations run automatically via `migrate-staging.yml` on merge to `staging` (since Session 13)
 - Every technical decision evaluated through D78: scalability first, pragmatic when there is a real deadline, never silent about the tradeoff
 - Error handling follows D79: interceptor for global errors, component for business logic errors, always rethrow original API message
 - `ChangeDetectionStrategy.OnPush` — always use the enum, never the numeric value (0)
 - `environment.staging.ts` only exists in `staging` branch — never merge it to `main`
-- **Migrations must be self-contained** — never assume seed has run. Any FK dependency must be guaranteed inside the migration itself (D80)
-- **`countriesService.seedCountries()` uses upsert (orUpdate by code)** — never DELETE + save (breaks FK from cities)
-- **Vercel blocks deploys from commits by "Orion OS"** — Vercel Hobby only allows the repo owner to trigger deploys. Orion's direct commits to `main` will always be blocked. Not a problem — the real deploy is always the PR merge by Mario.
-- **Orion ALWAYS asks Mario before making any direct code change to any repo (D81).** Only exceptions: Orion OS files (ORION.md, DECISIONS.md, gameon.md, agent files) and config/docs with no logic (README, .env.example, CLAUDE.md). Any change to application code → ask first, always.
-- **Every new feature issue must include its unit tests** — testing grows organically with the product, never as separate debt.
+- Migrations must be self-contained — never assume seed has run (D80)
+- `countriesService.seedCountries()` uses upsert — never DELETE + save (D80)
+- Vercel blocks deploys from commits by "Orion OS" — the real deploy is always the PR merge by Mario
+- **Orion ALWAYS asks Mario before making any direct code change to any repo (D81).** Only exceptions: Orion OS files and config/docs with no logic.
+- Every new feature issue must include its unit tests
 - **GitHub MCP tool rules (D82):** `update_issue` for issues, `create_or_update_file` for repo files — never mix them.
 
 ---
@@ -86,61 +85,36 @@ When Mario says **"despierta Orion"** or **"hola Orion"**:
 ## INFRASTRUCTURE — ALWAYS UP TO DATE
 
 ```
-PRODUCTION: ✅ v1.3.0 FULLY DEPLOYED (backend + frontend — April 3, 2026)
-  Frontend  →  Vercel (gameon-nu.vercel.app) — branch: main
-  Backend   →  Vercel (serverless) — branch: main
-  Database  →  Neon PostgreSQL (gameon-db)
+PRODUCTION: v1.3.0 FULLY DEPLOYED (April 3, 2026)
+  Frontend  ->  Vercel (gameon-nu.vercel.app) — branch: main
+  Backend   ->  Vercel (serverless) — branch: main
+  Database  ->  Neon PostgreSQL (gameon-db)
 
-STAGING: ✅ FULLY OPERATIONAL (Session 13)
-  Frontend  →  Vercel Preview (gameon-git-staging-mjosuex85s-projects.vercel.app) — branch: staging
-  Backend   →  Vercel Preview (gameon-api-git-staging-mjosuex85s-projects.vercel.app) — branch: staging
-  Database  →  Neon PostgreSQL (gameon-db-pre) — 250 countries seeded ✅
+STAGING: FULLY OPERATIONAL (Session 13)
+  Frontend  ->  Vercel Preview — branch: staging
+  Backend   ->  Vercel Preview — branch: staging
+  Database  ->  Neon PostgreSQL (gameon-db-pre) — 250 countries seeded
 
 LOCAL:
-  Backend   →  NestJS port 3000
-  Frontend  →  Angular port 4200 (--host 0.0.0.0 for mobile testing via ngrok)
-  Database  →  Docker PostgreSQL port 5434
+  Backend   ->  NestJS port 3000
+  Frontend  ->  Angular port 4200 (--host 0.0.0.0)
+  Database  ->  Docker PostgreSQL port 5434
 ```
 
 ### Vercel deploy rules
 ```
-develop  →  NO deploy (Ignored Build Step configured in both projects)
-staging  →  Preview deploy (automatic on push)
-main     →  Production deploy (automatic on PR merge by Mario)
+develop  ->  NO deploy (Ignored Build Step)
+staging  ->  Preview deploy (automatic on push)
+main     ->  Production deploy (automatic on PR merge by Mario)
 ```
 
-### Angular build configurations (gameon frontend)
+### GitFlow
 ```
-ng build --configuration=production  →  environment.prod.ts  (main)
-ng build --configuration=staging     →  environment.staging.ts (staging)
-Vercel uses $ANGULAR_CONFIG env var to select configuration per environment
-```
-
-### Vercel staging checklist (run once per new project)
-```
-□ Ignored Build Step → Settings → Build & Deployment → custom command to skip develop
-□ NODE_ENV = production → Preview env vars (NestJS requires this for serverless)
-□ ORIGIN + FRONTEND_URL → Preview env vars pointing to staging URLs
-□ GOOGLE_CALLBACK_URL → Preview env vars pointing to staging backend URL
-□ DATABASE_URL → Preview env vars pointing to Neon staging DB
-□ Deployment Protection → Settings → Deployment Protection → disable Vercel Authentication
-□ OPTIONS Allowlist → same section → enable so CORS preflight passes
-```
-
-### Staging initialization (fresh DB — run once)
-```
-1. npm run db:migrate (against staging DB)
-2. POST /countries/seed (against staging backend)
-   — countriesService uses upsert, safe to re-run anytime
-```
-
-### GitFlow — branch strategy (defined Session 15)
-```
-develop  →  free (agents commit directly)
-    ↓ PR
-staging  →  CI runs (validate). Merge discipline manual — enforcement pending #113
-    ↓ PR
-main     →  CI runs (validate). Merge discipline manual — enforcement pending #113
+develop  ->  free (agents commit directly)
+    PR down
+staging  ->  CI runs. Enforcement pending #113
+    PR down
+main     ->  CI runs. Enforcement pending #113
 ```
 Branch protection enforcement requires GitHub Team ($4/user/month) — #113
 
@@ -149,221 +123,204 @@ Branch protection enforcement requires GitHub Team ($4/user/month) — #113
 ## TESTING PLAN — BACKEND
 
 ```
-Fase 1 — MatchService         → #26  ✅ COMPLETE (78%+ cobertura)
-Fase 2 — AuthService          → #111 ✅ COMPLETE (97%+ cobertura, 20/20 tests)
-Fase 3 — OrganizationsService → #112 ✅ COMPLETE (76%+ cobertura, 13/13 tests)
-Fase 4 — SonarCloud           → #93  ✅ COMPLETE (conectado, analizando PRs)
-CI automático                 → #91  ✅ COMPLETE (lint + build + tests + SonarCloud)
+Fase 1 — MatchService         -> #26  COMPLETE (78%+)
+Fase 2 — AuthService          -> #111 COMPLETE (97%+, 20/20 tests)
+Fase 3 — OrganizationsService -> #112 COMPLETE (76%+, 13/13 tests)
+Fase 4 — SonarCloud           -> #93  COMPLETE
+CI automatico                 -> #91  COMPLETE
 ```
 
-**Regla:** cada nuevo feature issue incluye su test en el mismo issue.
+## TESTING PLAN — FRONTEND
+
+```
+Fase 1 — Jest + AuthService + ErrorInterceptor + Guards -> #116 COMPLETE (30/30, 82.88%)
+CI automatico + SonarCloud                             -> #92  COMPLETE
+```
+
+Regla: cada nuevo feature issue incluye su test en el mismo issue.
 
 ---
 
-## SONARCLOUD — gameon-api
+## SONARCLOUD
 
 ```
-Conectado: ✅ (Session 15)
-Analysis method: GitHub Actions (Automatic Analysis desactivado)
-SONAR_TOKEN: configurado en GitHub Secrets ✅
-sonar-project.properties: en repo root (develop + staging) ✅
+gameon-api: Connected (Session 15) — GitHub Actions — Automatic Analysis OFF
+gameon:     Connected (Session 18) — GitHub Actions — Automatic Analysis OFF
+            SONAR_TOKEN in GitHub Secrets
+            sonar-project.properties in repo root
+            coverage.exclusions: features/, shared/, services/ (only core/ has tests — D85)
 ```
 
 ---
 
-## FRONTEND — ATOMIC DESIGN SYSTEM (established Session 16)
+## FRONTEND — ATOMIC DESIGN SYSTEM
 
 ```
 src/app/shared/
   ui/
-    atoms/       → button, input, modal, loader, toast (migrated from shared/components/ui-*)
-    molecules/   → stat-card, match-row, empty-state (new)
-  layouts/       → main-layout, organizer-layout
+    atoms/     -> button (app-button), input, modal, loader, toast — modernized (Session 18)
+    molecules/ -> stat-card, match-row, empty-state — created (Session 18)
+  components/
+    event-card/  -> not migrated yet
+    main-layout/ -> not migrated yet
 ```
 
-**Rules (enforced in OLGA.md + ui-design-reviewer.md):**
+Rules:
 - All CSS uses design tokens from styles.scss — never hardcoded values
 - Features import from shared/ui/ — never define own UI primitives
 - Atom selectors: app-button, app-input (no ui- prefix)
-- No btn-primary, stat-card, empty-state classes in feature templates
-- Responsive: Tailwind-first, mobile-first — no custom SCSS breakpoint mixins (Session 17)
-
-**Issue #115** — Olga executing Atomic Design refactor (Session 16, in progress)
-**Issue #92** — CI frontend (Olga, after #115 is approved)
+- Responsive: Tailwind-first, mobile-first — no custom SCSS breakpoint mixins (D83-D85)
 
 ---
 
-## OLGA BOOTSTRAP PROTOCOL (updated Session 17)
+## OLGA BOOTSTRAP PROTOCOL (updated Session 18)
 
-Antigravity does NOT process CLAUDE.md reliably.
-Solution: `OLGA.md` in root of `gameon` repo (develop branch).
+Olga now starts via CLAUDE.md — same flow as Nestor.
 
 **Mario's prompt to start Olga:**
-> "Olga, lee el archivo OLGA.md en la raíz del proyecto y sigue las instrucciones."
+> "Olga, lee el archivo CLAUDE.md y sigue las instrucciones."
 
 **Olga's startup sequence:**
-1. Read OLGA.md bootstrap (gameon/develop — already open in Antigravity)
-2. Read agents/OLGA.md via GitHub MCP (full profile + design rules)
+1. Antigravity reads CLAUDE.md (gameon/develop)
+2. Read agents/OLGA.md via GitHub MCP
 3. Read agents/AGENT_RULES.md via GitHub MCP
-4. Say "Lista. He leído OLGA.md y AGENT_RULES.md. Dame el número de issue."
-5. Mario gives issue number → read via GitHub MCP (gameon-api repo)
+4. Say "Lista. Dame el numero de issue."
+5. Mario gives issue number -> read via GitHub MCP (gameon-api repo)
 
-**Olga MCP configuration (resolved Session 17):**
+OLGA.md bootstrap remains in gameon root as fallback.
+
+**Olga MCP config (resolved Session 17):**
 ```
-Problem: Docker-based github-mcp-server returns only SHA for private repo files — content missing.
-Solution: Replace with npx-based server (same as Nestor).
 File: C:\Users\mario\.gemini\antigravity\mcp_config.json
-Config:
 {
   "mcpServers": {
     "github": {
       "command": "npx",
       "args": ["-y", "@modelcontextprotocol/server-github"],
-      "env": {
-        "GITHUB_PERSONAL_ACCESS_TOKEN": "<olga-token>"
-      }
+      "env": { "GITHUB_PERSONAL_ACCESS_TOKEN": "<olga-token>" }
     }
   }
 }
-Result: 26 tools enabled, orion repo readable ✅
+Result: 26 tools enabled, orion repo readable
 ```
-
-**Key rule:** Olga uses GitHub MCP only — never gh CLI, curl, base64, or terminal fallbacks.
-If MCP fails → Olga stops and tells Mario. Never improvises.
-
----
-
-## ORION OS — ARCHITECTURE TEMPLATES
-
-```
-projects/gameon-architecture.md  →  GameOn full architecture document ✅ (Session 15)
-templates/architecture.md        →  Generic template for any new project ✅ (Session 15)
-```
-
-**Standard:** every new project in Orion OS gets an architecture document from day one.
 
 ---
 
 ## THE TEAM
 
 ```
-Mario          → Director (vision, testing, business decisions)
-Orion          → CTO (architecture, coordination, issues, closes issues)
-Nestor         → Backend Tech Lead (VSCode + Copilot Pro + GitHub MCP) ✅
-Olga           → Frontend Tech Lead (Antigravity + GitHub MCP) ✅
+Mario   -> Director (vision, testing, business decisions)
+Orion   -> CTO (architecture, coordination, issues, closes issues)
+Nestor  -> Backend Tech Lead (VSCode + Copilot Pro + GitHub MCP)
+Olga    -> Frontend Tech Lead (Antigravity + GitHub MCP)
 ```
 
-**Olga's subagents:** angular-component-architecture, angular-performance, ui-design-reviewer, angular-accessibility
-
-**Nestor's subagents:** nestjs-architecture, typeorm-migrations, backend-security
+Olga subagents: angular-component-architecture, angular-performance, ui-design-reviewer, angular-accessibility
+Nestor subagents: nestjs-architecture, typeorm-migrations, backend-security
 
 ---
 
 ## HOW EACH AGENT RECEIVES CONTEXT
 
-### Nestor (VSCode + Copilot + GitHub MCP)
+### Nestor
 ```
-1. Copilot reads CLAUDE.md natively on project open
-2. CLAUDE.md instructs: read NESTOR.md + AGENT_RULES.md via GitHub MCP from orion
+1. Copilot reads CLAUDE.md natively
+2. CLAUDE.md: read NESTOR.md + AGENT_RULES.md via GitHub MCP from orion
 3. Nestor confirms Read Log and waits for issue
 ```
 
-### Olga (Antigravity + GitHub MCP)
+### Olga
 ```
-Antigravity does NOT process CLAUDE.md reliably.
-Bootstrap file: OLGA.md in root of gameon repo (develop branch)
-Mario prompt: "Olga, lee el archivo OLGA.md en la raíz del proyecto y sigue las instrucciones."
-Olga reads: OLGA.md (bootstrap) → agents/OLGA.md → AGENT_RULES.md → issue
-Olga uses GitHub MCP only — never terminal fallbacks
+Antigravity reads CLAUDE.md natively (Session 18)
+CLAUDE.md: read agents/OLGA.md + AGENT_RULES.md via GitHub MCP from orion
+OLGA.md bootstrap remains as fallback in gameon root
 MCP server: npx @modelcontextprotocol/server-github (NOT Docker)
 ```
 
-### Access tokens
-Nestor and Olga have fine-grained tokens with **Read + Write** access to:
-- `Mjosuex85/gameon-api`
-- `Mjosuex85/gameon`
-- `Mjosuex85/orion`
+Nestor and Olga tokens: Read + Write on gameon-api, gameon, orion.
 
 ---
 
 ## REPOS
 
 ```
-Mjosuex85/orion        → Orion OS + memory
-Mjosuex85/gameon-api   → Backend NestJS (develop → staging → main)
-Mjosuex85/gameon       → Frontend Angular 21 (develop → staging → main)
+Mjosuex85/orion        -> Orion OS + memory
+Mjosuex85/gameon-api   -> Backend NestJS (develop -> staging -> main)
+Mjosuex85/gameon       -> Frontend Angular 21 (develop -> staging -> main)
 ```
 
 ---
 
 ## TOKEN STRATEGY
 
-- Mechanical refactor → Gemini Flash
-- Bug analysis / features → Gemini Pro / Sonnet
-- Complex architecture → Opus
-- Orion → Claude.ai Pro
+- Mechanical refactor -> Gemini Flash
+- Bug analysis / features -> Gemini Pro / Sonnet
+- Complex architecture -> Opus
+- Orion -> Claude.ai Pro
 
-**The value is in the context, not the model.**
+The value is in the context, not the model.
 
 ---
 
 ## SESSION LOG
 
 ### Sessions 1-11 (before April 1, 2026)
-- Full production deploy, Orion OS, agent flows, v1.2.0, organizations, tournaments, visibility
+Full production deploy, Orion OS, agent flows, v1.2.0, organizations, tournaments, visibility
 
 ### Session 12 — April 1, 2026
-- ✅ #96 — Organizer panel complete
-- ✅ #100, #103, #104, #105 — UX + payments + venues
-- ✅ organizerGuard, error interceptor D79, D78 documented
+- #96 — Organizer panel complete
+- #100, #103, #104, #105 — UX + payments + venues
+- organizerGuard, error interceptor D79, D78 documented
 
-### Session 13 — April 2, 2026 ✅ COMPLETE
-- ✅ #25, #63, #85, #90 closed
-- ✅ Staging environment fully operational
-- ✅ D80 documented
+### Session 13 — April 2, 2026
+- #25, #63, #85, #90 closed
+- Staging environment fully operational
+- D80 documented
 
-### Session 14 — April 3–4, 2026 ✅ COMPLETE
-- ✅ v1.3.0 backend + frontend deployed to production
-- ✅ #110 — fix límite partidos por organización (Nestor)
-- ✅ fix email.service.ts — Resend client por llamada, no en constructor
-- ✅ D81 — Orion pregunta antes de hacer cambios directos en código
-- ✅ #26 closed — Jest configurado + MatchService tests (78%+ cobertura)
-- ✅ #111 closed — AuthService tests (97%+ cobertura, 20/20 tests)
-- ✅ Filosofía de testing definida: servicios primero, tests crecen con el producto
+### Session 14 — April 3-4, 2026
+- v1.3.0 deployed to production
+- #110 — fix limite partidos por organizacion (Nestor)
+- fix email.service.ts
+- D81 — Orion pregunta antes de hacer cambios directos en codigo
+- #26 closed — Jest + MatchService tests (78%+)
+- #111 closed — AuthService tests (97%+, 20/20)
 
-### Session 15 — April 4, 2026 ✅ COMPLETE
-- ✅ #112 closed — OrganizationsService tests (76%+, 13/13) — Nestor
-- ✅ #91 closed — CI workflow: lint + build + test:cov + SonarCloud (develop + staging + main)
-- ✅ #93 closed — SonarCloud conectado, SONAR_TOKEN en GitHub Secrets
-- ✅ Security fixes: script injection en agent-log.yml y release.yml
-- ✅ GitFlow definido y probado: PR #114 develop → staging pasó ✅
-- ✅ #113 creado — GitHub Team para enforcement de branch protection
-- ✅ projects/gameon-architecture.md + templates/architecture.md creados
+### Session 15 — April 4, 2026
+- #112 closed — OrganizationsService tests (76%+, 13/13)
+- #91 closed — CI backend workflow
+- #93 closed — SonarCloud backend
+- GitFlow definido y probado
+- #113 creado — GitHub Team branch protection
+- gameon-architecture.md + templates/architecture.md creados
 
-### Session 16 — April 4, 2026 ✅ COMPLETE
-- ✅ features/admin eliminado de gameon (develop) — será repo separado en el futuro
-- ✅ admin.service.ts eliminado
-- ✅ styles.scss limpio — bloque admin eliminado
-- ✅ Atomic Design system definido — ui/atoms/ + ui/molecules/ + layouts/
-- ✅ OLGA.md + ui-design-reviewer.md actualizados con reglas de diseño no negociables
-- ✅ #115 creado — refactor Atomic Design (Olga, en progreso)
-- ✅ OLGA.md bootstrap creado en raíz de gameon
-- ✅ Protocolo Olga validado: bootstrap funcionó correctamente en sesión real
-- ✅ D82 documentado — GitHub MCP tool usage rules
+### Session 16 — April 4, 2026
+- features/admin eliminado
+- Atomic Design definido — ui/atoms/ + ui/molecules/
+- OLGA.md bootstrap creado
+- D82 documentado
 
-### Session 17 — April 4, 2026 ✅ COMPLETE
-- ✅ Responsive design rules definidas — Tailwind-first, mobile-first, responsabilidad por capa atómica
-- ✅ agents/OLGA.md actualizado con sección RESPONSIVE DESIGN completa
-- ✅ Olga MCP corregido: Docker → npx @modelcontextprotocol/server-github
-- ✅ orion repo ahora legible desde Antigravity ✅
-- ✅ gameon/develop/OLGA.md restaurado a bootstrap original — orion es fuente de verdad
+### Session 17 — April 4, 2026
+- Responsive rules — Tailwind-first, mobile-first (agents/OLGA.md)
+- Olga MCP corregido: Docker -> npx
+- orion readable desde Antigravity
 
-**Próxima sesión — PRIORIDAD:**
-- Validar y aprobar #115 cuando Olga diga "Listo para revisar"
-- CI frontend #92 (Olga, después de aprobar #115)
-- Demo con Jose (SoccerMix) — sin fecha aún
+### Session 18 — April 5, 2026
+- #116 closed — Jest frontend: 30/30 tests, 82.88% cobertura (AuthService, ErrorInterceptor, Guards)
+- #92 closed — CI frontend: build + tests + SonarCloud en cada PR
+- CLAUDE.md creado en gameon/develop — Olga arranca igual que Nestor
+- #115 closed — Atomic Design refactor: atomos modernizados + 3 moleculas creadas
+- #69, #72 closed — admin issues obsoletos
+- D83, D84, D85 documentados — frontend testing + SonarCloud Quality Gate
+- jest.config.js (no .ts) — evita ts-node en CI
+- .npmrc: legacy-peer-deps=true — resuelve conflicto Angular 21 + jest-preset-angular en Vercel
+- SonarCloud gameon conectado — coverage exclusions para features/shared/services
+
+**Proxima sesion — PRIORIDAD:**
+- Demo con Jose (SoccerMix) — preparar cuenta manualmente en Neon + Postman
+- #10 — Waitlist system (siguiente feature de valor real)
+- #70 — Design system session (cuando Mario tenga clara la direccion visual)
 
 ---
 
 *Orion OS — built by Mario Vidal + Orion*
-*Last updated: April 4, 2026 — Session 17 final*
+*Last updated: April 5, 2026 — Session 18 final*
