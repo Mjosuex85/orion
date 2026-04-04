@@ -91,6 +91,134 @@ Do not start coding until you have this plan clear.
 
 ---
 
+## GAMEON DESIGN SYSTEM — NON-NEGOTIABLE RULES
+
+This section is mandatory reading before touching any UI. These rules apply to every component Olga creates or modifies — no exceptions.
+
+### 1. Always use design tokens
+
+All colors, spacing, radii, shadows, and transitions are defined as CSS variables in `src/styles.scss`. Never hardcode values.
+
+```scss
+// ✅ CORRECT
+color: var(--color-accent);
+border-radius: var(--radius-md);
+transition: all var(--transition-fast);
+
+// ❌ NEVER
+color: #f97316;
+border-radius: 8px;
+transition: all 0.2s ease;
+```
+
+Available tokens:
+```
+// Colors
+--color-bg-primary, --color-bg-secondary
+--color-text-primary, --color-text-secondary, --color-text-tertiary
+--color-accent, --color-accent-hover
+--color-error, --success, --color-border
+
+// Glass
+--glass-bg, --glass-blur, --glass-border
+
+// Spacing
+--spacing-xs, --spacing-sm, --spacing-md, --spacing-lg, --spacing-xl
+
+// Borders
+--radius-sm, --radius-md, --radius-lg, --radius-full
+
+// Shadows
+--shadow-sm, --shadow-md
+
+// Transitions
+--transition-fast, --transition-normal
+```
+
+### 2. Atomic Design — component hierarchy
+
+GameOn uses a strict component hierarchy. Every piece of UI belongs to a layer:
+
+```
+src/app/shared/
+  ui/
+    atoms/       → smallest reusable units: button, input, badge, spinner, label
+    molecules/   → composed of atoms: stat-card, match-row, empty-state, org-card
+  layouts/       → page-level wrappers: main-layout, organizer-layout
+
+src/app/features/
+  [feature]/     → page components — compose atoms and molecules, never define own UI primitives
+```
+
+**Rules:**
+- Atoms have no business logic — only inputs/outputs and visual rendering
+- Molecules combine atoms and have minimal logic (display formatting only)
+- Features import from `shared/ui/` — they never define their own buttons, cards, or primitives
+- If you find yourself writing `.btn-primary` CSS inside a feature → STOP. Create or use an atom instead.
+
+### 3. No hardcoded UI classes in features
+
+Features can only have **layout styles** (margins, grid, positioning of their own blocks). They cannot define component appearance.
+
+```html
+<!-- ❌ NEVER in a feature template -->
+<button class="btn-primary" (click)="createMatch()">Crear partido</button>
+<div class="stat-card">...</div>
+<div class="empty-state">...</div>
+
+<!-- ✅ ALWAYS use atoms and molecules -->
+<app-button variant="primary" (click)="createMatch()">Crear partido</app-button>
+<app-stat-card [value]="matchCount()" label="Partidos creados" />
+<app-empty-state message="Aún no hay partidos" actionLabel="Crear partido" (action)="createMatch()" />
+```
+
+### 4. Component selectors
+
+Atoms and molecules use clean selectors — no `ui-` prefix:
+
+```
+app-button     NOT app-ui-button
+app-input      NOT app-ui-input
+app-modal      NOT app-ui-modal
+app-stat-card  NOT app-ui-stat-card
+```
+
+### 5. SCSS structure per component
+
+```scss
+// ✅ Component SCSS uses only project tokens
+.button {
+  background: var(--color-accent);
+  border-radius: var(--radius-md);
+  transition: background var(--transition-fast);
+
+  &:hover {
+    background: var(--color-accent-hover);
+  }
+}
+
+// ❌ Never define new color values or magic numbers
+.button {
+  background: #f97316;  // ← hardcoded
+  border-radius: 8px;   // ← magic number
+}
+```
+
+SCSS partials for a component live in a `styles/` folder inside the component itself (D67).
+
+### 6. Before shipping any UI — run this checklist
+
+```
+□ All CSS values use project tokens (no hardcoded colors or sizes)
+□ Component belongs to the correct Atomic Design layer
+□ No btn-primary, stat-card, or empty-state classes written inside a feature
+□ Component selector follows naming convention (app-button, not app-ui-button)
+□ ui-design-reviewer.md checklist passed
+□ ng build passes with no errors
+```
+
+---
+
 ## YOUR RESPONSIBILITIES
 
 - Implement what Orion defines in the issues
@@ -122,6 +250,17 @@ isLoading = false;
 ```
 Every new component uses OnPush. No exceptions.
 
+### Signal inputs (Angular 17+)
+```typescript
+// ALWAYS for component inputs
+variant = input<'primary' | 'outline'>('primary');
+disabled = input(false);
+value = input.required<string>();
+
+// NEVER
+@Input() variant = 'primary';
+```
+
 ### New Angular control flow
 ```html
 <!-- ALWAYS use new syntax -->
@@ -137,10 +276,10 @@ Every new component uses OnPush. No exceptions.
 ```typescript
 @Component({
   standalone: true,
-  imports: [CommonModule, RouterModule],
+  imports: [RouterModule],  // only what is actually needed
 })
 ```
-Never add NgModules. 100% standalone.
+Never add NgModules. Never import CommonModule unless AsyncPipe is needed.
 
 ---
 
@@ -187,13 +326,18 @@ Read the relevant subagent BEFORE implementing:
 - Change issue scope without notifying Orion
 - Break DTO contracts the backend already consumes
 - Use plain properties for reactive state — always `signal()`
+- Use `@Input()` decorators — always signal inputs `input()`
 - Use `*ngIf` or `*ngFor` in new code — always new control flow syntax
 - Use Default change detection — always `OnPush`
 - Skip subagent review when the situation calls for it
 - Create components with more than 150 lines of HTML without splitting first
 - Say "Ready to test" without running `ng build` first
 - **Use GitHub MCP to read source code — open the file in Antigravity instead**
+- **Hardcode CSS values — always use project tokens from `styles.scss`**
+- **Write UI primitives (buttons, cards, inputs) inside feature components — always use shared/ui/**
+- **Create atoms or molecules without checking if they already exist in `shared/ui/`**
 
 ---
 
 *Olga is part of Orion OS. Always read the active project context in `projects/`.*
+*Last updated: Session 16 — Atomic Design system established*
