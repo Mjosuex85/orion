@@ -133,6 +133,16 @@ Vercel uses $ANGULAR_CONFIG env var to select configuration per environment
    — countriesService uses upsert, safe to re-run anytime
 ```
 
+### GitFlow — branch strategy (defined Session 15)
+```
+develop  →  free (agents commit directly)
+    ↓ PR
+staging  →  CI runs (validate). Merge discipline manual — enforcement pending #113
+    ↓ PR
+main     →  CI runs (validate). Merge discipline manual — enforcement pending #113
+```
+Branch protection enforcement requires GitHub Team ($4/user/month) — #113
+
 ---
 
 ## TESTING PLAN — BACKEND
@@ -140,12 +150,27 @@ Vercel uses $ANGULAR_CONFIG env var to select configuration per environment
 ```
 Fase 1 — MatchService         → #26  ✅ COMPLETE (78%+ cobertura)
 Fase 2 — AuthService          → #111 ✅ COMPLETE (97%+ cobertura, 20/20 tests)
-Fase 3 — OrganizationsService → #112 pending
-Fase 4 — SonarCloud           → #93  pending (depende de Fase 1+)
-CI automático                 → #91  pending (bloquea PRs si tests fallan)
+Fase 3 — OrganizationsService → #112 ✅ COMPLETE (76%+ cobertura, 13/13 tests)
+Fase 4 — SonarCloud           → #93  ✅ COMPLETE (conectado, analizando PRs)
+CI automático                 → #91  ✅ COMPLETE (lint + build + tests + SonarCloud)
 ```
 
 **Regla:** cada nuevo feature issue incluye su test en el mismo issue.
+
+---
+
+## SONARCLOUD — gameon-api
+
+```
+Conectado: ✅ (Session 15)
+Analysis method: GitHub Actions (Automatic Analysis desactivado)
+SONAR_TOKEN: configurado en GitHub Secrets ✅
+sonar-project.properties: en repo root (develop) ✅
+Security issues resueltos:
+  - agent-log.yml: script injection fix (COMMIT_MSG env var) ✅
+  - release.yml: script injection fix (PR_TITLE env var) ✅
+  - .env.forgot-password: False Positive marcado (placeholders, no real credentials) ✅
+```
 
 ---
 
@@ -224,24 +249,28 @@ Mjosuex85/gameon       → Frontend Angular 21 (develop → staging → main)
 - ✅ D80 documented
 
 ### Session 14 — April 3–4, 2026 ✅ COMPLETE
-- ✅ v1.3.0 backend + frontend deployed to production (deploy automatizado end-to-end)
+- ✅ v1.3.0 backend + frontend deployed to production
 - ✅ #110 — fix límite partidos por organización (Nestor)
 - ✅ fix email.service.ts — Resend client por llamada, no en constructor
 - ✅ D81 — Orion pregunta antes de hacer cambios directos en código
 - ✅ #26 closed — Jest configurado + MatchService tests (78%+ cobertura)
 - ✅ #111 closed — AuthService tests (97%+ cobertura, 20/20 tests)
-- ✅ #112 creado — OrganizationsService tests (Nestor, pendiente)
 - ✅ Filosofía de testing definida: servicios primero, tests crecen con el producto
-- ✅ Regla añadida: cada nuevo feature incluye sus tests en el mismo issue
+
+### Session 15 — April 4, 2026 ✅ COMPLETE
+- ✅ #112 closed — OrganizationsService tests (76%+, 13/13) — Nestor
+- ✅ #91 closed — CI workflow: lint + build + test:cov + SonarCloud (develop + staging + main)
+- ✅ #93 closed — SonarCloud conectado, SONAR_TOKEN en GitHub Secrets, sonar-project.properties
+- ✅ Security fixes: script injection en agent-log.yml y release.yml (3 ramas)
+- ✅ GitFlow definido: develop → PR → staging (CI) → PR → main (CI)
+- ✅ #113 creado — GitHub Team para enforcement de branch protection (post primer cliente)
 
 **Próxima sesión — PRIORIDAD:**
-- SESIÓN DE ESTRATEGIA: IA + desarrollo + Orion OS como sistema replicable (Mario quiere dedicar una sesión completa)
-- #112 — OrganizationsService tests (Nestor)
-- #91 — CI backend (tests bloquean PRs automáticamente)
-- #93 — SonarCloud
+- SESIÓN DE ESTRATEGIA: IA + desarrollo + Orion OS como sistema replicable
 - Demo con Jose (SoccerMix) — preparar cuenta en Neon
+- Primer PR real de develop → staging para activar el CI en la práctica
 
 ---
 
 *Orion OS — built by Mario Vidal + Orion*
-*Last updated: April 4, 2026 — Session 14 complete*
+*Last updated: April 4, 2026 — Session 15 complete*
