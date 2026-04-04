@@ -186,13 +186,14 @@ src/app/shared/
 - Features import from shared/ui/ — never define own UI primitives
 - Atom selectors: app-button, app-input (no ui- prefix)
 - No btn-primary, stat-card, empty-state classes in feature templates
+- Responsive: Tailwind-first, mobile-first — no custom SCSS breakpoint mixins (Session 17)
 
 **Issue #115** — Olga executing Atomic Design refactor (Session 16, in progress)
 **Issue #92** — CI frontend (Olga, after #115 is approved)
 
 ---
 
-## OLGA BOOTSTRAP PROTOCOL (established Session 16)
+## OLGA BOOTSTRAP PROTOCOL (updated Session 17)
 
 Antigravity does NOT process CLAUDE.md reliably.
 Solution: `OLGA.md` in root of `gameon` repo (develop branch).
@@ -201,11 +202,31 @@ Solution: `OLGA.md` in root of `gameon` repo (develop branch).
 > "Olga, lee el archivo OLGA.md en la raíz del proyecto y sigue las instrucciones."
 
 **Olga's startup sequence:**
-1. Read OLGA.md (bootstrap — already open)
+1. Read OLGA.md bootstrap (gameon/develop — already open in Antigravity)
 2. Read agents/OLGA.md via GitHub MCP (full profile + design rules)
 3. Read agents/AGENT_RULES.md via GitHub MCP
-4. Say "Lista. He leído mi contexto. Esperando issue."
+4. Say "Lista. He leído OLGA.md y AGENT_RULES.md. Dame el número de issue."
 5. Mario gives issue number → read via GitHub MCP (gameon-api repo)
+
+**Olga MCP configuration (resolved Session 17):**
+```
+Problem: Docker-based github-mcp-server returns only SHA for private repo files — content missing.
+Solution: Replace with npx-based server (same as Nestor).
+File: C:\Users\mario\.gemini\antigravity\mcp_config.json
+Config:
+{
+  "mcpServers": {
+    "github": {
+      "command": "npx",
+      "args": ["-y", "@modelcontextprotocol/server-github"],
+      "env": {
+        "GITHUB_PERSONAL_ACCESS_TOKEN": "<olga-token>"
+      }
+    }
+  }
+}
+Result: 26 tools enabled, orion repo readable ✅
+```
 
 **Key rule:** Olga uses GitHub MCP only — never gh CLI, curl, base64, or terminal fallbacks.
 If MCP fails → Olga stops and tells Mario. Never improvises.
@@ -252,8 +273,9 @@ Olga           → Frontend Tech Lead (Antigravity + GitHub MCP) ✅
 Antigravity does NOT process CLAUDE.md reliably.
 Bootstrap file: OLGA.md in root of gameon repo (develop branch)
 Mario prompt: "Olga, lee el archivo OLGA.md en la raíz del proyecto y sigue las instrucciones."
-Olga reads: OLGA.md → agents/OLGA.md → AGENT_RULES.md → issue
+Olga reads: OLGA.md (bootstrap) → agents/OLGA.md → AGENT_RULES.md → issue
 Olga uses GitHub MCP only — never terminal fallbacks
+MCP server: npx @modelcontextprotocol/server-github (NOT Docker)
 ```
 
 ### Access tokens
@@ -329,13 +351,19 @@ Mjosuex85/gameon       → Frontend Angular 21 (develop → staging → main)
 - ✅ Protocolo Olga validado: bootstrap funcionó correctamente en sesión real
 - ✅ D82 documentado — GitHub MCP tool usage rules
 
+### Session 17 — April 4, 2026 ✅ COMPLETE
+- ✅ Responsive design rules definidas — Tailwind-first, mobile-first, responsabilidad por capa atómica
+- ✅ agents/OLGA.md actualizado con sección RESPONSIVE DESIGN completa
+- ✅ Olga MCP corregido: Docker → npx @modelcontextprotocol/server-github
+- ✅ orion repo ahora legible desde Antigravity ✅
+- ✅ gameon/develop/OLGA.md restaurado a bootstrap original — orion es fuente de verdad
+
 **Próxima sesión — PRIORIDAD:**
-- Sesión de estrategia: IA + desarrollo + Orion OS como sistema replicable
 - Validar y aprobar #115 cuando Olga diga "Listo para revisar"
 - CI frontend #92 (Olga, después de aprobar #115)
-- Demo con Jose (SoccerMix) — sin fecha aún, ventaja para pulir el producto
+- Demo con Jose (SoccerMix) — sin fecha aún
 
 ---
 
 *Orion OS — built by Mario Vidal + Orion*
-*Last updated: April 4, 2026 — Session 16 final*
+*Last updated: April 4, 2026 — Session 17 final*
