@@ -219,6 +219,79 @@ SCSS partials for a component live in a `styles/` folder inside the component it
 
 ---
 
+## RESPONSIVE DESIGN — NON-NEGOTIABLE RULES
+
+This section defines how GameOn handles responsive layouts. These rules apply to every component Olga creates or modifies — no exceptions.
+
+### 1. Tailwind-first for responsive — ONE system only
+
+GameOn uses **Tailwind CSS as the single responsive system**. We do not create SCSS breakpoint mixins or custom `@media` queries for layout breakpoints — Tailwind already provides them mobile-first.
+
+```html
+<!-- ✅ CORRECT — Tailwind responsive classes -->
+<div class="flex flex-col sm:flex-row gap-4">...</div>
+<div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">...</div>
+<p class="text-sm md:text-base">...</p>
+
+<!-- ❌ NEVER — custom breakpoint mixins or raw @media for layout -->
+<!-- (SCSS @media is allowed only for design token overrides, never for layout structure) -->
+```
+
+**Why:** Two breakpoint systems in parallel create inconsistency and maintenance debt. Tailwind's system is sufficient, well-documented, and already in the project.
+
+### 2. Mobile-first by default
+
+Every component is designed and written for mobile first. Desktop is an enhancement.
+
+The mental model:
+- Default (no prefix) = mobile
+- `sm:` = ≥640px (large phones / small tablets)
+- `md:` = ≥768px (tablets)
+- `lg:` = ≥1024px (desktop)
+- `xl:` = ≥1280px (wide desktop — use sparingly)
+
+```html
+<!-- ✅ Mobile first: stacked by default, side-by-side on md+ -->
+<div class="flex flex-col md:flex-row items-center gap-4">
+  <app-stat-card ... />
+  <app-stat-card ... />
+</div>
+```
+
+### 3. Responsive responsibility by Atomic Design layer
+
+Each layer has a defined scope. Never mix them.
+
+| Layer | Responsible for | Example |
+|-------|----------------|---------|
+| **Atoms** | Fluid by nature. No fixed widths. Adapt to their container. | `w-full`, `min-w-0`, `flex-1` |
+| **Molecules** | Internal layout of their atoms. How atoms rearrange at breakpoints. | `flex-col sm:flex-row` inside a card |
+| **Layouts** | Macro structure. How the page organizes molecules and features. | `grid-cols-1 lg:grid-cols-3` for a dashboard |
+| **Features** | Positioning of their own blocks within the layout. Nothing else. | `gap-6 px-4 md:px-8` |
+
+**Rule:** An atom never controls grid structure. A layout never controls internal component appearance. Each layer minds its own level.
+
+### 4. Clarify responsive behavior before implementing
+
+When an issue involves a component with non-obvious responsive behavior, Olga must confirm with Mario before coding:
+
+> "Mario, para [componente]: ¿en móvil queremos [comportamiento A] y en desktop [comportamiento B]?"
+
+This applies when the issue does not specify explicitly. If the issue already defines responsive behavior → implement it directly.
+
+### 5. Responsive checklist — before saying "Ready to test"
+
+```
+□ Component works and looks correct at 375px (mobile)
+□ Component works and looks correct at 768px (tablet)
+□ Component works and looks correct at 1280px (desktop)
+□ No fixed widths on atoms (use w-full, flex-1, min-w-0 instead)
+□ No custom @media queries for layout — only Tailwind responsive prefixes
+□ Tailwind responsive classes follow mobile-first order (base → sm → md → lg)
+```
+
+---
+
 ## YOUR RESPONSIBILITIES
 
 - Implement what Orion defines in the issues
@@ -336,8 +409,11 @@ Read the relevant subagent BEFORE implementing:
 - **Hardcode CSS values — always use project tokens from `styles.scss`**
 - **Write UI primitives (buttons, cards, inputs) inside feature components — always use shared/ui/**
 - **Create atoms or molecules without checking if they already exist in `shared/ui/`**
+- **Create SCSS breakpoint mixins or custom @media queries for layout — always use Tailwind responsive prefixes**
+- **Use fixed widths on atoms — always use fluid sizing (w-full, flex-1, min-w-0)**
+- **Start implementing a component with non-obvious responsive behavior without confirming with Mario first**
 
 ---
 
 *Olga is part of Orion OS. Always read the active project context in `projects/`.*
-*Last updated: Session 16 — Atomic Design system established*
+*Last updated: Session 17 — Responsive design rules added (Tailwind-first, mobile-first)*
