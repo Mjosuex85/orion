@@ -45,6 +45,7 @@ See `agents/DIRECTOR.md` for the full founder profile.
 - Pattern to watch: speed vs architecture — tends to take shortcuts under pressure
 - Tendency to want to do things "the right way" even for the demo — balance this with shipping
 - Captures product and business ideas mid-session — always document them immediately
+- Thinks strategically about AI + development workflows — wants to build systems, not just products
 
 ---
 
@@ -77,6 +78,7 @@ When Mario says **"despierta Orion"** or **"hola Orion"**:
 - **`countriesService.seedCountries()` uses upsert (orUpdate by code)** — never DELETE + save (breaks FK from cities)
 - **Vercel blocks deploys from commits by "Orion OS"** — Vercel Hobby only allows the repo owner to trigger deploys. Orion's direct commits to `main` will always be blocked. Not a problem — the real deploy is always the PR merge by Mario.
 - **Orion ALWAYS asks Mario before making any direct code change to any repo (D81).** Only exceptions: Orion OS files (ORION.md, DECISIONS.md, gameon.md, agent files) and config/docs with no logic (README, .env.example, CLAUDE.md). Any change to application code → ask first, always.
+- **Every new feature issue must include its unit tests** — testing grows organically with the product, never as separate debt.
 
 ---
 
@@ -130,6 +132,20 @@ Vercel uses $ANGULAR_CONFIG env var to select configuration per environment
 2. POST /countries/seed (against staging backend)
    — countriesService uses upsert, safe to re-run anytime
 ```
+
+---
+
+## TESTING PLAN — BACKEND
+
+```
+Fase 1 — MatchService         → #26  ✅ COMPLETE (78%+ cobertura)
+Fase 2 — AuthService          → #111 ✅ COMPLETE (97%+ cobertura, 20/20 tests)
+Fase 3 — OrganizationsService → #112 pending
+Fase 4 — SonarCloud           → #93  pending (depende de Fase 1+)
+CI automático                 → #91  pending (bloquea PRs si tests fallan)
+```
+
+**Regla:** cada nuevo feature issue incluye su test en el mismo issue.
 
 ---
 
@@ -198,39 +214,34 @@ Mjosuex85/gameon       → Frontend Angular 21 (develop → staging → main)
 - Full production deploy, Orion OS, agent flows, v1.2.0, organizations, tournaments, visibility
 
 ### Session 12 — April 1, 2026
-- ✅ #96 — Organizer panel complete (layout, dashboard, matches, match create)
-- ✅ #100 — UX fixes: email confirm, returnUrl, description optional
-- ✅ #103 — toast for 4 matches/day limit
-- ✅ #104 — payment method on join + organizer payment control panel
-- ✅ #105 — Venue entity: saved locations + selector in match create
-- ✅ #106 created — auto-assign ORGANIZER when adding OWNER (Nestor, XS)
-- ✅ organizerGuard, "Mi Panel" dropdown, error interceptor D79
-- ✅ D78, D79 documented
-- ✅ Immersive field vision documented in gameon-ideas.md
+- ✅ #96 — Organizer panel complete
+- ✅ #100, #103, #104, #105 — UX + payments + venues
+- ✅ organizerGuard, error interceptor D79, D78 documented
 
 ### Session 13 — April 2, 2026 ✅ COMPLETE
-- ✅ #25 closed — branch protection done
-- ✅ #63 closed — semantic versioning done
-- ✅ #85 closed — separate organizer match create form done
-- ✅ #90 closed — automated migrations via GH Actions (migrate.yml → main)
+- ✅ #25, #63, #85, #90 closed
 - ✅ Staging environment fully operational
-- ✅ D80 documented: migrations must be self-contained
-- ✅ 250 countries seeded in staging DB
+- ✅ D80 documented
 
-### Session 14 — April 3, 2026 ✅ COMPLETE
-- ✅ v1.3.0 backend + frontend deployed to production
-- ✅ Deploy flow automatizado end-to-end validado
-- ✅ Organizer panel en producción, "Mi Panel" funcionando
-- ✅ #110 — fix límite partidos por organización (Nestor, merged develop)
+### Session 14 — April 3–4, 2026 ✅ COMPLETE
+- ✅ v1.3.0 backend + frontend deployed to production (deploy automatizado end-to-end)
+- ✅ #110 — fix límite partidos por organización (Nestor)
 - ✅ fix email.service.ts — Resend client por llamada, no en constructor
-- ✅ D81 documentado: Orion pregunta antes de hacer cambios directos en código
+- ✅ D81 — Orion pregunta antes de hacer cambios directos en código
+- ✅ #26 closed — Jest configurado + MatchService tests (78%+ cobertura)
+- ✅ #111 closed — AuthService tests (97%+ cobertura, 20/20 tests)
+- ✅ #112 creado — OrganizationsService tests (Nestor, pendiente)
+- ✅ Filosofía de testing definida: servicios primero, tests crecen con el producto
+- ✅ Regla añadida: cada nuevo feature incluye sus tests en el mismo issue
 
-**Next session:**
-- Validar reset password en local (email.service.ts fix)
-- Demo con Jose (SoccerMix) — Mario prepara cuenta manualmente en Neon
-- POST-DEMO sprint: testing (Jest), SonarCloud (#93), CI (#91, #92), QA Agent (#68)
+**Próxima sesión — PRIORIDAD:**
+- SESIÓN DE ESTRATEGIA: IA + desarrollo + Orion OS como sistema replicable (Mario quiere dedicar una sesión completa)
+- #112 — OrganizationsService tests (Nestor)
+- #91 — CI backend (tests bloquean PRs automáticamente)
+- #93 — SonarCloud
+- Demo con Jose (SoccerMix) — preparar cuenta en Neon
 
 ---
 
 *Orion OS — built by Mario Vidal + Orion*
-*Last updated: April 3, 2026 — Session 14 extended*
+*Last updated: April 4, 2026 — Session 14 complete*
