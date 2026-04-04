@@ -175,6 +175,46 @@ Security issues resueltos:
 
 ---
 
+## FRONTEND — ATOMIC DESIGN SYSTEM (established Session 16)
+
+```
+src/app/shared/
+  ui/
+    atoms/       → button, input, modal, loader, toast (migrated from shared/components/ui-*)
+    molecules/   → stat-card, match-row, empty-state (new)
+  layouts/       → main-layout, organizer-layout
+```
+
+**Rules (enforced in OLGA.md + ui-design-reviewer.md):**
+- All CSS uses design tokens from styles.scss — never hardcoded values
+- Features import from shared/ui/ — never define own UI primitives
+- Atom selectors: app-button, app-input (no ui- prefix)
+- No btn-primary, stat-card, empty-state classes in feature templates
+
+**Issue #115** — Olga executing Atomic Design refactor (Session 16, in progress)
+
+---
+
+## OLGA BOOTSTRAP PROTOCOL (established Session 16)
+
+Antigravity does NOT process CLAUDE.md reliably.
+Solution: `OLGA.md` in root of `gameon` repo (develop branch).
+
+**Mario's prompt to start Olga:**
+> "Olga, lee el archivo OLGA.md en la raíz del proyecto y sigue las instrucciones."
+
+**Olga's startup sequence:**
+1. Read OLGA.md (bootstrap — already open)
+2. Read agents/OLGA.md via GitHub MCP (full profile + design rules)
+3. Read agents/AGENT_RULES.md via GitHub MCP
+4. Say "Lista. He leído mi contexto. Esperando issue."
+5. Mario gives issue number → read via GitHub MCP (gameon-api repo)
+
+**Key rule:** Olga uses GitHub MCP only — never gh CLI, curl, base64, or terminal fallbacks.
+If MCP fails → Olga stops and tells Mario. Never improvises.
+
+---
+
 ## ORION OS — ARCHITECTURE TEMPLATES
 
 ```
@@ -212,12 +252,15 @@ Olga           → Frontend Tech Lead (Antigravity + GitHub MCP) ✅
 
 ### Olga (Antigravity + GitHub MCP)
 ```
-Antigravity does NOT process CLAUDE.md the same way as Copilot.
-Olga's full context lives in the issue prompt — every issue must be self-contained.
+Antigravity does NOT process CLAUDE.md reliably.
+Bootstrap file: OLGA.md in root of gameon repo (develop branch)
+Mario prompt: "Olga, lee el archivo OLGA.md en la raíz del proyecto y sigue las instrucciones."
+Olga reads: OLGA.md → agents/OLGA.md → AGENT_RULES.md → issue
+Olga uses GitHub MCP only — never terminal fallbacks
 ```
 
 ### Access tokens
-Nestor and Olga have fine-grained tokens with **read-only** access to:
+Nestor and Olga have fine-grained tokens with **Read + Write** access to:
 - `Mjosuex85/gameon-api`
 - `Mjosuex85/gameon`
 - `Mjosuex85/orion`
@@ -280,12 +323,23 @@ Mjosuex85/gameon       → Frontend Angular 21 (develop → staging → main)
 - ✅ projects/gameon-architecture.md creado — onboarding document completo
 - ✅ templates/architecture.md creado — plantilla reutilizable para futuros proyectos Orion OS
 
+### Session 16 — April 4, 2026 ✅ COMPLETE
+- ✅ features/admin eliminado de gameon (develop) — será repo separado en el futuro
+- ✅ admin.service.ts eliminado de gameon (develop)
+- ✅ styles.scss limpio — bloque admin global eliminado
+- ✅ Atomic Design system definido — estructura ui/atoms/ + ui/molecules/ + layouts/
+- ✅ OLGA.md actualizado — sección GAMEON DESIGN SYSTEM completa con reglas no negociables
+- ✅ ui-design-reviewer.md actualizado — 5 checklists incluyendo Atomic Design enforcement
+- ✅ #115 creado — refactor Atomic Design para Olga (L, en progreso)
+- ✅ OLGA.md bootstrap creado en raíz de gameon — protocolo de arranque para Antigravity
+- ✅ Protocolo Olga definido: MCP only, no gh CLI, parar y avisar si falla
+
 **Próxima sesión — PRIORIDAD:**
-- Frontend con Olga (Mario tiene cosas que comentar)
-- SESIÓN DE ESTRATEGIA: IA + desarrollo + Orion OS como sistema replicable
+- Validar que Olga ejecuta #115 correctamente con el nuevo bootstrap
+- CI frontend (#92)
 - Demo con Jose (SoccerMix) — preparar cuenta en Neon
 
 ---
 
 *Orion OS — built by Mario Vidal + Orion*
-*Last updated: April 4, 2026 — Session 15 final*
+*Last updated: April 4, 2026 — Session 16 final*
