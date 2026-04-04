@@ -250,6 +250,19 @@ GOOGLE_CALLBACK_URL, FRONTEND_URL, ORIGIN, NODE_ENV, RESEND_API_KEY
 **D68. Nestor and Olga use the GitHub MCP to read the assigned issue body only — comments are not accessible via MCP.**
 Orion leaves corrections in the issue body, never in comments.
 
+**D82. GitHub MCP — tool usage rules for Orion.**
+
+Each tool has a single purpose. Never mix them:
+
+| Tool | Use for |
+|------|---------|
+| `github:create_or_update_file` | Create or edit files in a repo filesystem |
+| `github:update_issue` | Edit the body, title, or state of an existing issue |
+| `github:create_issue` | Create a new issue |
+| `github:push_files` | Push multiple files in a single commit |
+
+`create_or_update_file` with an issue URL as path creates a literal file in the repo — it does NOT edit the issue. Always use `update_issue` to modify issue content.
+
 ---
 
 ## 10. AGENTS AND MODELS
@@ -362,5 +375,5 @@ A shortcut taken silently is a bug waiting to happen.
 
 ---
 
-*Last updated: April 1, 2026 — Orion*
-*New decisions this session: D78 (scalability + release framework), D79 (error handling pattern)*
+*Last updated: April 4, 2026 — Session 16*
+*New decisions: D82 (GitHub MCP tool usage rules)*
