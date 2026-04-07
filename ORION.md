@@ -79,6 +79,8 @@ When Mario says **"despierta Orion"** or **"hola Orion"**:
 - **Orion ALWAYS asks Mario before making any direct code change to any repo (D81).** Only exceptions: Orion OS files and config/docs with no logic.
 - Every new feature issue must include its unit tests
 - **GitHub MCP tool rules (D82):** `update_issue` for issues, `create_or_update_file` for repo files — never mix them.
+- **Olga must always start with CLAUDE.md, not OLGA.md directly** — CLAUDE.md triggers the full bootstrap chain.
+- **`hasSpots` filter uses in-memory filter on `matchParticipants.length`** — TypeORM without SnakeNamingStrategy generates `"matchId"` FK (quoted camelCase), raw SQL subqueries on this column fail. Always filter in memory when `matchParticipants` is already loaded in the join.
 
 ---
 
@@ -159,7 +161,7 @@ gameon:     Connected (Session 18) — GitHub Actions — Automatic Analysis OFF
 src/app/shared/
   ui/
     atoms/     -> button (app-button), input, modal, loader, toast — modernized (Session 18)
-    molecules/ -> stat-card, match-row, empty-state — created (Session 18)
+    molecules/ -> stat-card, match-row, empty-state, match-filters — (Session 19)
   components/
     event-card/  -> not migrated yet
     main-layout/ -> not migrated yet
@@ -170,6 +172,9 @@ Rules:
 - Features import from shared/ui/ — never define own UI primitives
 - Atom selectors: app-button, app-input (no ui- prefix)
 - Responsive: Tailwind-first, mobile-first — no custom SCSS breakpoint mixins (D83-D85)
+- Angular output signals: use `output()` not `@Output() + EventEmitter` (Angular 17+)
+- Tailwind dynamic class binding: use `[class.class-name]` bindings, NOT ternary `[class]="condition ? 'cls-a' : 'cls-b'"` — Tailwind purges dynamic ternary strings in build
+- Icons: Material Symbols via CDN in index.html — `<span class="material-symbols-outlined">icon_name</span>`
 
 ---
 
@@ -315,12 +320,28 @@ Full production deploy, Orion OS, agent flows, v1.2.0, organizations, tournament
 - .npmrc: legacy-peer-deps=true — resuelve conflicto Angular 21 + jest-preset-angular en Vercel
 - SonarCloud gameon conectado — coverage exclusions para features/shared/services
 
+### Session 19 — April 7, 2026
+- #102 Phase 1 (Nestor) — filtros en GET /organizations/:id/matches: gameMode, status, dateFrom, dateTo, hasSpots
+- #102 Phase 2 (Orion+Olga) — MatchFiltersComponent en shared/ui/molecules/ (reusable), wired en org detail page
+- #102 fix — orgId como signal para que effect() reactive cargue matches al init
+- #102 fix — hasSpots filter en memoria usando matchParticipants.length (TypeORM FK naming issue)
+- #117 creado — arquitectura multi-deporte: campo sport en Match + pizarra data-driven (backlog)
+- #118 creado — posiciones nombradas en pizarra de fútbol: catálogo 19 posiciones + spots por gameMode (backlog)
+- #119 creado — priceMin/priceMax en GET /organizations/:id/matches (Nestor, XS)
+- Material Symbols (Google Icons) añadido via CDN en index.html
+- event-detail chips: emojis reemplazados por Material Symbols icons
+- MatchFilterParams model: gameMode, status, dateFrom, dateTo, priceMin, priceMax, hasSpots
+- Lección: Tailwind purga clases en ternarios dinámicos — usar [class.name] bindings
+- Lección: Olga debe arrancar siempre con CLAUDE.md, no OLGA.md directamente
+- Lección: hasSpots no puede usar raw SQL subquery por naming de FK en TypeORM sin SnakeNamingStrategy
+
 **Proxima sesion — PRIORIDAD:**
-- Demo con Jose (SoccerMix) — preparar cuenta manualmente en Neon + Postman
-- #10 — Waitlist system (siguiente feature de valor real)
-- #70 — Design system session (cuando Mario tenga clara la direccion visual)
+- Demo con Jose (SoccerMix) — pendiente confirmar fecha
+- #119 — priceMin/priceMax backend (Nestor, XS, listo para ejecutar)
+- #70 — Design system session (Mario define dirección visual)
+- #102 — cerrar issue cuando Mario confirme que todo funciona
 
 ---
 
 *Orion OS — built by Mario Vidal + Orion*
-*Last updated: April 5, 2026 — Session 18 final*
+*Last updated: April 7, 2026 — Session 19 final*
