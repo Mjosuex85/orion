@@ -139,6 +139,11 @@ Exception: `@CreateDateColumn()`, `@UpdateDateColumn()`, `@DeleteDateColumn()` g
 **D72. Free users can set a price on their match without a paid plan.**
 It is an organizational tool (splitting costs via Bizum), not GameOn monetization.
 
+**D86. The `Match` entity column for the match date/time is `dateTime`, NOT `scheduledAt`.**
+- In QueryBuilder always use `match.dateTime` — e.g. `query.orderBy('match.dateTime', 'ASC')`
+- `scheduledAt` does not exist in the entity — any issue or code referencing it is incorrect
+- The frontend sends `dateFrom`/`dateTo` as query params — that naming is correct and independent of the entity column name
+
 ---
 
 ## 7. ARCHITECTURE — FRONTEND
@@ -395,5 +400,5 @@ Components are tested only when they contain non-trivial logic.
 
 ---
 
-*Last updated: April 4, 2026 — Session 17*
-*New decisions: D83, D84, D85 (frontend testing + SonarCloud Quality Gate)*
+*Last updated: April 8, 2026 — Session 20*
+*New decisions: D86 (Match.dateTime — columna real de fecha en la entidad Match)*
