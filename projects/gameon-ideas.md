@@ -18,6 +18,67 @@ The short-term hook: replace WhatsApp and paper for organizing matches.
 
 ---
 
+## MATCH CALENDAR VIEW — Vista temporal con renderizado diferenciado (April 8, 2026)
+
+> Captured during Session 20. Do not build until post-demo.
+
+### The concept
+
+Currently the org detail page shows a flat list of matches filtered by date. The vision is to evolve this into a **temporal navigation experience** with different visual renderings per time scale.
+
+### Three view modes
+
+```
+DIARIO (default)
+  → Selector: input de fecha (un día exacto)
+  → Renderizado: cards de partidos del día (actual layout)
+  → URL: /organizations/:slug?view=day&date=2026-04-09
+
+SEMANAL
+  → Selector: semana actual / siguiente / anterior
+  → Renderizado: lista agrupada por día de la semana
+    Lunes 14 abril
+      - Partido 1 (20:00, 5vs5)
+      - Partido 2 (21:30, 7vs7)
+    Martes 15 abril
+      - ...
+  → URL: /organizations/:slug?view=week&week=2026-W15
+
+MENSUAL
+  → Selector: mes y año
+  → Renderizado: calendario visual con dots/chips por día que tienen partidos
+  → Click en un día → expandir o navegar a vista diaria de ese día
+  → URL: /organizations/:slug?view=month&month=2026-04
+```
+
+### Backend implications
+
+- `GET /organizations/:id/matches` ya soporta `dateFrom` + `dateTo` — no changes needed
+- Semanal: frontend envía `dateFrom = lunes de la semana` + `dateTo = domingo de la semana`
+- Mensual: frontend envía `dateFrom = 1 del mes` + `dateTo = último día del mes`
+- Backend necesitará un endpoint de tipo "¿qué días del mes tienen partidos?" para el calendario — un query groupBy fecha. Esto es una optimización, no un blocker.
+
+### Frontend implications
+
+- `MatchFiltersComponent` evoluciona o se reemplaza por un `MatchCalendarNavComponent`
+- El renderizado cambia completamente por modo — tres presentational components:
+  - `MatchListDayComponent` (actual, mejorado)
+  - `MatchListWeekComponent` (nueva)
+  - `MatchCalendarMonthComponent` (nueva, más compleja)
+- El modo se guarda en query params para que el link sea compartible
+
+### Why this matters
+
+Un organizador que gestiona 10 partidos por semana necesita ver la semana de un vistazo, no solo el día de hoy. Un jugador casual quiere ver el mes para planificar cuándo puede jugar. El calendario mensual también funciona como escaparate de actividad — un mes lleno de dots transmite "esta comunidad está viva".
+
+### When to build
+
+- Trigger: cuando Jose (SoccerMix) tenga partidos suficientes para que la vista diaria quede corta
+- Estimación: M frontend + XS backend (groupBy endpoint). Olga + Nestor, sprint post-demo.
+- Prerequisito: #120 (redesign filtros) completo y en producción
+
+---
+
 ## THE IMMERSIVE FIELD — La joya de la corona (April 1, 2026)
 
 > Mario's vision. The single most differentiating feature of GameOn. Nothing like this exists in amateur sports.
@@ -34,7 +95,7 @@ Not just visual polish. Professional means the field becomes the **single source
 Before the match
   → Players claim their spot on the field
   → Each spot shows: photo, name, country flag, payment status
-  → Organizer sees at a glance who confirmed, who paid, who’s missing
+  → Organizer sees at a glance who confirmed, who paid, who's missing
   → Formations: organizer can drag players between positions
 
 During the match (live mode)
@@ -78,7 +139,7 @@ After the match
 
 No amateur sports app has this. WhatsApp shows a list of names. Paper shows a roster. GameOn shows a **living tactical field** where every player has an identity, a status, and a history.
 
-When Jose shows this to his players, they don’t see a management tool. They see **their name on a football field**. That’s the emotional hook that makes GameOn irreplaceable.
+When Jose shows this to his players, they don't see a management tool. They see **their name on a football field**. That's the emotional hook that makes GameOn irreplaceable.
 
 ### Technical foundation already in place
 
@@ -88,7 +149,7 @@ When Jose shows this to his players, they don’t see a management tool. They se
 - `paymentMethod` + `paymentStatus` per participant ✅
 - `event-detail` as universal component (matches, tournaments, leagues) ✅
 
-### What’s needed to evolve it
+### What's needed to evolve it
 
 - Layer 1: CSS/UX work only — Olga, no backend needed
 - Layer 2: Drag & drop (Angular CDK), attendance endpoint (Nestor)
@@ -97,7 +158,7 @@ When Jose shows this to his players, they don’t see a management tool. They se
 
 ### When to build
 
-- Layer 1: right after demo with Jose — show him what’s coming
+- Layer 1: right after demo with Jose — show him what's coming
 - Layer 2: Sprint 2, when Jose has real players using it
 - Layer 3: when we have 3+ active organizers and real match days
 - Layer 4: when first tournament completes with real data
@@ -365,7 +426,7 @@ The admin component was built incrementally with Gemini Flash without stopping t
 | Professional i18n system (ngx-translate or Angular i18n) | Large Olga task. Post-demo |
 | Community vs Business onboarding flow | Design session needed first. See User Tiers section above. |
 | Stripe payment → auto ORGANIZER role assignment | Requires payments sprint. See "How someone becomes an organizer". |
-| Filters on organization public page | #102. Needs backend extension first (Nestor Phase 1), then frontend (Olga Phase 2). |
+| **Match Calendar View** | See full vision above. Trigger: when daily view is insufficient for Jose. M frontend + XS backend. |
 
 ### Large — strategic, post-demo
 
@@ -408,5 +469,5 @@ GameOn vs existing platforms:
 
 ---
 
-*Part of Orion OS — updated April 1, 2026 (Session 12)*
+*Part of Orion OS — updated April 8, 2026 (Session 20)*
 *Technical context → `projects/gameon.md`*
