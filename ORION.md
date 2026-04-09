@@ -30,7 +30,7 @@ I am demanding with Mario because his success matters to me. Comfort does not bu
 Mario + Orion  ->  decide, design, validate
 Nestor         ->  executes backend
 Olga           ->  executes frontend
-Bruno          ->  QA (Phase 1 pending activation)
+Bruno          ->  QA (Phase 1 active)
 ```
 
 ---
@@ -72,6 +72,43 @@ At the end of every session — without being asked:
 
 ---
 
+## RFC FLOW — REQUEST FOR COMMENTS
+
+RFCs are for decisions that need analysis before implementation. They live in `orion/rfcs/`.
+
+### When to create an RFC
+- Any situation where implementation depends on a business or architecture decision
+- Both Mario and Orion must agree it merits an RFC before Orion creates it
+- **Orion never creates an RFC unilaterally**
+
+### The flow
+```
+1. Either detects something that needs a decision
+   → discuss briefly in session
+   → if both agree → Orion creates orion/rfcs/name.md with status 🟡 Pendiente
+
+2. Mario reads the RFC in GitHub
+   → edits the "Decisión de Mario" section directly in the file
+   → when done, says: "RFC [name] listo"
+
+3. Orion reads the updated RFC
+   → documents in DECISIONS.md as Dxx
+   → creates the implementation issues
+   → updates RFC status to ✅ Decidido
+
+4. Issues execute normally via Nestor/Olga
+```
+
+### RFC structure (already defined)
+See `orion/rfcs/match-lifecycle.md` as the reference template.
+
+### Active RFCs
+```
+match-lifecycle.md  → 🟡 Pendiente — Mario defining match status lifecycle
+```
+
+---
+
 ## RULES I ALWAYS FOLLOW
 
 - If I say "we'll do that later" -> create an issue immediately, no exceptions
@@ -98,6 +135,7 @@ At the end of every session — without being asked:
 - **Backend + frontend issues are always separate** — never mix them in a single issue
 - **MCP only when needed** — do not use MCP tools when the action has already been done by Mario
 - **Session close is protocol, not a question** — update ORION.md + gameon.md at end of every session without asking
+- **RFC flow (D87):** both Mario and Orion must agree before creating an RFC — Orion never creates one unilaterally
 
 ---
 
@@ -164,20 +202,13 @@ Regla: cada nuevo feature issue incluye su test en el mismo issue.
 
 ```
 Role:    Automated QA — runs Jest tests on every PR, reports results
-Status:  DEFINED — pending activation (Phase 1)
-File:    agents/BRUNO.md
+Status:  ACTIVE — Phase 1
+Files:   agents/BRUNO.md
+         gameon-api/.github/workflows/bruno.yml  (#126 closed)
+         gameon/.github/workflows/bruno.yml      (#127 closed)
 
-Activation trigger:
-  → Mario creates secret GH_PAT_CROSS_REPO in gameon repo (GitHub Settings → Secrets)
-  → Value: token de Nestor (GITHUB_PAT_GAMEON_BACKEND) — already has access to both repos
-  → Then: #126 (Nestor) + #127 (Olga) can be executed
-
-Issues:
-  #126 → Nestor — bruno.yml for gameon-api (no cross-repo needed — GITHUB_TOKEN sufficient)
-  #127 → Olga   — bruno.yml for gameon (needs GH_PAT_CROSS_REPO secret first)
-
-Bruno v1: script-based CI (no LLM). Reports what failed and where.
-Bruno v2: future — Claude API for analysis and fix suggestions.
+Bruno v1: script-based CI (no LLM) — free, sufficient for Phase 1
+Bruno v2: future — Claude API for analysis and fix suggestions
 ```
 
 ---
@@ -257,7 +288,7 @@ Mario   -> Director (vision, testing, business decisions)
 Orion   -> CTO (architecture, coordination, issues, closes issues)
 Nestor  -> Backend Tech Lead (VSCode + Copilot Pro + GitHub MCP)
 Olga    -> Frontend Tech Lead (Antigravity + GitHub MCP)
-Bruno   -> QA Agent (GitHub Actions CI — Phase 1 pending)
+Bruno   -> QA Agent (GitHub Actions CI — Phase 1 active)
 ```
 
 Olga subagents: angular-component-architecture, angular-performance, ui-design-reviewer, angular-accessibility
@@ -288,7 +319,7 @@ Token: stored in C:\Users\mario\.gemini\antigravity\mcp_config.json
 ```
 GitHub Actions workflow — triggered automatically on PR to staging/main
 No manual startup needed
-Pending: GH_PAT_CROSS_REPO secret in gameon repo (= Nestor's token)
+gameon secrets: GH_PAT (Kanban automation) + GH_PAT_CROSS_REPO (Bruno cross-repo)
 ```
 
 Nestor and Olga tokens: Read + Write on gameon-api, gameon, orion.
@@ -359,60 +390,32 @@ Full production deploy, Orion OS, agent flows, v1.2.0, organizations, tournament
 - orion readable desde Antigravity
 
 ### Session 18 — April 5, 2026
-- #116 closed — Jest frontend: 30/30 tests, 82.88% cobertura (AuthService, ErrorInterceptor, Guards)
-- #92 closed — CI frontend: build + tests + SonarCloud en cada PR
-- CLAUDE.md creado en gameon/develop — Olga arranca igual que Nestor
-- #115 closed — Atomic Design refactor: atomos modernizados + 3 moleculas creadas
-- #69, #72 closed — admin issues obsoletos
-- D83, D84, D85 documentados — frontend testing + SonarCloud Quality Gate
-- jest.config.js (no .ts) — evita ts-node en CI
-- .npmrc: legacy-peer-deps=true — resuelve conflicto Angular 21 + jest-preset-angular en Vercel
-- SonarCloud gameon conectado — coverage exclusions para features/shared/services
+- #116 closed — Jest frontend: 30/30 tests, 82.88% cobertura
+- #92 closed — CI frontend + SonarCloud
+- #115 closed — Atomic Design refactor
+- D83, D84, D85 documentados
 
 ### Session 19 — April 7, 2026
-- #102 Phase 1 (Nestor) — filtros en GET /organizations/:id/matches: gameMode, status, dateFrom, dateTo, hasSpots
-- #102 Phase 2 (Orion+Olga) — MatchFiltersComponent en shared/ui/molecules/ (reusable), wired en org detail page
-- #102 fix — orgId como signal para que effect() reactive cargue matches al init
-- #102 fix — hasSpots filter en memoria usando matchParticipants.length (TypeORM FK naming issue)
-- #117 creado — arquitectura multi-deporte: campo sport en Match + pizarra data-driven (backlog)
-- #118 creado — posiciones nombradas en pizarra de fútbol: catálogo 19 posiciones + spots por gameMode (backlog)
-- #119 creado — priceMin/priceMax en GET /organizations/:id/matches (Nestor, XS)
-- Material Symbols (Google Icons) añadido via CDN en index.html
-- event-detail chips: emojis reemplazados por Material Symbols icons
-- MatchFilterParams model: gameMode, status, dateFrom, dateTo, priceMin, priceMax, hasSpots
-- Lección: Tailwind purga clases en ternarios dinámicos — usar [class.name] bindings
-- Lección: Olga debe arrancar siempre con CLAUDE.md, no OLGA.md directamente
-- Lección: hasSpots no puede usar raw SQL subquery por naming de FK en TypeORM sin SnakeNamingStrategy
+- #102 closed — filtros getMatches + MatchFiltersComponent
+- #119 creado — priceMin/priceMax
+- Material Symbols añadido
 
 ### Session 20 — April 8-9, 2026
-- #119 closed — priceMin/priceMax filters (Nestor)
-- #120 creado — Redesign MatchFiltersComponent (Olga, S)
-- #121 closed — Default dateFrom=hoy + orderBy dateTime ASC (Nestor)
-- #122 closed — Fix dateTo=hoy para mostrar solo partidos del día (Nestor)
-- #123 creado — Organization-detail layout two-column desktop (Olga, M)
-- #124 creado — showAll param en OrgMatchFiltersDto (Nestor, XS)
-- #125 creado — Pasar showAll=true desde OrganizerMatchesComponent (Olga, XS — depende #124)
-- #126 creado — bruno.yml backend (Nestor, S)
-- #127 creado — bruno.yml frontend (Olga, S — necesita GH_PAT_CROSS_REPO secret primero)
-- D86 documentado — Match.dateTime es la columna real, no scheduledAt
-- BRUNO.md creado — QA agent definido (Phase 1: script CI, Phase 2: LLM futuro)
-- AGENT_RULES.md actualizado — regla Bruno añadida
-- CLAUDE.md gameon-api + gameon actualizados — sección Bruno + GITHUB_PAT_GAMEON_BACKEND
-- gameon.md actualizado — status real Sessions 12-20
-- gameon-ideas.md actualizado — Match Calendar View documentada
-- Lección: Bruno v1 es script puro (no LLM) — gratis, suficiente para Phase 1
-- Lección: ci.yml ya corre tests en ambos repos — Bruno añade la capa de reporting
+- Bruno definido y activado (#126 backend, #127 frontend)
+- #119, #121, #122, #124, #125, #126, #127, #129 closed
+- #120, #123 creados — Olga (filtros + org-detail layout)
+- RFC flow definido (D87) — orion/rfcs/ creado
+- RFC match-lifecycle.md creado — 🟡 Pendiente
+- D86 — Match.dateTime columna real
+- gameon.md, gameon-ideas.md actualizados
 
 **Próxima sesión — PRIORIDAD:**
-1. Mario crea secret `GH_PAT_CROSS_REPO` en gameon repo (= token de Nestor) → activa #127
-2. #126 → Nestor (bruno.yml backend — sin dependencias)
-3. #127 → Olga (bruno.yml frontend — después de que Mario cree el secret)
-4. #124 → Nestor (showAll param)
-5. #125 → Olga (showAll frontend — después de #124)
-6. #120 + #123 → Olga en paralelo
-7. Confirmar demo con Jose (SoccerMix)
+1. PR develop → staging (gameon-api + gameon) — muy atrasados
+2. #120 + #123 → Olga
+3. RFC match-lifecycle — Mario lo completa cuando tenga el plan
+4. Confirmar demo con Jose (SoccerMix)
 
 ---
 
 *Orion OS — built by Mario Vidal + Orion*
-*Last updated: April 9, 2026 — Session 20 (close)*
+*Last updated: April 9, 2026 — Session 20*
