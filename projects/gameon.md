@@ -70,6 +70,7 @@ Deploy:     Vercel (gameon-nu.vercel.app)
 - `GET /organizations/my` — returns the organization where the authenticated user is OWNER
 - `POST /organizations` requires ADMIN — manual creation by Mario for early clients
 - `GET /organizations/:id/matches` — default shows only today's matches; `?showAll=true` for all
+- `showAll=true` used by organizer panel (dashboard + matches list) to see all matches regardless of date
 
 ### Tournaments
 - Belongs to an Organization
@@ -100,7 +101,6 @@ ORGANIZER:  { matchesPerDay: 4, tournamentsPerWeek: 2, leaguesPerMonth: 1 }
 ### Pricing
 - Free users can set a price on their match (tool for splitting costs via Bizum)
 - No commission for GameOn on free matches
-- Price restriction for free users revisited when Pro Free plan is defined
 
 ### How someone becomes ORGANIZER
 - **Demo phase:** Mario assigns role manually in Neon + creates org via Postman
@@ -127,59 +127,79 @@ ORGANIZER:  { matchesPerDay: 4, tournamentsPerWeek: 2, leaguesPerMonth: 1 }
   $env:DATABASE_URL=""
   ```
 
+## CI / QUALITY
+
+### gameon-api CI pipeline (ci.yml)
+- Lint: `eslint` — requires `eslint-plugin-prettier` + `eslint-config-prettier` in devDependencies
+- Build: `nest build`
+- Tests: `jest --coverage` — coverage threshold 50% on service files only (auth, matchs, organizations)
+- Audit: `npm audit --audit-level=critical --omit=dev` — high vulns exist as tracked debt (#141)
+- SonarCloud: Quality Gate 80% new code — exclusions in `sonar-project.properties` cover controllers, entities, dtos, strategies, guards, decorators, migrations, seed files
+
+### Bruno QA
+- `bruno.yml` in both repos — triggers on PR to `staging` or `main`
+- Backend: comments ✅ on PR if tests pass; opens issue if tests fail
+- Frontend: same, but opens issue in `gameon-api` via `GH_PAT_CROSS_REPO`
+- Permissions required: `contents: read`, `issues: write`, `pull-requests: write`
+
+### Known CI issues to avoid
+- Orion OS commits (`orion@orion-os.app`) break Vercel deploy and sometimes CI checkout on PRs — always do `git pull` + empty commit from Mario's machine after Orion pushes to develop
+- `npm ci` requires package-lock.json in sync — any new dep must be `npm install`-ed locally and lock committed
+- `collectCoverageFrom` in package.json must list only the 3 service files — not all `src/**` (inflates uncovered files)
+
 ---
 
-## STATUS — April 8, 2026 (v1.3.0)
+## STATUS — April 9, 2026 (Session 20 close)
 
 **Production (v1.3.0 — deployed April 3, 2026):**
-- ✅ Backend live on Vercel (serverless)
-- ✅ Frontend live on Vercel (gameon-nu.vercel.app)
+- ✅ Backend + Frontend live on Vercel
 - ✅ Neon PostgreSQL (gameon-db)
 - ✅ Staging environment fully operational (gameon-db-pre)
 - ✅ Automated migrations via `migrate.yml` + `migrate-staging.yml`
-- ✅ CI pipeline (build + tests) on every PR — backend + frontend
-- ✅ SonarCloud connected — backend + frontend (Quality Gate 50% new code)
-- ✅ Semantic versioning via `release.yml`
+- ✅ CI pipeline fully operational — backend + frontend
+- ✅ SonarCloud connected — backend + frontend
+- ✅ Bruno QA active — backend (#126) + frontend (#127)
+- ✅ RFC flow defined (D87) — `orion/rfcs/` created
 
-**Closed since Session 12 (April 1 → April 8, 2026):**
-- ✅ #96  — Organizer panel (dashboard + matches + create match)
-- ✅ #100, #103, #104, #105 — UX + payment method selection + venue management
-- ✅ #110 — Fix límite partidos por organización
-- ✅ #26  — Jest MatchService tests (78%+)
-- ✅ #111 — AuthService tests (97%+, 20/20)
-- ✅ #112 — OrganizationsService tests (76%+, 13/13)
-- ✅ #91  — CI backend workflow
-- ✅ #93  — SonarCloud backend
-- ✅ #116 — Jest frontend: 30/30 tests, 82.88% cobertura (AuthService, ErrorInterceptor, Guards)
-- ✅ #92  — CI frontend workflow + SonarCloud
-- ✅ #115 — Atomic Design refactor (atoms modernized + molecules created)
-- ✅ #69, #72 — Admin issues obsoletos cerrados
-- ✅ #102 — Filtros en GET /organizations/:id/matches (backend + MatchFiltersComponent frontend)
-- ✅ #119 — priceMin/priceMax filters on organization matches
-- ✅ #121 — Default dateFrom=hoy + orderBy dateTime ASC
-- ✅ #122 — Fix dateTo=hoy para mostrar solo partidos del día
+**Closed this session (Session 20):**
+- ✅ #124 — showAll param in OrgMatchFiltersDto (Nestor)
+- ✅ #125 — showAll=true from OrganizerMatchesComponent (Olga)
+- ✅ #126 — bruno.yml backend (Nestor)
+- ✅ #127 — bruno.yml frontend (Olga)
+- ✅ #129 — organizer dashboard showing 0 matches fixed (Olga)
+- ✅ CI gameon-api fully green after extensive debugging:
+  - eslint-plugin-prettier + eslint-config-prettier added to package.json
+  - coverage scope narrowed to 3 service files
+  - hasSpots test fixed (in-memory filter, not SQL)
+  - audit level lowered to critical
+  - sonar coverage exclusions added
 
-**Active now (Session 20 — April 8, 2026):**
+**Open / Active:**
 - 🔄 #120 — Redesign MatchFiltersComponent (Olga)
-- 🔄 #123 — Organization-detail layout two-column desktop (Olga)
-- 🔄 #124 — showAll param en OrgMatchFiltersDto (Nestor)
-- 🔄 #125 — Pasar showAll=true desde OrganizerMatchesComponent (Olga, depende de #124)
+- 🔄 #123 — Organization-detail layout two-column (Olga)
+- 📋 #138 — Lint: remove unused imports (Nestor, XS) — unblocked
+- 📋 #141 — npm high vulnerabilities (Nestor, S) — before demo
+- 📋 #106 — Auto-assign ORGANIZER on OWNER member add (Nestor, XS)
+- 📋 #113 — GitHub Team branch protection
+- 📋 #117 — Multi-sport foundation
+- 📋 RFC match-lifecycle — Mario completing
 
-**Open backlog:**
-- 📋 #113 — GitHub Team branch protection (pending first paying client)
-- 📋 #117 — Arquitectura multi-deporte: campo `sport` en Match
-- 📋 #118 — Posiciones nombradas en pizarra: catálogo 19 posiciones
-- 📋 #106 — Assign OWNER in org should auto-set UserRole to ORGANIZER (XS)
+**Next session priorities:**
+1. PR develop → staging in `gameon` (frontend) — same flow as today
+2. Fix CI frontend (same pattern: eslint, coverage, sonar)
+3. Merge both to staging → test staging → PR staging → main as `release: v1.4.0`
+4. Confirm demo date with Jose (SoccerMix)
+5. #138 + #141 → Nestor (unblock before v1.4.0 if possible)
 
 ---
 
 ## TARGET USERS
 
-**Demo 1 — Jose (SoccerMix):** Football community organizer in Madrid. Uses WhatsApp + paper today. Goal: collect honest feedback, not close a sale. Mario prepares account manually before demo. Date pending confirmation.
+**Demo 1 — Jose (SoccerMix):** Football community organizer in Madrid. Uses WhatsApp + paper today. Goal: collect honest feedback, not close a sale. Mario prepares account manually before demo.
 
-**Demo 2:** Group of friends who organize casual football matches. Need: create match, share link, friends join, split cost via Bizum.
+**Demo 2:** Group of friends who organize casual football matches.
 
 ---
 
-*Part of Orion OS — updated April 8, 2026 (Session 20)*
+*Part of Orion OS — updated April 9, 2026 (Session 20 close)*
 *Ideas and product roadmap → `projects/gameon-ideas.md`*

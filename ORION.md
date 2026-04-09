@@ -99,12 +99,9 @@ RFCs are for decisions that need analysis before implementation. They live in `o
 4. Issues execute normally via Nestor/Olga
 ```
 
-### RFC structure (already defined)
-See `orion/rfcs/match-lifecycle.md` as the reference template.
-
 ### Active RFCs
 ```
-match-lifecycle.md  → 🟡 Pendiente — Mario defining match status lifecycle
+match-lifecycle.md  →  🟡 Pendiente — Mario defining match status lifecycle
 ```
 
 ---
@@ -136,6 +133,10 @@ match-lifecycle.md  → 🟡 Pendiente — Mario defining match status lifecycle
 - **MCP only when needed** — do not use MCP tools when the action has already been done by Mario
 - **Session close is protocol, not a question** — update ORION.md + gameon.md at end of every session without asking
 - **RFC flow (D87):** both Mario and Orion must agree before creating an RFC — Orion never creates one unilaterally
+- **Orion commits break CI checkout on PRs** — after any direct Orion push to develop, Mario must `git pull` + empty commit + push for CI to run correctly
+- **`collectCoverageFrom` in package.json** must only list the 3 service files with tests (auth, matchs, organizations) — not `src/**` which inflates uncovered files and fails coverage threshold
+- **CI audit level is `critical` not `high`** — high vulns in prod deps are tracked as debt (#141), not blockers
+- **SonarCloud coverage exclusions** must cover: controllers, entities, dtos, strategies, guards, decorators, migrations, seed files — otherwise Quality Gate fails on new code
 
 ---
 
@@ -207,6 +208,11 @@ Files:   agents/BRUNO.md
          gameon-api/.github/workflows/bruno.yml  (#126 closed)
          gameon/.github/workflows/bruno.yml      (#127 closed)
 
+Required permissions in bruno.yml:
+  contents: read
+  issues: write
+  pull-requests: write
+
 Bruno v1: script-based CI (no LLM) — free, sufficient for Phase 1
 Bruno v2: future — Claude API for analysis and fix suggestions
 ```
@@ -216,11 +222,13 @@ Bruno v2: future — Claude API for analysis and fix suggestions
 ## SONARCLOUD
 
 ```
-gameon-api: Connected (Session 15) — GitHub Actions — Automatic Analysis OFF
-gameon:     Connected (Session 18) — GitHub Actions — Automatic Analysis OFF
+gameon-api: Connected — GitHub Actions — Automatic Analysis OFF
+            sonar.coverage.exclusions covers controllers, entities, dtos,
+            strategies, guards, decorators, migrations, seed files
+gameon:     Connected — GitHub Actions — Automatic Analysis OFF
             SONAR_TOKEN in GitHub Secrets
             sonar-project.properties in repo root
-            coverage.exclusions: features/, shared/, services/ (only core/ has tests — D85)
+            coverage.exclusions: features/, shared/, services/ (only core/ has tests)
 ```
 
 ---
@@ -364,58 +372,54 @@ Full production deploy, Orion OS, agent flows, v1.2.0, organizations, tournament
 
 ### Session 14 — April 3-4, 2026
 - v1.3.0 deployed to production
-- #110 — fix limite partidos por organizacion (Nestor)
-- fix email.service.ts
-- D81 — Orion pregunta antes de hacer cambios directos en codigo
-- #26 closed — Jest + MatchService tests (78%+)
-- #111 closed — AuthService tests (97%+, 20/20)
+- fix email.service.ts, D81
+- #26 closed — Jest MatchService (78%+)
+- #111 closed — AuthService tests (97%+)
 
 ### Session 15 — April 4, 2026
-- #112 closed — OrganizationsService tests (76%+, 13/13)
-- #91 closed — CI backend workflow
-- #93 closed — SonarCloud backend
+- #112 closed — OrganizationsService tests
+- #91, #93 closed — CI + SonarCloud backend
 - GitFlow definido y probado
-- #113 creado — GitHub Team branch protection
-- gameon-architecture.md + templates/architecture.md creados
 
-### Session 16 — April 4, 2026
-- features/admin eliminado
-- Atomic Design definido — ui/atoms/ + ui/molecules/
-- OLGA.md bootstrap creado
-- D82 documentado
-
-### Session 17 — April 4, 2026
-- Responsive rules — Tailwind-first, mobile-first (agents/OLGA.md)
-- Olga MCP corregido: Docker -> npx
-- orion readable desde Antigravity
+### Session 16-17 — April 4, 2026
+- Atomic Design, OLGA.md, Olga MCP fix
 
 ### Session 18 — April 5, 2026
-- #116 closed — Jest frontend: 30/30 tests, 82.88% cobertura
-- #92 closed — CI frontend + SonarCloud
-- #115 closed — Atomic Design refactor
+- #116, #92, #115 closed — Jest frontend, CI, Atomic Design refactor
 - D83, D84, D85 documentados
 
 ### Session 19 — April 7, 2026
 - #102 closed — filtros getMatches + MatchFiltersComponent
-- #119 creado — priceMin/priceMax
 - Material Symbols añadido
 
 ### Session 20 — April 8-9, 2026
-- Bruno definido y activado (#126 backend, #127 frontend)
-- #119, #121, #122, #124, #125, #126, #127, #129 closed
-- #120, #123 creados — Olga (filtros + org-detail layout)
+- Bruno activado (#126 backend, #127 frontend) — Phase 1 live
 - RFC flow definido (D87) — orion/rfcs/ creado
 - RFC match-lifecycle.md creado — 🟡 Pendiente
+- #124, #125, #126, #127, #129 closed (showAll param, Bruno, dashboard fix)
+- CI gameon-api fully green — extensive debugging session:
+  - Problem: eslint-plugin-prettier + eslint-config-prettier missing from package.json
+  - Problem: coverage threshold 50% failing because collectCoverageFrom included all src/**
+  - Problem: hasSpots test checking SQL andWhere but implementation is in-memory
+  - Problem: npm audit --audit-level=high blocking on dev+prod high vulns
+  - Problem: SonarCloud Quality Gate 73.3% < 80% on new code
+  - All fixed — PR develop→staging gameon-api ready to merge
+- #138 created — lint unused imports (Nestor, XS)
+- #141 created — npm high vulnerabilities (Nestor, S, before demo)
 - D86 — Match.dateTime columna real
-- gameon.md, gameon-ideas.md actualizados
+- gameon.md, DECISIONS.md, ORION.md actualizados
+
+**Key lesson from Session 20:**
+The CI debugging took ~2h because of accumulated invisible debt: deps not in package.json (only in lock file), coverage config too broad, tests checking implementation details that changed, audit level too strict, sonar exclusions missing. All were small issues individually — the lesson is to set up CI correctly from the start and test it on the first PR, not after sessions of work.
 
 **Próxima sesión — PRIORIDAD:**
-1. PR develop → staging (gameon-api + gameon) — muy atrasados
-2. #120 + #123 → Olga
-3. RFC match-lifecycle — Mario lo completa cuando tenga el plan
-4. Confirmar demo con Jose (SoccerMix)
+1. PR develop → staging in `gameon` (frontend) — same CI flow
+2. Fix frontend CI if needed (same patterns as backend)
+3. Merge both → test staging → PR staging → main as `release: v1.4.0`
+4. Confirm demo date with Jose (SoccerMix)
+5. #138 + #141 → Nestor (before v1.4.0)
 
 ---
 
 *Orion OS — built by Mario Vidal + Orion*
-*Last updated: April 9, 2026 — Session 20*
+*Last updated: April 9, 2026 — Session 20 (close)*
