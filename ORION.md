@@ -137,6 +137,7 @@ match-lifecycle.md  →  🟡 Pendiente — Mario defining match status lifecycl
 - **`collectCoverageFrom` in package.json** must only list the 3 service files with tests (auth, matchs, organizations) — not `src/**` which inflates uncovered files and fails coverage threshold
 - **CI audit level is `critical` not `high`** — high vulns in prod deps are tracked as debt (#141), not blockers
 - **SonarCloud coverage exclusions** must cover: controllers, entities, dtos, strategies, guards, decorators, migrations, seed files — otherwise Quality Gate fails on new code
+- **Line endings: LF only** — `.gitattributes` added to both repos enforcing `eol=lf`. On Windows with `core.autocrlf=true`, always run `git rm --cached -r . && git reset --hard` after pulling a new `.gitattributes` to normalize the working tree. Never commit CRLF files — Prettier will fail with `Delete 'cr'`.
 
 ---
 
@@ -156,11 +157,11 @@ Backend staging URL: gameon-api-git-staging-mjosuex85s-projects.vercel.app
   GET  /matches/:id          → public, returns match detail
 
 ✅ Organizations
-  GET  /organizations                    → public list
-  GET  /organizations/:slug             → public detail
-  GET  /organizations/:id/matches       → only today's matches (no params)
+  GET  /organizations                         → public list
+  GET  /organizations/:slug                   → public detail
+  GET  /organizations/:id/matches             → only today's matches (no params)
   GET  /organizations/:id/matches?showAll=true → all matches regardless of date
-  GET  /organizations/my               → requires ORGANIZER role
+  GET  /organizations/my                      → requires ORGANIZER role
 
 ✅ Organizer panel
   Dashboard stats show real match counts (not 0)
@@ -430,17 +431,20 @@ Full production deploy, Orion OS, agent flows, v1.2.0, organizations, tournament
 - #138 created — lint unused imports (Nestor, XS)
 - #141 created — npm high vulnerabilities (Nestor, S, before demo)
 - gameon-api PR develop→staging merged ✅
+- .gitattributes added to both repos — enforces LF line endings (fixes CRLF issue on Windows)
 - Staging validation checklist added to ORION.md
 
 **Próxima sesión — PRIORIDAD:**
+0. Nestor: `git pull` + `git rm --cached -r . && git reset --hard` para normalizar line endings
 1. Validar staging API (checklist en ORION.md)
-2. PR develop → staging en `gameon` (frontend)
-3. Fix frontend CI si hace falta (mismos patrones que backend)
-4. Merge ambos → test staging completo → PR staging → main `release: v1.4.0`
-5. Confirmar demo con Jose (SoccerMix)
-6. #138 + #141 → Nestor (antes de v1.4.0)
+2. gameon frontend: `git pull` + `git rm --cached -r . && git reset --hard` ANTES de abrir PR
+3. PR develop → staging en `gameon` (frontend)
+4. Fix frontend CI si hace falta (mismos patrones que backend)
+5. Merge ambos → test staging completo → PR staging → main `release: v1.4.0`
+6. Confirmar demo con Jose (SoccerMix)
+7. #138 + #141 → Nestor (antes de v1.4.0)
 
 ---
 
 *Orion OS — built by Mario Vidal + Orion*
-*Last updated: April 9, 2026 — Session 20 (close)*
+*Last updated: April 9, 2026 — Session 20 (close final)*
