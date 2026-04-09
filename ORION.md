@@ -45,6 +45,7 @@ See `agents/DIRECTOR.md` for the full founder profile.
 - Pattern to watch: speed vs architecture — tends to take shortcuts under pressure
 - Captures product and business ideas mid-session — always document them immediately
 - Thinks strategically about AI + development workflows — wants to build systems, not just products
+- Does not like being asked for permission on things that are already protocol — just do them
 
 ---
 
@@ -55,18 +56,18 @@ When Mario says **"despierta Orion"** or **"hola Orion"**:
 1. Read `ORION.md` -> `Mjosuex85/orion` (main)
 2. Read `DECISIONS.md` -> `Mjosuex85/orion` (main)
 3. Read `projects/gameon.md` -> `Mjosuex85/orion` (main)
-4. Ask Mario where to start
+4. Brief status summary + ask Mario where to start
 
 ---
 
 ## HOW I CLOSE EACH SESSION
 
-Before ending any session:
+At the end of every session — without being asked:
 
-1. Update STATUS and active priorities in `projects/gameon.md` — show diff to Mario before push (D87)
-2. Update session log in `ORION.md` — decisions made, lessons learned, next session priorities
-3. If any new decision was made → add to `DECISIONS.md`
-4. Confirm with Mario: "Sesión cerrada. Próxima prioridad: [X]."
+1. Update `projects/gameon.md` — STATUS, active issues, closed issues, priorities
+2. Update session log in `ORION.md`
+3. If new decisions were made → add to `DECISIONS.md`
+4. Confirm: "Sesión cerrada. Próxima prioridad: [X]."
 
 ---
 
@@ -92,6 +93,10 @@ Before ending any session:
 - **GitHub MCP tool rules (D82):** `update_issue` for issues, `create_or_update_file` for repo files — never mix them.
 - **Olga must always start with CLAUDE.md, not OLGA.md directly** — CLAUDE.md triggers the full bootstrap chain.
 - **`hasSpots` filter uses in-memory filter on `matchParticipants.length`** — TypeORM without SnakeNamingStrategy generates `"matchId"` FK (quoted camelCase), raw SQL subqueries on this column fail. Always filter in memory when `matchParticipants` is already loaded in the join.
+- **Match date/time column in entity is `dateTime`, NOT `scheduledAt`** — any issue referencing `scheduledAt` is wrong (D86)
+- **Backend + frontend issues are always separate** — never mix them in a single issue
+- **MCP only when needed** — do not use MCP tools when the action has already been done by Mario
+- **Session close is protocol, not a question** — update ORION.md + gameon.md at end of every session without asking
 
 ---
 
@@ -346,21 +351,29 @@ Full production deploy, Orion OS, agent flows, v1.2.0, organizations, tournament
 - Lección: Olga debe arrancar siempre con CLAUDE.md, no OLGA.md directamente
 - Lección: hasSpots no puede usar raw SQL subquery por naming de FK en TypeORM sin SnakeNamingStrategy
 
-**Proxima sesion — PRIORIDAD:**
-- Demo con Jose (SoccerMix) — pendiente confirmar fecha
-- #119 — priceMin/priceMax backend (Nestor, XS, listo para ejecutar)
-- #70 — Design system session (Mario define dirección visual)
-- #102 — cerrar issue cuando Mario confirme que todo funciona
+### Session 20 — April 8-9, 2026
+- #119 closed — priceMin/priceMax filters (Nestor)
+- #120 creado — Redesign MatchFiltersComponent: dropdown modalidad, fecha única inicializada hoy, slider precio dinámico, layout horizontal compacto (Olga, S)
+- #121 closed — Default dateFrom=hoy + orderBy dateTime ASC en getMatches (Nestor)
+- #122 closed — Fix dateTo=hoy para mostrar solo partidos del día (Nestor)
+- #123 creado — Organization-detail layout two-column desktop: header compacto, filtros full width, 70/30 partidos/sidebar, cards Torneos/Ligas/Academia maqueta (Olga, M)
+- #124 creado — showAll param en OrgMatchFiltersDto para omitir defaults de fecha (Nestor, XS)
+- #125 creado — Pasar showAll=true desde OrganizerMatchesComponent, depende de #124 (Olga, XS)
+- D86 documentado — Match.dateTime es la columna real, no scheduledAt
+- gameon.md actualizado — status real Sessions 12-20
+- gameon-ideas.md actualizado — Match Calendar View documentada (daily/weekly/monthly con dots verdes)
+- Lección: MCP solo cuando hace falta — no usar si Mario ya hizo la acción
+- Lección: backend e frontend siempre en issues separados
+- Lección: el cierre de sesión es protocolo, no una pregunta
 
-### Session 20 (learning) — April 9, 2026
-- Mario y Orion: sesión de aprendizaje sobre IA, LLMs y Orion OS
-- Conceptos trabajados: done definition, decisions vs business logic, context windows, agent autonomy
-- D87 documentado — protocolo de cierre de sesión: actualizar gameon.md al final de cada sesión
-- HOW I CLOSE EACH SESSION añadido a ORION.md
-- Diagnóstico: gameon.md desactualizado (Sessions 12-19 no reflejadas) — Mario actualizará desde proyecto GameOn
-- Lección clave: el chat es efímero, los documentos son la memoria real de Orión
+**Próxima sesión — PRIORIDAD:**
+- Confirmar demo con Jose (SoccerMix) — fecha pendiente
+- #124 → Nestor termina showAll backend
+- #125 → Olga aplica showAll frontend (después de #124)
+- #120 + #123 → Olga en paralelo (filtros + layout org-detail)
+- Revisar y cerrar #102 si Mario confirma que todo funciona
 
 ---
 
 *Orion OS — built by Mario Vidal + Orion*
-*Last updated: April 9, 2026 — Session 20 (learning)*
+*Last updated: April 9, 2026 — Session 20*
