@@ -30,6 +30,7 @@ I am demanding with Mario because his success matters to me. Comfort does not bu
 Mario + Orion  ->  decide, design, validate
 Nestor         ->  executes backend
 Olga           ->  executes frontend
+Bruno          ->  QA (Phase 1 pending activation)
 ```
 
 ---
@@ -159,6 +160,28 @@ Regla: cada nuevo feature issue incluye su test en el mismo issue.
 
 ---
 
+## BRUNO — QA AGENT
+
+```
+Role:    Automated QA — runs Jest tests on every PR, reports results
+Status:  DEFINED — pending activation (Phase 1)
+File:    agents/BRUNO.md
+
+Activation trigger:
+  → Mario creates secret GH_PAT_CROSS_REPO in gameon repo (GitHub Settings → Secrets)
+  → Value: token de Nestor (GITHUB_PAT_GAMEON_BACKEND) — already has access to both repos
+  → Then: #126 (Nestor) + #127 (Olga) can be executed
+
+Issues:
+  #126 → Nestor — bruno.yml for gameon-api (no cross-repo needed — GITHUB_TOKEN sufficient)
+  #127 → Olga   — bruno.yml for gameon (needs GH_PAT_CROSS_REPO secret first)
+
+Bruno v1: script-based CI (no LLM). Reports what failed and where.
+Bruno v2: future — Claude API for analysis and fix suggestions.
+```
+
+---
+
 ## SONARCLOUD
 
 ```
@@ -234,6 +257,7 @@ Mario   -> Director (vision, testing, business decisions)
 Orion   -> CTO (architecture, coordination, issues, closes issues)
 Nestor  -> Backend Tech Lead (VSCode + Copilot Pro + GitHub MCP)
 Olga    -> Frontend Tech Lead (Antigravity + GitHub MCP)
+Bruno   -> QA Agent (GitHub Actions CI — Phase 1 pending)
 ```
 
 Olga subagents: angular-component-architecture, angular-performance, ui-design-reviewer, angular-accessibility
@@ -248,6 +272,7 @@ Nestor subagents: nestjs-architecture, typeorm-migrations, backend-security
 1. Copilot reads CLAUDE.md natively
 2. CLAUDE.md: read NESTOR.md + AGENT_RULES.md via GitHub MCP from orion
 3. Nestor confirms Read Log and waits for issue
+Token: GITHUB_PAT_GAMEON_BACKEND (system environment variable)
 ```
 
 ### Olga
@@ -256,6 +281,14 @@ Antigravity reads CLAUDE.md natively (Session 18)
 CLAUDE.md: read agents/OLGA.md + AGENT_RULES.md via GitHub MCP from orion
 OLGA.md bootstrap remains as fallback in gameon root
 MCP server: npx @modelcontextprotocol/server-github (NOT Docker)
+Token: stored in C:\Users\mario\.gemini\antigravity\mcp_config.json
+```
+
+### Bruno
+```
+GitHub Actions workflow — triggered automatically on PR to staging/main
+No manual startup needed
+Pending: GH_PAT_CROSS_REPO secret in gameon repo (= Nestor's token)
 ```
 
 Nestor and Olga tokens: Read + Write on gameon-api, gameon, orion.
@@ -353,27 +386,33 @@ Full production deploy, Orion OS, agent flows, v1.2.0, organizations, tournament
 
 ### Session 20 — April 8-9, 2026
 - #119 closed — priceMin/priceMax filters (Nestor)
-- #120 creado — Redesign MatchFiltersComponent: dropdown modalidad, fecha única inicializada hoy, slider precio dinámico, layout horizontal compacto (Olga, S)
-- #121 closed — Default dateFrom=hoy + orderBy dateTime ASC en getMatches (Nestor)
+- #120 creado — Redesign MatchFiltersComponent (Olga, S)
+- #121 closed — Default dateFrom=hoy + orderBy dateTime ASC (Nestor)
 - #122 closed — Fix dateTo=hoy para mostrar solo partidos del día (Nestor)
-- #123 creado — Organization-detail layout two-column desktop: header compacto, filtros full width, 70/30 partidos/sidebar, cards Torneos/Ligas/Academia maqueta (Olga, M)
-- #124 creado — showAll param en OrgMatchFiltersDto para omitir defaults de fecha (Nestor, XS)
-- #125 creado — Pasar showAll=true desde OrganizerMatchesComponent, depende de #124 (Olga, XS)
+- #123 creado — Organization-detail layout two-column desktop (Olga, M)
+- #124 creado — showAll param en OrgMatchFiltersDto (Nestor, XS)
+- #125 creado — Pasar showAll=true desde OrganizerMatchesComponent (Olga, XS — depende #124)
+- #126 creado — bruno.yml backend (Nestor, S)
+- #127 creado — bruno.yml frontend (Olga, S — necesita GH_PAT_CROSS_REPO secret primero)
 - D86 documentado — Match.dateTime es la columna real, no scheduledAt
+- BRUNO.md creado — QA agent definido (Phase 1: script CI, Phase 2: LLM futuro)
+- AGENT_RULES.md actualizado — regla Bruno añadida
+- CLAUDE.md gameon-api + gameon actualizados — sección Bruno + GITHUB_PAT_GAMEON_BACKEND
 - gameon.md actualizado — status real Sessions 12-20
-- gameon-ideas.md actualizado — Match Calendar View documentada (daily/weekly/monthly con dots verdes)
-- Lección: MCP solo cuando hace falta — no usar si Mario ya hizo la acción
-- Lección: backend e frontend siempre en issues separados
-- Lección: el cierre de sesión es protocolo, no una pregunta
+- gameon-ideas.md actualizado — Match Calendar View documentada
+- Lección: Bruno v1 es script puro (no LLM) — gratis, suficiente para Phase 1
+- Lección: ci.yml ya corre tests en ambos repos — Bruno añade la capa de reporting
 
 **Próxima sesión — PRIORIDAD:**
-- Confirmar demo con Jose (SoccerMix) — fecha pendiente
-- #124 → Nestor termina showAll backend
-- #125 → Olga aplica showAll frontend (después de #124)
-- #120 + #123 → Olga en paralelo (filtros + layout org-detail)
-- Revisar y cerrar #102 si Mario confirma que todo funciona
+1. Mario crea secret `GH_PAT_CROSS_REPO` en gameon repo (= token de Nestor) → activa #127
+2. #126 → Nestor (bruno.yml backend — sin dependencias)
+3. #127 → Olga (bruno.yml frontend — después de que Mario cree el secret)
+4. #124 → Nestor (showAll param)
+5. #125 → Olga (showAll frontend — después de #124)
+6. #120 + #123 → Olga en paralelo
+7. Confirmar demo con Jose (SoccerMix)
 
 ---
 
 *Orion OS — built by Mario Vidal + Orion*
-*Last updated: April 9, 2026 — Session 20*
+*Last updated: April 9, 2026 — Session 20 (close)*
