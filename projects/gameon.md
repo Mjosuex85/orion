@@ -69,6 +69,7 @@ Deploy:     Vercel (gameon-nu.vercel.app)
 - Public endpoints: `GET /organizations`, `GET /organizations/:slug`, `GET /organizations/:id/matches`
 - `GET /organizations/my` — returns the organization where the authenticated user is OWNER
 - `POST /organizations` requires ADMIN — manual creation by Mario for early clients
+- `GET /organizations/:id/matches` — default shows only today's matches; `?showAll=true` for all
 
 ### Tournaments
 - Belongs to an Organization
@@ -116,60 +117,69 @@ ORGANIZER:  { matchesPerDay: 4, tournamentsPerWeek: 2, leaguesPerMonth: 1 }
 - No SnakeNamingStrategy — new entities must use explicit `name` in snake_case on camelCase columns (D69, D70)
 - `@CreateDateColumn()`, `@UpdateDateColumn()`, `@DeleteDateColumn()` generate snake_case automatically
 - `synchronize: false` always — migrations control the schema
-- **Migrations MUST be run manually before every production deploy** (Vercel serverless — migrationsRun does not work)
-- Migration command (PowerShell):
+- Match date/time column in entity is `dateTime`, NOT `scheduledAt` (D86)
+- **Migrations run automatically via `migrate.yml` on merge to `main` and `migrate-staging.yml` on merge to `staging`**
+- Migration command if manual run needed (PowerShell):
   ```powershell
   npm run build
   $env:DATABASE_URL="your_neon_url"
   npm run db:migrate
   $env:DATABASE_URL=""
   ```
-- Automated migrations via GH Actions planned in issue #90 (post-demo)
 
 ---
 
-## STATUS — March 31, 2026 (v1.2.0)
+## STATUS — April 8, 2026 (v1.3.0)
 
-**Production:**
+**Production (v1.3.0 — deployed April 3, 2026):**
 - ✅ Backend live on Vercel (serverless)
 - ✅ Frontend live on Vercel (gameon-nu.vercel.app)
-- ✅ Neon PostgreSQL — schema updated with 8 migrations from v1.2.0
-- ✅ Resend working (email)
+- ✅ Neon PostgreSQL (gameon-db)
+- ✅ Staging environment fully operational (gameon-db-pre)
+- ✅ Automated migrations via `migrate.yml` + `migrate-staging.yml`
+- ✅ CI pipeline (build + tests) on every PR — backend + frontend
+- ✅ SonarCloud connected — backend + frontend (Quality Gate 50% new code)
+- ✅ Semantic versioning via `release.yml`
 
-**Closed this cycle (#74–#87):**
-- ✅ #74 — Google OAuth redirect fix
-- ✅ #71 — SCSS budget resolved
-- ✅ #80 — admin SCSS consolidated
-- ✅ #82 — public organization pages
-- ✅ #83 — GET /organizations/my endpoint
-- ✅ #84 — two match creation flows (free vs organizer)
-- ✅ #86, #87 — match DTO bug fixes
+**Closed since Session 12 (April 1 → April 8, 2026):**
+- ✅ #96  — Organizer panel (dashboard + matches + create match)
+- ✅ #100, #103, #104, #105 — UX + payment method selection + venue management
+- ✅ #110 — Fix límite partidos por organización
+- ✅ #26  — Jest MatchService tests (78%+)
+- ✅ #111 — AuthService tests (97%+, 20/20)
+- ✅ #112 — OrganizationsService tests (76%+, 13/13)
+- ✅ #91  — CI backend workflow
+- ✅ #93  — SonarCloud backend
+- ✅ #116 — Jest frontend: 30/30 tests, 82.88% cobertura (AuthService, ErrorInterceptor, Guards)
+- ✅ #92  — CI frontend workflow + SonarCloud
+- ✅ #115 — Atomic Design refactor (atoms modernized + molecules created)
+- ✅ #69, #72 — Admin issues obsoletos cerrados
+- ✅ #102 — Filtros en GET /organizations/:id/matches (backend + MatchFiltersComponent frontend)
+- ✅ #119 — priceMin/priceMax filters on organization matches
+- ✅ #121 — Default dateFrom=hoy + orderBy dateTime ASC
+- ✅ #122 — Fix dateTo=hoy para mostrar solo partidos del día
 
-**Sprint 1 — Demo with Jose (SoccerMix) — ACTIVE:**
-- 🔴 #96 — Organizer panel: dashboard + matches table + players + create match (Olga, DEMO BLOCKER)
-- 🟡 #95 — CHANGELOG.md (Nestor, this session)
+**Active now (Session 20 — April 8, 2026):**
+- 🔄 #120 — Redesign MatchFiltersComponent (Olga)
+- 🔄 #123 — Organization-detail layout two-column desktop (Olga)
+- 🔄 #124 — showAll param en OrgMatchFiltersDto (Nestor)
+- 🔄 #125 — Pasar showAll=true desde OrganizerMatchesComponent (Olga, depende de #124)
 
-**Open — post-demo:**
-- 📋 #97 — Match templates (Nestor + Olga)
-- 📋 #85 — Organizer match creation form backend (Nestor)
-- 📋 #91 — CI backend workflow (Nestor)
-- 📋 #92 — CI frontend workflow (Olga)
-- 📋 #93 — SonarCloud integration
-- 📋 #94 — Sprint system + staging environment
-- 📋 #90 — Automated migrations via GH Actions
-- 📋 #35 — Initial proper migration (replace synchronize:true history)
-- 📋 #36 — Email provider integration
-- 📋 #6  — Roles system refinement
+**Open backlog:**
+- 📋 #113 — GitHub Team branch protection (pending first paying client)
+- 📋 #117 — Arquitectura multi-deporte: campo `sport` en Match
+- 📋 #118 — Posiciones nombradas en pizarra: catálogo 19 posiciones
+- 📋 #106 — Assign OWNER in org should auto-set UserRole to ORGANIZER (XS)
 
 ---
 
 ## TARGET USERS
 
-**Demo 1 — Jose (SoccerMix):** Football community organizer in Madrid. Uses WhatsApp + paper today. Goal: collect honest feedback, not close a sale. Mario prepares account manually before demo.
+**Demo 1 — Jose (SoccerMix):** Football community organizer in Madrid. Uses WhatsApp + paper today. Goal: collect honest feedback, not close a sale. Mario prepares account manually before demo. Date pending confirmation.
 
 **Demo 2:** Group of friends who organize casual football matches. Need: create match, share link, friends join, split cost via Bizum.
 
 ---
 
-*Part of Orion OS — updated March 31, 2026 (Session 11)*
+*Part of Orion OS — updated April 8, 2026 (Session 20)*
 *Ideas and product roadmap → `projects/gameon-ideas.md`*
