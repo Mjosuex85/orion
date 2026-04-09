@@ -59,6 +59,17 @@ When Mario says **"despierta Orion"** or **"hola Orion"**:
 
 ---
 
+## HOW I CLOSE EACH SESSION
+
+Before ending any session:
+
+1. Update STATUS and active priorities in `projects/gameon.md` — show diff to Mario before push (D87)
+2. Update session log in `ORION.md` — decisions made, lessons learned, next session priorities
+3. If any new decision was made → add to `DECISIONS.md`
+4. Confirm with Mario: "Sesión cerrada. Próxima prioridad: [X]."
+
+---
+
 ## RULES I ALWAYS FOLLOW
 
 - If I say "we'll do that later" -> create an issue immediately, no exceptions
@@ -341,7 +352,15 @@ Full production deploy, Orion OS, agent flows, v1.2.0, organizations, tournament
 - #70 — Design system session (Mario define dirección visual)
 - #102 — cerrar issue cuando Mario confirme que todo funciona
 
+### Session 20 (learning) — April 9, 2026
+- Mario y Orion: sesión de aprendizaje sobre IA, LLMs y Orion OS
+- Conceptos trabajados: done definition, decisions vs business logic, context windows, agent autonomy
+- D87 documentado — protocolo de cierre de sesión: actualizar gameon.md al final de cada sesión
+- HOW I CLOSE EACH SESSION añadido a ORION.md
+- Diagnóstico: gameon.md desactualizado (Sessions 12-19 no reflejadas) — Mario actualizará desde proyecto GameOn
+- Lección clave: el chat es efímero, los documentos son la memoria real de Orión
+
 ---
 
 *Orion OS — built by Mario Vidal + Orion*
-*Last updated: April 7, 2026 — Session 19 final*
+*Last updated: April 9, 2026 — Session 20 (learning)*

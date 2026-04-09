@@ -36,6 +36,11 @@ This file documents the technical, process, and team decisions made in the proje
 
 **D56. Mario gives the green light before Orion uses any MCP.**
 
+**D87. At the end of every session, Orion updates `projects/gameon.md` — only the STATUS and active priorities sections.**
+- Orion shows the diff to Mario before pushing
+- If there are no relevant changes in STATUS or priorities, Orion states this explicitly
+- Reason: `gameon.md` is the product state map. If it goes stale, Orion makes decisions with outdated information.
+
 ---
 
 ## 3. GIT AND BRANCHES
@@ -233,7 +238,7 @@ Automation via GitHub Actions is planned in issue #90 (post-demo).
 DATABASE_URL
 JWT_ACCESS_SECRET, JWT_REFRESH_SECRET
 JWT_ACCESS_EXPIRES_IN=900, JWT_REFRESH_EXPIRES_IN=604800
-GOOGLE_CLIENT_ID, GOOGLE_CLIENT_SECRET
+GOOLD_CLIENT_ID, GOOGLE_CLIENT_SECRET
 GOOGLE_CALLBACK_URL, FRONTEND_URL, ORIGIN, NODE_ENV, RESEND_API_KEY
 ```
 
@@ -357,7 +362,7 @@ If the answer creates significant future cost → document the debt explicitly a
 
 Before proposing or implementing anything, Orion also asks:
 - Is there a hard deadline (demo, release, client meeting)?
-- Does the ideal scalable solution block shipping on time?\
+- Does the ideal scalable solution block shipping on time?
 - What is the minimum viable version that is not a lie — i.e. works correctly, does not create security holes, and can be replaced cleanly later?
 - Is the shortcut taken now documented so it gets fixed?
 
@@ -400,5 +405,5 @@ Components are tested only when they contain non-trivial logic.
 
 ---
 
-*Last updated: April 8, 2026 — Session 20*
-*New decisions: D86 (Match.dateTime — columna real de fecha en la entidad Match)*
+*Last updated: April 9, 2026 — Session 20 (learning)*
+*New decisions: D87 (session close protocol — gameon.md update)*
