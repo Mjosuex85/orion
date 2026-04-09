@@ -140,6 +140,35 @@ match-lifecycle.md  →  🟡 Pendiente — Mario defining match status lifecycl
 
 ---
 
+## STAGING VALIDATION CHECKLIST
+
+**Before merging staging → main, always validate these endpoints against the staging API:**
+
+```
+Backend staging URL: gameon-api-git-staging-mjosuex85s-projects.vercel.app
+
+✅ Auth
+  POST /auth/login           → returns access_token
+  GET  /auth/me              → returns user profile
+
+✅ Matches
+  GET  /matches              → returns creator's matches (requires auth)
+  GET  /matches/:id          → public, returns match detail
+
+✅ Organizations
+  GET  /organizations                    → public list
+  GET  /organizations/:slug             → public detail
+  GET  /organizations/:id/matches       → only today's matches (no params)
+  GET  /organizations/:id/matches?showAll=true → all matches regardless of date
+  GET  /organizations/my               → requires ORGANIZER role
+
+✅ Organizer panel
+  Dashboard stats show real match counts (not 0)
+  Match list shows all matches (showAll=true working)
+```
+
+---
+
 ## INFRASTRUCTURE — ALWAYS UP TO DATE
 
 ```
@@ -397,27 +426,19 @@ Full production deploy, Orion OS, agent flows, v1.2.0, organizations, tournament
 - RFC flow definido (D87) — orion/rfcs/ creado
 - RFC match-lifecycle.md creado — 🟡 Pendiente
 - #124, #125, #126, #127, #129 closed (showAll param, Bruno, dashboard fix)
-- CI gameon-api fully green — extensive debugging session:
-  - Problem: eslint-plugin-prettier + eslint-config-prettier missing from package.json
-  - Problem: coverage threshold 50% failing because collectCoverageFrom included all src/**
-  - Problem: hasSpots test checking SQL andWhere but implementation is in-memory
-  - Problem: npm audit --audit-level=high blocking on dev+prod high vulns
-  - Problem: SonarCloud Quality Gate 73.3% < 80% on new code
-  - All fixed — PR develop→staging gameon-api ready to merge
+- CI gameon-api fully green — extensive debugging session
 - #138 created — lint unused imports (Nestor, XS)
 - #141 created — npm high vulnerabilities (Nestor, S, before demo)
-- D86 — Match.dateTime columna real
-- gameon.md, DECISIONS.md, ORION.md actualizados
-
-**Key lesson from Session 20:**
-The CI debugging took ~2h because of accumulated invisible debt: deps not in package.json (only in lock file), coverage config too broad, tests checking implementation details that changed, audit level too strict, sonar exclusions missing. All were small issues individually — the lesson is to set up CI correctly from the start and test it on the first PR, not after sessions of work.
+- gameon-api PR develop→staging merged ✅
+- Staging validation checklist added to ORION.md
 
 **Próxima sesión — PRIORIDAD:**
-1. PR develop → staging in `gameon` (frontend) — same CI flow
-2. Fix frontend CI if needed (same patterns as backend)
-3. Merge both → test staging → PR staging → main as `release: v1.4.0`
-4. Confirm demo date with Jose (SoccerMix)
-5. #138 + #141 → Nestor (before v1.4.0)
+1. Validar staging API (checklist en ORION.md)
+2. PR develop → staging en `gameon` (frontend)
+3. Fix frontend CI si hace falta (mismos patrones que backend)
+4. Merge ambos → test staging completo → PR staging → main `release: v1.4.0`
+5. Confirmar demo con Jose (SoccerMix)
+6. #138 + #141 → Nestor (antes de v1.4.0)
 
 ---
 
