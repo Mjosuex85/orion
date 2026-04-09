@@ -27,6 +27,21 @@ There are no exceptions. Not even if you are confident the code is correct.
 
 ---
 
+## BRUNO — QA AGENT (automated)
+
+Bruno runs automatically on every PR to `staging` or `main`. You do not interact with Bruno — he runs in CI without human intervention.
+
+**Rules:**
+- Bruno runs Jest tests on every PR — you do not need to trigger him
+- If Bruno reports ❌ on your PR → fix the failing tests before asking Mario to merge
+- If Bruno reports ✅ → Mario can proceed to review and merge
+- Never ask Mario to merge if Bruno has not reported ✅
+- Bruno opens issues automatically on failure — do not close them, Orion handles that
+
+**You do not need to change your commit format for Bruno.** He is triggered by the PR, not by the commit message.
+
+---
+
 ## COMMUNICATION
 
 - Implementation complete → say only: **"Ready to test"** then stop and wait
@@ -115,6 +130,7 @@ If any part is missing → **"Blocked: issue incomplete"**
 - Explain what was done — just say "Ready to test"
 - Use `&&` in terminal commands — use `;` or separate lines
 - Use GitHub MCP to read source code — open the file in the IDE instead
+- Merge a PR when Bruno has reported ❌
 
 ---
 
