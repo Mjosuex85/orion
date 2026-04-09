@@ -36,10 +36,26 @@ This file documents the technical, process, and team decisions made in the proje
 
 **D56. Mario gives the green light before Orion uses any MCP.**
 
-**D87. At the end of every session, Orion updates `projects/gameon.md` — only the STATUS and active priorities sections.**
-- Orion shows the diff to Mario before pushing
-- If there are no relevant changes in STATUS or priorities, Orion states this explicitly
-- Reason: `gameon.md` is the product state map. If it goes stale, Orion makes decisions with outdated information.
+**D87. RFC flow — Request for Comments.**
+
+RFCs are for decisions that require analysis and a business/architecture choice before any implementation can begin. They live in `orion/rfcs/`.
+
+Rules:
+- **Both Mario and Orion must agree** that something merits an RFC before Orion creates it
+- Orion never creates an RFC unilaterally
+- Orion prepares the RFC: problem statement, technical options, questions for Mario
+- Mario reads the RFC in GitHub and edits the "Decisión de Mario" section
+- When Mario is done, he says: **"RFC [name] listo"**
+- Orion reads the updated RFC, documents in DECISIONS.md as Dxx, creates issues, marks RFC as ✅ Decidido
+
+```
+Flow:
+  Detect → discuss briefly in session → agree → Orion creates RFC
+  Mario edits RFC → says "RFC [name] listo"
+  Orion → DECISIONS.md + issues + RFC status = ✅ Decidido
+```
+
+RFC states: 🟡 Pendiente | ✅ Decidido
 
 ---
 
@@ -238,7 +254,7 @@ Automation via GitHub Actions is planned in issue #90 (post-demo).
 DATABASE_URL
 JWT_ACCESS_SECRET, JWT_REFRESH_SECRET
 JWT_ACCESS_EXPIRES_IN=900, JWT_REFRESH_EXPIRES_IN=604800
-GOOLD_CLIENT_ID, GOOGLE_CLIENT_SECRET
+GOOGLE_CLIENT_ID, GOOGLE_CLIENT_SECRET
 GOOGLE_CALLBACK_URL, FRONTEND_URL, ORIGIN, NODE_ENV, RESEND_API_KEY
 ```
 
@@ -405,5 +421,5 @@ Components are tested only when they contain non-trivial logic.
 
 ---
 
-*Last updated: April 9, 2026 — Session 20 (learning)*
-*New decisions: D87 (session close protocol — gameon.md update)*
+*Last updated: April 9, 2026 — Session 20*
+*New decisions: D87 (RFC flow — both Mario and Orion must agree before creating an RFC)*
