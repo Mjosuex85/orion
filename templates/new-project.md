@@ -1,6 +1,7 @@
 # Template: New Project
 
 Use this template to start any new project with Orion OS.
+Full step-by-step guide: `workflows/project-init.md`.
 
 ---
 
@@ -20,73 +21,78 @@ Deploy:
 
 ---
 
-## 2. Infrastructure checklist
+## 2. Mario creates repos
 
-- [ ] Backend repo: `owner/project-api`
-- [ ] Frontend repo: `owner/project`
-- [ ] GitHub Project (Kanban): Todo / In Progress / Done
-- [ ] Create `projects/<name>.md` in Orion OS with project context
-- [ ] Create `projects/<name>-decisions.md` in Orion OS for project-specific decisions
-- [ ] Copy `templates/claude-md.md` to both repos as `CLAUDE.md` and adapt
-- [ ] Document environment variables in `.env.example`
-- [ ] Set up `.npmrc` with `ignore-scripts=true` (D73)
-- [ ] Set up `.gitattributes` with `* text=auto eol=lf`
+- [ ] Backend repo: `Mjosuex85/<project>-api` (init with README + main branch)
+- [ ] Frontend repo: `Mjosuex85/<project>` (init with README + main branch)
+- [ ] Create `develop` and `staging` branches in both repos
 
 ---
 
-## 3. Configure agents
+## 3. Orion initializes Orion OS files
 
-### Bootstrap chain (applies to all agents)
-```
-1. IDE reads CLAUDE.md natively from the project repo (develop branch)
-2. CLAUDE.md instructs: read agents/<AGENT>.md + AGENT_RULES.md via GitHub MCP from orion
-3. Agent confirms Read Log and waits for issue number
-4. Mario gives issue number → agent reads issue body via GitHub MCP
-```
+Using `workflows/project-init.md` Phase 1:
 
-### Agent setup
-- [ ] Nestor: verify GITHUB_PAT has Read+Write on new repos + orion
-- [ ] Olga: update mcp_config.json token if needed
-- [ ] Bruno: copy `bruno.yml` to `.github/workflows/` in both repos, configure secrets
+- [ ] Create `projects/<project>.md` from `templates/project-context.md`
+- [ ] Create `projects/<project>-decisions.md` from `templates/project-decisions.md`
+- [ ] Update `ORION.md` REPOS section
 
 ---
 
-## 4. CI/CD setup
+## 4. Orion configures repos
 
-- [ ] Copy CI workflow from existing project and adapt
-- [ ] Set up SonarCloud project + add SONAR_TOKEN to GitHub Secrets
-- [ ] Configure `sonar-project.properties` in repo root
-- [ ] Set initial coverage threshold (50% recommended for new projects)
+Using `workflows/project-init.md` Phase 2:
 
----
+### Backend repo
+- [ ] `CLAUDE.md` from `templates/claude-md.md` (adapt for backend/Nestor)
+- [ ] `.npmrc` → `ignore-scripts=true`
+- [ ] `.gitattributes` → `* text=auto eol=lf`
+- [ ] `.env.example` → list all required env vars
+- [ ] `.github/workflows/ci.yml` from `templates/ci-backend.yml`
+- [ ] `.github/workflows/bruno.yml` from `templates/bruno.yml`
+- [ ] `sonar-project.properties`
 
-## 5. First issue
-
-Orion creates issue #1:
-
-```markdown
-## Context
-Initial project setup — folder structure, base configuration, first endpoint/component.
-
-## Prompt for [NESTOR/OLGA]
-[Specific setup instructions]
-
-## Test plan for the Director
-1. Project starts without errors
-2. First endpoint/component responds correctly
-3. Environment variables documented in .env.example
-```
+### Frontend repo
+- [ ] `CLAUDE.md` from `templates/claude-md.md` (adapt for frontend/Olga)
+- [ ] `.npmrc` → `ignore-scripts=true`
+- [ ] `.gitattributes` → `* text=auto eol=lf`
+- [ ] `.github/workflows/ci.yml` from `templates/ci-frontend.yml`
+- [ ] `.github/workflows/bruno.yml` from `templates/bruno.yml`
+- [ ] `sonar-project.properties`
 
 ---
 
-## 6. Project-specific decisions
+## 5. Mario configures platform
 
-Complete in `projects/<name>-decisions.md`:
-- Architecture decisions specific to this project
-- Stack-specific rules
-- Deploy-specific configuration
-- Business logic constraints
+Using `workflows/project-init.md` Phase 3:
+
+- [ ] Agent PATs: Read+Write on new repos + orion
+- [ ] GitHub Secrets: `SONAR_TOKEN`, `GH_PAT`, `GH_PAT_CROSS_REPO`
+- [ ] Deploy platform (Vercel/other): connect repos, set env vars
+- [ ] Staging database provisioned
+- [ ] Branch protection on `main`
 
 ---
 
-*Part of Orion OS v1.1.0 — using this template ensures consistency across projects.*
+## 6. Orion creates first issues
+
+Using `workflows/project-init.md` Phase 4:
+
+- [ ] Issue #1: Backend initial setup (Nestor)
+- [ ] Issue #2: Frontend initial setup (Olga)
+
+---
+
+## 7. Validation
+
+- [ ] Backend starts locally
+- [ ] Frontend starts locally
+- [ ] CI runs on first PR to `staging`
+- [ ] Bruno triggers and reports
+- [ ] SonarCloud receives first analysis
+
+**Project is now operational under Orion OS.**
+
+---
+
+*Part of Orion OS v1.4.0 — new project with full infrastructure in under 30 minutes.*

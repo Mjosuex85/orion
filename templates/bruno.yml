@@ -1,0 +1,89 @@
+# Bruno QA Template
+#
+# Copy to: <project>-api/.github/workflows/bruno.yml (backend)
+#          <project>/.github/workflows/bruno.yml (frontend)
+#
+# For frontend repos: set ISSUES_REPO to the backend repo (cross-repo)
+# and use GH_PAT_CROSS_REPO secret instead of GITHUB_TOKEN for issue creation.
+#
+# Part of Orion OS v1.4.0
+
+name: Bruno QA
+
+on:
+  pull_request:
+    branches: [staging, main]
+
+permissions:
+  contents: read
+  issues: write
+  pull-requests: write
+
+jobs:
+  qa:
+    runs-on: ubuntu-latest
+
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/setup-node@v4
+        with:
+          node-version: '20'
+          cache: 'npm'
+
+      - name: Install dependencies
+        run: npm ci
+
+      - name: Run tests
+        id: tests
+        run: |
+          if npm run test:cov 2>&1 | tee test-output.txt; then
+            echo "result=pass" >> $GITHUB_OUTPUT
+          else
+            echo "result=fail" >> $GITHUB_OUTPUT
+          fi
+
+      - name: Comment on PR (pass)
+        if: steps.tests.outputs.result == 'pass'
+        uses: actions/github-script@v7
+        with:
+          script: |
+            github.rest.issues.createComment({
+              issue_number: context.issue.number,
+              owner: context.repo.owner,
+              repo: context.repo.repo,
+              body: '✅ **Bruno QA:** All tests passed.'
+            })
+
+      - name: Comment on PR (fail)
+        if: steps.tests.outputs.result == 'fail'
+        uses: actions/github-script@v7
+        with:
+          script: |
+            const fs = require('fs');
+            const output = fs.readFileSync('test-output.txt', 'utf8').slice(-2000);
+            github.rest.issues.createComment({
+              issue_number: context.issue.number,
+              owner: context.repo.owner,
+              repo: context.repo.repo,
+              body: `❌ **Bruno QA:** Tests failed.\n\n\`\`\`\n${output}\n\`\`\``
+            });
+
+      - name: Open issue on failure
+        if: steps.tests.outputs.result == 'fail'
+        uses: actions/github-script@v7
+        with:
+          # For cross-repo (frontend): use secrets.GH_PAT_CROSS_REPO
+          # and change owner/repo to the issues repo
+          script: |
+            github.rest.issues.create({
+              owner: context.repo.owner,
+              repo: context.repo.repo,
+              title: `bug: Bruno QA — tests failing on PR #${context.issue.number} [BACKEND]`,
+              body: `## Context\nBruno detected failing tests on PR #${context.issue.number}.\n\n## Action required\nFix the failing tests before merging.`,
+              labels: ['bug', 'priority: high']
+            });
+
+      - name: Fail the job if tests failed
+        if: steps.tests.outputs.result == 'fail'
+        run: exit 1

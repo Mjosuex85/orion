@@ -2,8 +2,6 @@
 
 > Decisions that apply to **every project** under Orion OS.
 > Project-specific decisions live in `projects/<project>-decisions.md`.
->
-> The **why** behind each rule. Maintained by Orion and read by the whole team.
 
 ---
 
@@ -22,28 +20,24 @@
 ## 2. WORKFLOW
 
 **D5. All issues for a project live in a single repo (typically the backend repo).**
-Reason: Single source of truth. Frontend issues reference backend repo with cross-repo syntax.
 
 **D6. Each issue includes: context + agent prompt + test plan.**
 
-**D7. Maximum 2 issues In Progress simultaneously.**
+**D7. Maximum 2 issues In Progress simultaneously per project.**
 
 **D8. When Orion says "we'll do that later", an issue is created immediately.**
 
 **D9. When Mario proposes an idea, Orion analyzes it technically before creating the issue.**
 
 **D52. Commits use `ref #XX` — never `closes #XX` or `fixes #XX`.**
-Reason: Orion closes issues after Mario validates. Automatic closing bypasses validation.
 
 **D53. Orion closes issues — they are never closed automatically.**
 
-**D55. Configuration or documentation changes — Mario receives them with `git pull` after Orion pushes.**
+**D55. Configuration or documentation changes — Mario receives them with `git pull`.**
 
 **D56. Mario gives the green light before Orion uses any MCP on application repos.**
 
-**D87. RFC flow — Request for Comments.**
-RFCs are for decisions requiring analysis before implementation. They live in `orion/rfcs/`.
-Both Mario and Orion must agree before creating an RFC. Orion never creates one unilaterally.
+**D87. RFC flow — both Mario and Orion must agree before creating an RFC.**
 
 ---
 
@@ -51,31 +45,21 @@ Both Mario and Orion must agree before creating an RFC. Orion never creates one 
 
 **D10. `develop` is the active working branch. `main` is production.**
 
-**D11. `main` is NOT touched — except in planned production deploys via PR.**
+**D11. `main` is NOT touched — except via planned PR.**
 
 **D12. All team members do `git pull origin develop` before starting work.**
 
-**D14. Orion can make direct changes in GitHub on `develop` for:**
-- Configuration (`.npmrc`, `.env.example`, etc.)
-- Documentation (`CLAUDE.md`, `README`)
-- Urgent architecture fixes decided with Mario
-- Orion OS files (`ORION.md`, `DECISIONS.md`, subagents, etc.)
+**D14. Orion can push to `develop` for:** config, docs, urgent fixes decided with Mario, Orion OS files.
 
-For business logic or application code → issue for the assigned agent always.
-
-**D74. Branch protection on `main`.**
-- No direct push to `main` by anyone
-- All production deploys via PR
-- Mario is the only one who approves and merges
-- In emergencies: Mario temporarily disables protection, applies fix, re-enables
+**D74. Branch protection on `main`.** No direct push. Mario sole merger.
 
 ---
 
 ## 4. PRODUCTION DEPLOYS
 
-**D49. Production deploys are done on planned dates via PR.**
+**D49. Production deploys via planned PR.**
 
-**D51. Orion NEVER makes changes to `main` outside of a planned deploy PR.**
+**D51. Orion NEVER changes `main` outside of a deploy PR.**
 
 ---
 
@@ -83,12 +67,11 @@ For business logic or application code → issue for the assigned agent always.
 
 **D35. Never commit credentials, tokens, or secrets.**
 
-**D36. Never use `any` in TypeScript without explicit justification.**
+**D36. Never use `any` in TypeScript without justification.**
 
-**D37. Never break DTO/API contracts the frontend already consumes.**
+**D37. Never break DTO/API contracts the frontend consumes.**
 
 **D73. `ignore-scripts=true` in `.npmrc` in all projects.**
-Reason: Prevents automatic execution of malicious scripts from npm packages.
 
 ---
 
@@ -96,105 +79,83 @@ Reason: Prevents automatic execution of malicious scripts from npm packages.
 
 **D38. GitHub MCP connected to Claude for Orion.**
 
-**D68. Agents use the GitHub MCP to read the assigned issue body only — comments are not accessible via MCP.**
-Orion leaves corrections in the issue body, never in comments.
+**D68. Agents read issue body only via MCP — corrections go in body, not comments.**
 
-**D82. GitHub MCP — tool usage rules for Orion.**
+**D82. GitHub MCP tool rules:**
 
 | Tool | Use for |
 |------|---------|
-| `github:create_or_update_file` | Create or edit files in a repo filesystem |
-| `github:update_issue` | Edit body, title, or state of an existing issue |
-| `github:create_issue` | Create a new issue |
-| `github:push_files` | Push multiple files in a single commit |
-
-`create_or_update_file` with an issue URL as path creates a literal file — it does NOT edit the issue.
+| `create_or_update_file` | Files in repo filesystem |
+| `update_issue` | Issue body, title, state |
+| `create_issue` | New issue |
+| `push_files` | Multiple files, single commit |
 
 ---
 
 ## 7. AGENTS AND MODELS
 
-**D54. Scale from Sonnet to Opus when:**
-- The codebase exceeds 500k tokens
-- Sonnet cannot resolve complex architecture after two attempts
+**D54. Scale from Sonnet to Opus when:** codebase > 500k tokens or Sonnet fails twice.
 
-**D63. Token strategy: Copilot/Gemini for S/M tasks, Claude CLI for L/XL.**
+**D63. Copilot/Gemini for S/M tasks, Claude CLI for L/XL.**
 
-**D64. The value of the system is in the context, not the model.**
+**D64. The value is in the context, not the model.**
 
-**D66. Model selection by task complexity:**
+**D66. Model by complexity:**
 
-| Task | Minimum model |
-|------|---------------|
+| Task | Model |
+|------|-------|
 | Mechanical refactor | Gemini Flash / Haiku |
 | Bug analysis / features | Gemini Pro / Sonnet |
-| Architecture, new features | Gemini Pro / Sonnet |
-| Global architecture decisions | Claude Opus / Orion |
+| Architecture | Gemini Pro / Sonnet |
+| Global decisions | Claude Opus / Orion |
 
 ---
 
 ## 8. ORION OS STRUCTURE
 
-**D60. ORION.md lives in `Mjosuex85/orion` (main) — not in application repos.**
+**D60. ORION.md lives in `Mjosuex85/orion` — not in app repos.**
 
-**D61. CLAUDE.md in each project repo = how to work (≤150 lines). Business rules in `orion/projects/<project>.md`.**
+**D61. CLAUDE.md in each project repo = how to work (≤150 lines).**
 
 **D65. Subagents live in `orion/agents/subagents/` — reusable across projects.**
 
-**D81. Orion ALWAYS asks Mario before making any direct code change to application repos.**
-Only exceptions: Orion OS files and config/docs with no logic.
+**D81. Orion asks Mario before any direct code change to app repos.**
 
 ---
 
-## 9. ENGINEERING PRINCIPLES — UNIVERSAL
+## 9. ENGINEERING PRINCIPLES
 
-**D77. Engineering principles — apply to every project under Orion OS.**
-
-① **Measure before optimizing.** Never optimize without data.
-② **Never guess the bottleneck.** Instrument, observe, then act.
-③ **Avoid unnecessary complexity.** If simple solves it, complex is wrong.
-④ **Simple things fail less.** Fewer moving parts, fewer failure modes.
-⑤ **Data matters more than the algorithm.** The right data model beats a clever algorithm.
+**D77.** ① Measure before optimizing. ② Never guess the bottleneck. ③ Avoid unnecessary complexity. ④ Simple fails less. ⑤ Data > algorithm.
 
 ---
 
-## 10. DECISION FRAMEWORK — UNIVERSAL
+## 10. DECISION FRAMEWORK
 
-**D78. Orion evaluates every technical decision through two lenses simultaneously.**
-
-### Lens 1 — Scalability & technical health
-- Does this create tech debt? Is it justified?
-- Will this hold at 10x current load?
-- Does this couple things that should be independent?
-- Is there a simpler data model?
-
-If significant future cost → document as issue. Never leave invisible debt.
-
-### Lens 2 — Demo / release constraints
-- Is there a hard deadline?
-- What is the minimum viable version that works correctly?
-- Is the shortcut documented?
-
-If deadline conflict → propose both options:
-- **Option A (scalable):** effort, timeline
-- **Option B (demo-safe):** corners cut, debt created, issue created immediately
-
-Mario decides. Orion never makes that tradeoff silently.
-
-```
-Scalable by default.
-Pragmatic when there is a real deadline.
-Never silent about the tradeoff.
-```
+**D78.** Scalable by default. Pragmatic when there is a real deadline. Never silent about the tradeoff.
 
 ---
 
-## 11. FUTURE
+## 11. MULTI-PROJECT
 
-**D40. Orion as multi-project architect.**
+**D88. Multi-project rules (v1.4.0):**
+
+1. **Each project is fully isolated:** own project.md, own decisions file, own repos, own issues.
+2. **D7 applies per project:** max 2 in-progress per project, not global.
+3. **Context switch is explicit:** Orion saves state before switching (see `workflows/context-switch.md`).
+4. **Decisions go to the right file:** universal → DECISIONS.md, project-specific → projects/<n>-decisions.md.
+5. **Agents re-bootstrap on project switch:** they must re-read CLAUDE.md from the new repo.
+6. **Cross-project decisions are rare:** if one is needed, document in DECISIONS.md universal and note in both project files.
+7. **New projects use the init workflow:** `workflows/project-init.md` + templates. No ad-hoc setup.
+8. **Primary project:** the project Orion loads by default at session start. Currently GameOn. Mario can change this.
+
+---
+
+## 12. FUTURE
+
+**D40. Orion as multi-project architect.** ✅ Active since v1.4.0.
 
 **D43. GitHub Actions CI/CD + SonarCloud is standard for all projects.**
 
 ---
 
-*Orion OS v1.1.0 — Last updated: April 10, 2026 — Session 21*
+*Orion OS v1.4.0 — Last updated: April 10, 2026 — Session 21*
