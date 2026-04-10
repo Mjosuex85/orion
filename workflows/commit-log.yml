@@ -2,15 +2,16 @@ name: Log Agent Activity
 
 on:
   push:
-    branches: [develop, main]
+    branches: [develop, main, staging]
 
 jobs:
   log-activity:
     runs-on: ubuntu-latest
-    # Only runs if commit follows agent format
     if: |
       startsWith(github.event.head_commit.message, '[NESTOR]') ||
       startsWith(github.event.head_commit.message, '[OLGA]') ||
+      startsWith(github.event.head_commit.message, '[BRUNO]') ||
+      startsWith(github.event.head_commit.message, '[ORION]') ||
       startsWith(github.event.head_commit.message, '[TESTER]') ||
       startsWith(github.event.head_commit.message, '[DEVOPS]') ||
       startsWith(github.event.head_commit.message, '[SECURITY]')
@@ -26,9 +27,12 @@ jobs:
         run: |
           MSG="${{ github.event.head_commit.message }}"
 
-          AGENT=$(echo "$MSG" | grep -oP '(?<=\[)\w+(?=\])')
+          AGENT=$(echo "$MSG" | grep -oP '(?<=\[)\w+(?=\])' | head -1)
+          TYPE=$(echo "$MSG" | grep -oP '(?<=\] )\w+(?=\()' || echo "unknown")
+          SCOPE=$(echo "$MSG" | grep -oP '(?<=\()\w+(?=\))' || echo "unknown")
           ISSUE=$(echo "$MSG" | grep -oP '(?<=#)\d+' | head -1)
           SIZE=$(echo "$MSG" | grep -oP '(?<=size: )[SMLX]+')
+          BRANCH="${{ github.ref_name }}"
 
           case $SIZE in
             S)  TOKENS=1000 ;;
@@ -39,15 +43,29 @@ jobs:
           esac
 
           echo "agent=$AGENT" >> $GITHUB_OUTPUT
+          echo "type=$TYPE" >> $GITHUB_OUTPUT
+          echo "scope=$SCOPE" >> $GITHUB_OUTPUT
           echo "issue=$ISSUE" >> $GITHUB_OUTPUT
           echo "size=$SIZE" >> $GITHUB_OUTPUT
           echo "tokens=$TOKENS" >> $GITHUB_OUTPUT
+          echo "branch=$BRANCH" >> $GITHUB_OUTPUT
 
       - name: Append to usage log
         run: |
           mkdir -p logs
 
-          ENTRY="{\"timestamp\": \"$(date -u +%Y-%m-%dT%H:%M:%SZ)\", \"agent\": \"${{ steps.extract.outputs.agent }}\", \"issue\": \"${{ steps.extract.outputs.issue }}\", \"size\": \"${{ steps.extract.outputs.size }}\", \"tokens\": ${{ steps.extract.outputs.tokens }}, \"repo\": \"${{ github.repository }}\", \"commit\": \"${{ github.sha }}\"}"
+          ENTRY=$(jq -n \
+            --arg ts "$(date -u +%Y-%m-%dT%H:%M:%SZ)" \
+            --arg agent "${{ steps.extract.outputs.agent }}" \
+            --arg type "${{ steps.extract.outputs.type }}" \
+            --arg scope "${{ steps.extract.outputs.scope }}" \
+            --arg issue "${{ steps.extract.outputs.issue }}" \
+            --arg size "${{ steps.extract.outputs.size }}" \
+            --argjson tokens "${{ steps.extract.outputs.tokens }}" \
+            --arg repo "${{ github.repository }}" \
+            --arg branch "${{ steps.extract.outputs.branch }}" \
+            --arg commit "${{ github.sha }}" \
+            '{timestamp: $ts, agent: $agent, type: $type, scope: $scope, issue: $issue, size: $size, tokens: $tokens, repo: $repo, branch: $branch, commit: $commit}')
 
           echo $ENTRY >> logs/usage.jsonl
 

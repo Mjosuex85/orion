@@ -2,86 +2,88 @@
 
 > Versioning del sistema operativo. Cada versión marca un hito real en las capacidades del framework.
 > Las versiones siguen semver: MAJOR.MINOR.PATCH
-> - MAJOR: cambio fundamental en cómo opera el sistema
-> - MINOR: nueva capacidad significativa
-> - PATCH: mejoras, fixes, documentación
+
+---
+
+## v1.2.0 — Metrics & Observability (April 10, 2026)
+
+**Objetivo:** Saber cómo rinde el sistema con datos reales, no con intuición. Detectar problemas al inicio de cada sesión.
+
+### Cambios
+
+**`metrics/METRICS.md` — NEW — System dashboard**
+- System overview: version, projects, sessions, agents, RFCs
+- Per-project: production status, CI, issues, test coverage
+- Session velocity: issues closed per week, decisions per period
+- Agent performance: last tasks, pending, compliance
+- Health check results: recorded every session
+- Tech debt tracker: prioritized list with origin date
+- Trends & observations: what's working, what needs attention
+
+**`logs/sessions.jsonl` — NEW — Structured session log**
+- Each session = one JSON line
+- Fields: session number, date, project, issues closed/created, decisions, summary, OS version
+- Machine-parseable for future analysis and automation
+- Replaces the free-text session log as the data source (ORION.md keeps human-readable summary)
+
+**`workflows/health-check.md` — NEW — Session start protocol**
+- 6 checks: CI status, stale PRs, unassigned issues, branch sync, Bruno status, in-progress limit
+- Runs before status summary at every session start
+- Results recorded in METRICS.md
+- Severity levels: green → continue, warning → mention, critical → fix first
+
+**`workflows/commit-log.yml` — IMPROVED**
+- Now captures: commit type, scope, branch (not just agent/issue/size)
+- Triggers on `staging` branch too (not just develop/main)
+- Uses `jq` for proper JSON construction (avoids escaping issues)
+- Recognizes `[BRUNO]` and `[ORION]` commits
+
+**`templates/session-close.md` — NEW — Session close checklist**
+- Step-by-step: project.md → sessions.jsonl → ORION.md → decisions → METRICS.md → confirm
+- Compression rules for short sessions
+- Never skip sessions.jsonl
+
+**ORION.md updated**
+- Session start protocol now includes health check (step 4)
+- Session close protocol references `templates/session-close.md`
+- Session log entries compressed to one line each (details in sessions.jsonl)
+- Version bumped to v1.2.0
+
+### Migration impact
+- Session start: now includes health check before status summary
+- Session close: now includes sessions.jsonl entry + METRICS.md update
+- Existing session history migrated to sessions.jsonl (sessions 12-21)
+- commit-log.yml must be copied to project repos' `.github/workflows/` to capture agent commits
 
 ---
 
 ## v1.1.0 — Separation of Concerns (April 10, 2026)
 
-**Objetivo:** Separar lo que es Orion OS (framework universal) de lo que es GameOn (proyecto específico). Listo para multi-proyecto.
+**Objetivo:** Separar Orion OS (framework universal) de GameOn (proyecto específico). Listo para multi-proyecto.
 
 ### Cambios
-
-**ORION.md refactored (~17KB → ~5KB)**
-- Stripped to: identity, universal rules, session protocol, agent bootstrap, session log
-- Removed: all GameOn-specific state, infrastructure, checklists, testing plans, Atomic Design rules
-- Added: version header, dynamic project loading in session start protocol
-- Session close protocol now writes to correct decisions file (universal or project)
-
-**DECISIONS.md split**
-- `DECISIONS.md` — universal Orion OS decisions only (D1-D14, D35-D40, D43, D49-D56, D60-D68, D73-D74, D77-D78, D81-D82, D87)
-- `projects/gameon-decisions.md` — NEW — all GameOn-specific decisions (D16-D33, D44-D48, D57-D59, D62, D67, D69-D72, D75-D76, D79-D80, D83-D86)
-- Removed obsolete entries: D50 (superseded by D74), D39 (pending MCPs from early sessions)
-
-**projects/gameon.md updated**
-- Absorbed: infrastructure details, staging checklist, testing status, Atomic Design system, Bruno config, SonarCloud config
-- Added: reference to `gameon-decisions.md`
-- Cleaner structure: stack → modules → business rules → infra → CI → testing → status
-
-**Templates updated**
-- `templates/new-project.md` — reflects CLAUDE.md bootstrap flow, CI/CD setup, `.gitattributes`, project-specific decisions file
-- `templates/claude-md.md` — NEW — standard CLAUDE.md template for any project repo
-
-### Migration impact
-- Orion session start: no change (still reads ORION.md → DECISIONS.md → project.md)
-- Orion also reads `projects/gameon-decisions.md` when working on GameOn
-- Agent bootstrap: no change (CLAUDE.md → agent.md → AGENT_RULES.md)
-- New projects: use updated `new-project.md` template + `claude-md.md` template
+- ORION.md: ~17KB → ~5KB (identity + universal rules only)
+- DECISIONS.md: split into universal + `projects/gameon-decisions.md`
+- projects/gameon.md: absorbed all GameOn state from ORION.md
+- Templates: updated to CLAUDE.md flow + new `claude-md.md` template
 
 ---
 
 ## v1.0.0 — Foundation (March 26 – April 9, 2026)
 
-**El sistema funciona.** Un director, un CTO (Orion), dos agentes de ejecución (Nestor, Olga), un QA automatizado (Bruno), y un proyecto real en producción (GameOn v1.3.0).
+**El sistema funciona.** Director + CTO + 2 execution agents + QA + 1 project in production.
 
 ### Lo que se construyó
-
-**Core — Memoria y contexto**
-- `ORION.md` — cerebro de Orion
-- `DECISIONS.md` — registro de decisiones técnicas (87 decisiones)
-- `projects/gameon.md` — contexto del proyecto activo
-- Protocolos de inicio/cierre de sesión
-
-**Agentes**
-- `agents/NESTOR.md`, `agents/OLGA.md` — system prompts
-- `agents/BRUNO.md` — QA agent (CI-based, Phase 1)
-- `agents/DIRECTOR.md` — founder profile
-- `agents/AGENT_RULES.md` — universal rules
-- `agents/subagents/` — 7 specialized subagents
-
-**Infraestructura**
-- `templates/` — new-project, issue-template, architecture
-- `skills/` — universal, backend, frontend, projects
-- `workflows/commit-log.yml` — activity metrics
-- `rfcs/` — RFC flow (D87)
-
-**Proceso probado**
-- GitFlow: develop → staging → main
-- CI/CD: lint, build, test, audit, SonarCloud
-- Bruno QA: automatic tests on every PR
-- Issue management: single repo, Orion closes, agents execute
-- RFC flow for decisions requiring analysis
+- Memory system (ORION.md + DECISIONS.md + project.md)
+- Agent definitions (Nestor, Olga, Bruno, 7 subagents)
+- Templates (new-project, issue, architecture)
+- Skills library (universal, backend, frontend)
+- GitFlow + CI/CD + SonarCloud + Bruno QA
+- RFC flow for structured decision-making
 
 ---
 
 ## ROADMAP
-
-### v1.2.0 — Metrics & Observability
-- Dashboard de métricas (issues/week, resolution time, reopen ratio)
-- Session log estructurado (`logs/sessions.jsonl`)
-- Health check de repos al inicio de sesión
 
 ### v1.3.0 — Agent Intelligence
 - Skill injection automática en issues
@@ -105,8 +107,8 @@
 ## VERSIONING RULES
 
 - Cada mejora se documenta aquí con fecha y descripción
-- Las versiones se tagean en el repo: `git tag v1.1.0`
-- El README.md muestra la versión actual
+- Las versiones se tagean en el repo: `git tag vX.X.X`
+- README.md muestra la versión actual
 - ORION.md referencia la versión en su header
 
 ---
