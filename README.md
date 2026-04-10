@@ -1,6 +1,7 @@
 # Orion OS
 
 > The operating system for AI-powered development teams.
+> **v1.1.0** — See [CHANGELOG.md](CHANGELOG.md) for version history.
 
 ---
 
@@ -8,7 +9,7 @@
 
 Orion OS is a framework for building and orchestrating AI agent teams that develop real software. It's not a chatbot — it's a working methodology with roles, rules, memory, and automation.
 
-The team operates like a development agency: each agent has a specialized role, follows clear rules, and communicates through GitHub Issues as the state layer.
+The team operates like a development agency: each agent has a specialized role, follows clear rules, and communicates through GitHub Issues as the single state layer.
 
 ## The hierarchy
 
@@ -16,56 +17,87 @@ The team operates like a development agency: each agent has a specialized role, 
 Director / Founder (vision & business decisions)
   └── Orion (CTO / permanent orchestrator)
         └── Per project:
-              ├── Nestor Senior (backend tech lead)
-              │     ├── Dev backend
-              │     ├── Tester
-              │     └── Security
-              └── Olga Senior (frontend tech lead)
-                    ├── Dev frontend
-                    └── QA
+              ├── Backend Tech Lead (Nestor)
+              │     └── Subagents: architecture, migrations, security
+              ├── Frontend Tech Lead (Olga)
+              │     └── Subagents: components, performance, accessibility, design review
+              └── QA Agent (Bruno)
+                    └── Automated CI — runs on every PR
 ```
+
+## Core concepts
+
+**Separation of concerns** — Orion OS (the framework) is completely decoupled from any specific project. Universal decisions, agent definitions, and templates live at the root. Project-specific state, decisions, and context live in `projects/`.
+
+**Issue-driven development** — GitHub Issues are the only communication channel between Orion and execution agents. Each issue follows a standard format: Context + Agent Prompt + Test Plan.
+
+**Agent bootstrap chain** — Every agent starts the same way: `CLAUDE.md` (in the project repo) → `agents/<AGENT>.md` (from orion) → `AGENT_RULES.md` (from orion) → issue body.
+
+**Decision registry** — Every technical decision is documented with its reasoning. Universal decisions in `DECISIONS.md`, project-specific in `projects/<name>-decisions.md`.
 
 ## Repository structure
 
 ```
 orion/
-  ├── README.md              → This file
-  ├── ORION.md               → Orion's identity and global memory
-  ├── DECISIONS.md           → Global rules (all projects)
+  ├── README.md                  → This file
+  ├── ORION.md                   → Orion's identity, universal rules, session protocol
+  ├── DECISIONS.md               → Universal decisions (all projects)
+  ├── CHANGELOG.md               → Version history and roadmap
+  │
   ├── agents/
-  │   ├── NESTOR.md          → Nestor's system prompt (backend tech lead)
-  │   └── OLGA.md            → Olga's system prompt (frontend tech lead)
+  │   ├── AGENT_RULES.md         → Universal rules for all execution agents
+  │   ├── DIRECTOR.md            → Founder profile
+  │   ├── NESTOR.md              → Backend tech lead system prompt
+  │   ├── OLGA.md                → Frontend tech lead system prompt
+  │   ├── BRUNO.md               → QA agent (CI-based)
+  │   └── subagents/             → 7 specialized subagents (reusable)
+  │
   ├── projects/
-  │   └── gameon.md          → GameOn project context (lab project)
+  │   ├── gameon.md              → GameOn project context (active)
+  │   ├── gameon-decisions.md    → GameOn-specific decisions
+  │   ├── gameon-architecture.md → GameOn architecture docs
+  │   └── gameon-ideas.md        → GameOn product backlog
+  │
+  ├── rfcs/                      → Request for Comments (pending decisions)
+  │
   ├── skills/
-  │   ├── universal/         → Apply to all agents and projects
-  │   ├── backend/           → Reusable backend skills
-  │   ├── frontend/          → Reusable frontend skills
-  │   └── projects/          → Project-specific skills
+  │   ├── universal/             → Apply to all agents and projects
+  │   ├── backend/               → Reusable backend skills
+  │   ├── frontend/              → Reusable frontend skills
+  │   └── projects/              → Project-specific skills
+  │
   ├── templates/
-  │   ├── new-project.md     → How to start a new project
-  │   └── issue-template.md  → Standard issue format
+  │   ├── new-project.md         → Checklist to start a new project
+  │   ├── claude-md.md           → Standard CLAUDE.md template for project repos
+  │   ├── issue-template.md      → Standard issue format
+  │   └── architecture.md        → Architecture documentation template
+  │
   └── workflows/
-      └── commit-log.yml     → GitHub Action for activity metrics
+      └── commit-log.yml         → GitHub Action for activity metrics
 ```
 
-## How to use Orion OS on a new project
+## How to start a new project
 
-1. Copy `templates/new-project.md` and fill in the project context
-2. Create project repos with `AGENTS.md` and `DECISIONS.md`
-3. Set up GitHub Project (Kanban): Todo / In Progress / Done
-4. Give each agent their system prompt from `agents/` + project context
+1. Copy `templates/new-project.md` — follow the checklist
+2. Create project repos with `CLAUDE.md` (from `templates/claude-md.md`)
+3. Create `projects/<name>.md` and `projects/<name>-decisions.md` in this repo
+4. Set up CI/CD, SonarCloud, and Bruno QA
 5. Orion coordinates — agents execute — Director validates
 
-## Scalability roadmap
+## Roadmap
 
 ```
-Phase 1 → Manual framework + guided onboarding (now)
-Phase 2 → Claude API as semi-automatic orchestration engine
-Phase 3 → Fully automated system with human supervision
+v1.0.0  ✅  Foundation — manual framework, single project (GameOn)
+v1.1.0  ✅  Separation of Concerns — framework decoupled from project
+v1.2.0  ⬜  Metrics & Observability — dashboards, structured logs, health checks
+v1.3.0  ⬜  Agent Intelligence — skill injection, quality scoring, post-mortems
+v1.4.0  ⬜  Multi-Project Ready — CLI scaffolding, context switching
+v2.0.0  ⬜  Semi-Autonomous Orchestration — Orion as API
 ```
+
+See [CHANGELOG.md](CHANGELOG.md) for full details on each version.
 
 ---
 
-*Created by Mario Vidal + Orion — March 26, 2026*
+*Created by Mario Vidal + Orion — March 2026*
 *GameOn is the lab project where this framework is tested and refined.*
