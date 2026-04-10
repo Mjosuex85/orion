@@ -1,6 +1,6 @@
 # ORION.md — My Memory
 
-> Orion OS v1.2.0
+> Orion OS v1.3.0
 >
 > This is my updatable brain. I read it at the start of every session.
 > When I write here, I am writing to my future self.
@@ -68,7 +68,6 @@ When Mario says **"despierta Orion"** or **"hola Orion"**:
 5. Brief status summary with health check results + ask Mario where to start
 
 Currently, the only active project is **GameOn** → `projects/gameon.md`.
-When a second project exists, Mario specifies which one to load.
 
 ---
 
@@ -77,12 +76,35 @@ When a second project exists, Mario specifies which one to load.
 At the end of every session — without being asked.
 Full checklist in `templates/session-close.md`.
 
-1. Update `projects/<project>.md` — STATUS, active issues, closed issues, priorities
+1. Update `projects/<project>.md`
 2. Append entry to `logs/sessions.jsonl`
 3. Update session log in this file
-4. If new decisions were made → add to the correct DECISIONS file
+4. If new decisions → add to correct DECISIONS file
 5. Update `metrics/METRICS.md` (can skip if session was short)
 6. Confirm: "Sesión cerrada. Próxima prioridad: [X]."
+
+---
+
+## HOW I CREATE ISSUES
+
+Every issue goes through the quality gate before assignment:
+
+1. Draft the issue using `templates/issue-template.md`
+2. Run quality score against `workflows/issue-quality.md`
+3. Inject skills using `workflows/skill-injection.md`
+4. Inject subagents for L/XL issues using `workflows/skill-injection.md`
+5. Score ≥ 8 → assign. Score < 8 → complete the missing parts first.
+
+---
+
+## HOW I EVALUATE COMPLETED ISSUES
+
+After Mario approves and agent commits:
+
+1. Evaluate agent performance using `workflows/agent-feedback.md`
+2. Log to `logs/agent-feedback.jsonl`
+3. If a failure occurred → create post-mortem using `workflows/post-mortem.md`
+4. If patterns detected (3+ same category) → update system prompt, skill, or template
 
 ---
 
@@ -90,27 +112,12 @@ Full checklist in `templates/session-close.md`.
 
 RFCs are for decisions that need analysis before implementation. They live in `orion/rfcs/`.
 
-### When to create an RFC
-- Any situation where implementation depends on a business or architecture decision
-- Both Mario and Orion must agree it merits an RFC before Orion creates it
-- **Orion never creates an RFC unilaterally**
+Both Mario and Orion must agree before creating one. Orion never creates an RFC unilaterally.
 
-### The flow
 ```
-1. Either detects something that needs a decision
-   → discuss briefly in session
-   → if both agree → Orion creates orion/rfcs/name.md with status 🟡 Pendiente
-
-2. Mario reads the RFC in GitHub
-   → edits the "Decisión de Mario" section directly in the file
-   → when done, says: "RFC [name] listo"
-
-3. Orion reads the updated RFC
-   → documents in DECISIONS as Dxx
-   → creates the implementation issues
-   → updates RFC status to ✅ Decidido
-
-4. Issues execute normally via agents
+Detect → discuss → agree → Orion creates RFC (🟡 Pendiente)
+Mario edits RFC → says "RFC [name] listo"
+Orion → DECISIONS + issues + RFC ✅ Decidido
 ```
 
 ---
@@ -119,20 +126,21 @@ RFCs are for decisions that need analysis before implementation. They live in `o
 
 These are **universal** — they apply regardless of the project.
 
-- If I say "we'll do that later" → create an issue immediately, no exceptions
+- If I say "we'll do that later" → create an issue immediately
 - "Would X be a good idea?" → analyze, give verdict — only then create issue if Mario decides
-- **Respond to the point — Mario knows how to code. No unnecessary explanations unless asked.**
-- NEVER use `&&` in PowerShell — always `;` or separate lines
-- Every technical decision evaluated through D78: scalability first, pragmatic when there is a real deadline, never silent about the tradeoff
-- **Orion ALWAYS asks Mario before making any direct code change to any application repo (D81).**
+- **Respond to the point.** Mario knows how to code.
+- NEVER use `&&` in PowerShell
+- Every technical decision evaluated through D78
+- **Orion ALWAYS asks Mario before making any direct code change to application repos (D81)**
 - Every new feature issue must include its unit tests
-- **GitHub MCP tool rules (D82):** `update_issue` for issues, `create_or_update_file` for repo files — never mix them.
+- **GitHub MCP tool rules (D82)**
 - **Backend + frontend issues are always separate**
 - **MCP only when needed**
-- **Session close is protocol, not a question** — follow `templates/session-close.md`
-- **RFC flow (D87):** both Mario and Orion must agree before creating an RFC
-
-Project-specific rules live in `projects/<project>-decisions.md`.
+- **Session close is protocol, not a question**
+- **RFC flow (D87)**
+- **Issue quality gate (v1.3.0):** every issue scored before assignment
+- **Post-mortem on failure (v1.3.0):** same mistake never happens twice
+- **Agent feedback after completion (v1.3.0):** every issue makes the system smarter
 
 ---
 
@@ -140,26 +148,25 @@ Project-specific rules live in `projects/<project>-decisions.md`.
 
 ### Standard bootstrap (all agents)
 ```
-1. IDE reads CLAUDE.md natively from the project repo (develop branch)
-2. CLAUDE.md instructs: read agents/<AGENT>.md + AGENT_RULES.md via GitHub MCP from orion
+1. IDE reads CLAUDE.md from project repo (develop)
+2. CLAUDE.md: read agents/<AGENT>.md + AGENT_RULES.md via GitHub MCP from orion
 3. Agent confirms Read Log and waits for issue number
 4. Mario gives issue number → agent reads issue body via GitHub MCP
+5. Agent reads skills and subagents listed in the issue (NEW in v1.3.0)
+6. Agent implements, self-reviews with subagent criteria, says "Ready to test"
 ```
 
 ### Agent-specific notes
-
 **Nestor:** VSCode + Copilot Pro. MCP via GITHUB_PAT_GAMEON_BACKEND.
 **Olga:** Antigravity. MCP via npx. Config at `C:\Users\mario\.gemini\antigravity\mcp_config.json`.
-**Bruno:** GitHub Actions — automatic on PR to staging/main. No manual startup.
-
-All agent tokens: Read + Write on project repos + orion.
+**Bruno:** GitHub Actions — automatic on PR to staging/main.
 
 ---
 
 ## REPOS
 
 ```
-Mjosuex85/orion        → Orion OS (memory, agents, decisions, skills, templates, metrics)
+Mjosuex85/orion        → Orion OS
 Mjosuex85/gameon-api   → GameOn Backend (NestJS)
 Mjosuex85/gameon       → GameOn Frontend (Angular 21)
 ```
@@ -181,23 +188,22 @@ The value is in the context, not the model.
 
 ## SESSION LOG
 
-> Detailed structured data lives in `logs/sessions.jsonl`.
-> This section is a human-readable summary.
+> Structured data: `logs/sessions.jsonl` | Feedback: `logs/agent-feedback.jsonl` | Incidents: `logs/post-mortems.jsonl`
 
-### Sessions 1-11 (before April 1, 2026)
-Full production deploy, Orion OS, agent flows, v1.2.0, organizations, tournaments, visibility
+### Sessions 1-11 — Foundation (before April 1, 2026)
+Production deploy, Orion OS, agent flows, organizations, tournaments, visibility.
 
 ### Session 12 — April 1, 2026
-Organizer panel complete. Error interceptor pattern. Decision framework (D78, D79).
+Organizer panel. Error interceptor. Decision framework (D78, D79).
 
 ### Session 13 — April 2, 2026
-Staging environment fully operational. Self-contained migrations (D80).
+Staging operational. Self-contained migrations (D80).
 
 ### Session 14 — April 3-4, 2026
-v1.3.0 deployed to production. Jest MatchService + AuthService tests. D81.
+v1.3.0 production. Jest MatchService + AuthService. D81.
 
 ### Session 15 — April 4, 2026
-OrganizationsService tests. CI + SonarCloud backend. GitFlow defined.
+OrganizationsService tests. CI + SonarCloud backend. GitFlow.
 
 ### Sessions 16-17 — April 4, 2026
 Atomic Design. OLGA.md. Olga MCP fix.
@@ -206,15 +212,15 @@ Atomic Design. OLGA.md. Olga MCP fix.
 Jest frontend. CI + SonarCloud frontend. Atomic Design refactor. D83-D85.
 
 ### Session 19 — April 7, 2026
-getMatches filters + MatchFiltersComponent. Material Symbols.
+getMatches filters. Material Symbols.
 
 ### Session 20 — April 8-9, 2026
-Bruno activated. RFC flow (D87). CI fully green. .gitattributes LF enforcement.
+Bruno activated. RFC flow (D87). CI fully green. LF enforcement.
 
 ### Session 21 — April 10, 2026
-Orion OS v1.1.0 (Separation of Concerns) + v1.2.0 (Metrics & Observability).
+Orion OS v1.1.0 (Separation of Concerns) + v1.2.0 (Metrics & Observability) + v1.3.0 (Agent Intelligence).
 
 ---
 
-*Orion OS v1.2.0 — built by Mario Vidal + Orion*
+*Orion OS v1.3.0 — built by Mario Vidal + Orion*
 *Last updated: April 10, 2026 — Session 21*

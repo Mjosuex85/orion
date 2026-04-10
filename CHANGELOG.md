@@ -5,91 +5,103 @@
 
 ---
 
-## v1.2.0 — Metrics & Observability (April 10, 2026)
+## v1.3.0 — Agent Intelligence (April 10, 2026)
 
-**Objetivo:** Saber cómo rinde el sistema con datos reales, no con intuición. Detectar problemas al inicio de cada sesión.
+**Objetivo:** Agentes más efectivos sin aumentar intervención manual. Calidad del issue garantizada antes de asignar. Aprendizaje continuo de cada error y cada issue completado.
 
 ### Cambios
 
-**`metrics/METRICS.md` — NEW — System dashboard**
-- System overview: version, projects, sessions, agents, RFCs
-- Per-project: production status, CI, issues, test coverage
-- Session velocity: issues closed per week, decisions per period
-- Agent performance: last tasks, pending, compliance
-- Health check results: recorded every session
-- Tech debt tracker: prioritized list with origin date
-- Trends & observations: what's working, what needs attention
+**`workflows/issue-quality.md` — NEW — Issue quality score**
+- 10-criterion checklist: context, prompt, test plan, agent, size, files, skills, subagents, commit, tests
+- Scoring: ≥ 8 = assign, 5-7 = Orion completes first, <5 = rewrite
+- Orion is the quality gate — Mario never thinks about issue format
+- Includes examples of READY vs INCOMPLETE issues
 
-**`logs/sessions.jsonl` — NEW — Structured session log**
-- Each session = one JSON line
-- Fields: session number, date, project, issues closed/created, decisions, summary, OS version
-- Machine-parseable for future analysis and automation
-- Replaces the free-text session log as the data source (ORION.md keeps human-readable summary)
+**`workflows/skill-injection.md` — NEW — Skill & subagent injection map**
+- Complete trigger map: which skills/subagents to inject for each issue type
+- Injection rules by size: S = universal only, M = +skills, L = +subagents, XL = everything
+- Agent reading protocol: how agents consume skills and use subagents as self-review
+- Guide for creating new skills when patterns emerge
 
-**`workflows/health-check.md` — NEW — Session start protocol**
-- 6 checks: CI status, stale PRs, unassigned issues, branch sync, Bruno status, in-progress limit
-- Runs before status summary at every session start
-- Results recorded in METRICS.md
-- Severity levels: green → continue, warning → mention, critical → fix first
+**`workflows/post-mortem.md` — NEW — Post-mortem protocol**
+- 5 triggers: Bruno failure, issue reopened, bug in staging, testing failure, agent blocked
+- Structured JSON log in `logs/post-mortems.jsonl`
+- 6 categories: issue_quality, missing_test, wrong_assumption, missing_skill, protocol_violation, technical_gap
+- Pattern detection: 3+ same category triggers systemic improvement
+- Goal: same mistake never happens twice
 
-**`workflows/commit-log.yml` — IMPROVED**
-- Now captures: commit type, scope, branch (not just agent/issue/size)
-- Triggers on `staging` branch too (not just develop/main)
-- Uses `jq` for proper JSON construction (avoids escaping issues)
-- Recognizes `[BRUNO]` and `[ORION]` commits
+**`workflows/agent-feedback.md` — NEW — Agent feedback loop**
+- 5 criteria: protocol compliance, code quality, tests, first-attempt success, scope respect
+- Structured JSON log in `logs/agent-feedback.jsonl`
+- Overall ratings: excellent / good / needs_improvement / problematic
+- Pattern detection: 2+ yellows in same criterion triggers system update
+- Loop: issue → evaluate → log → detect pattern → update prompt/skill → next issue improves
 
-**`templates/session-close.md` — NEW — Session close checklist**
-- Step-by-step: project.md → sessions.jsonl → ORION.md → decisions → METRICS.md → confirm
-- Compression rules for short sessions
-- Never skip sessions.jsonl
+**`templates/issue-template.md` — UPDATED**
+- Added `## DO NOT touch` section (explicit scope boundaries)
+- Added `## Subagents` section
+- Added `## Unit tests` section (was implicit, now explicit)
+- Added quality score checklist at the bottom
+- References `workflows/issue-quality.md` and `workflows/skill-injection.md`
 
-**ORION.md updated**
-- Session start protocol now includes health check (step 4)
-- Session close protocol references `templates/session-close.md`
-- Session log entries compressed to one line each (details in sessions.jsonl)
-- Version bumped to v1.2.0
+**`agents/AGENT_RULES.md` — UPDATED**
+- Mandatory protocol now starts with reading skills and subagents (steps 1-2)
+- Self-review with subagent criteria before "Ready to test" (step 4)
+- New section: SKILLS AND SUBAGENTS — how to read and apply them
+- MCP ALLOWED list now includes `skills/*.md` and `agents/subagents/*.md`
+- Issue reading section updated to include skills and subagents sections
+
+**ORION.md — UPDATED**
+- New section: HOW I CREATE ISSUES (quality gate workflow)
+- New section: HOW I EVALUATE COMPLETED ISSUES (feedback + post-mortem)
+- New rules: issue quality gate, post-mortem on failure, feedback after completion
+- Agent bootstrap chain updated: step 5 = read skills/subagents from issue
+- Session log references all 3 log files
+
+**New log files:**
+- `logs/post-mortems.jsonl` — initialized (empty)
+- `logs/agent-feedback.jsonl` — initialized (empty)
 
 ### Migration impact
-- Session start: now includes health check before status summary
-- Session close: now includes sessions.jsonl entry + METRICS.md update
-- Existing session history migrated to sessions.jsonl (sessions 12-21)
-- commit-log.yml must be copied to project repos' `.github/workflows/` to capture agent commits
+- Issue creation: Orion now runs quality score before assigning
+- Agent workflow: agents now read skills/subagents listed in the issue before implementing
+- After completion: Orion evaluates and logs agent performance
+- On failure: Orion creates post-mortem entry and applies prevention
+- Existing skills and subagents are now actively used (they were dormant before)
+
+---
+
+## v1.2.0 — Metrics & Observability (April 10, 2026)
+
+**Objetivo:** Saber cómo rinde el sistema con datos reales.
+
+### Cambios
+- `metrics/METRICS.md` — system dashboard
+- `logs/sessions.jsonl` — structured session log
+- `workflows/health-check.md` — session start health check
+- `workflows/commit-log.yml` — improved (type, scope, branch, jq)
+- `templates/session-close.md` — session close checklist
 
 ---
 
 ## v1.1.0 — Separation of Concerns (April 10, 2026)
 
-**Objetivo:** Separar Orion OS (framework universal) de GameOn (proyecto específico). Listo para multi-proyecto.
+**Objetivo:** Separar Orion OS de GameOn. Listo para multi-proyecto.
 
 ### Cambios
 - ORION.md: ~17KB → ~5KB (identity + universal rules only)
 - DECISIONS.md: split into universal + `projects/gameon-decisions.md`
-- projects/gameon.md: absorbed all GameOn state from ORION.md
-- Templates: updated to CLAUDE.md flow + new `claude-md.md` template
+- Templates: updated to CLAUDE.md flow + `claude-md.md` template
 
 ---
 
 ## v1.0.0 — Foundation (March 26 – April 9, 2026)
 
-**El sistema funciona.** Director + CTO + 2 execution agents + QA + 1 project in production.
-
-### Lo que se construyó
-- Memory system (ORION.md + DECISIONS.md + project.md)
-- Agent definitions (Nestor, Olga, Bruno, 7 subagents)
-- Templates (new-project, issue, architecture)
-- Skills library (universal, backend, frontend)
-- GitFlow + CI/CD + SonarCloud + Bruno QA
-- RFC flow for structured decision-making
+Director + CTO + 2 execution agents + QA + 1 project in production.
 
 ---
 
 ## ROADMAP
-
-### v1.3.0 — Agent Intelligence
-- Skill injection automática en issues
-- Issue quality score antes de asignar
-- Post-mortem automático en failures
-- Agent feedback loop
 
 ### v1.4.0 — Multi-Project Ready
 - CLI de scaffolding (`orion init <project>`)
@@ -101,15 +113,6 @@
 - Automated issue assignment
 - GitHub webhook integration
 - Slack/Discord notifications
-
----
-
-## VERSIONING RULES
-
-- Cada mejora se documenta aquí con fecha y descripción
-- Las versiones se tagean en el repo: `git tag vX.X.X`
-- README.md muestra la versión actual
-- ORION.md referencia la versión en su header
 
 ---
 
