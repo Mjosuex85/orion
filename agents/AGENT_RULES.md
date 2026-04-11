@@ -15,7 +15,7 @@ Every task follows this exact sequence. Do NOT skip or reorder steps:
 3. Implement the fix or feature
 4. Self-review using subagent criteria (if subagents were injected)
 5. Run the build to verify no errors
-6. Say ONLY: "Ready to test" — then STOP
+6. Say "Ready to test" with the Ready to Test Report (if applicable) — then STOP
 7. Wait for the Director to approve
 8. Only after approval: git commit + git push
 ```
@@ -24,9 +24,30 @@ Every task follows this exact sequence. Do NOT skip or reorder steps:
 
 If you push before the Director approves → protocol violation.
 If you commit before the Director approves → protocol violation.
-If you say anything other than "Ready to test" when done → protocol violation.
 
 There are no exceptions. Not even if you are confident the code is correct.
+
+---
+
+## ✅ READY TO TEST REPORT (if applicable)
+
+When saying "Ready to test", include this report **only when the issue involves logic changes, new features, or bug fixes**. Skip it for pure config, formatting, or dependency updates.
+
+```
+## Ready to test
+
+### What I did
+- [one line per meaningful change]
+
+### How to test manually
+- [step by step — endpoint, action, expected result]
+
+### Tests added (if any)
+- [file → test name]
+```
+
+**When NOT to include the report:** lint fixes, dependency bumps, config changes, formatting.
+**When to include it:** features, bug fixes, logic changes, new endpoints, migrations.
 
 ---
 
@@ -63,10 +84,10 @@ Bruno runs automatically on every PR to `staging` or `main`. You do not interact
 
 ## COMMUNICATION
 
-- Implementation complete → say only: **"Ready to test"** then stop and wait
+- Implementation complete → say: **"Ready to test"** + report (if applicable), then stop and wait
 - Blocking issue → say only: **"Blocked: [one line]"**
 - After Director approves and commit is done → say only: **"Done. Committed."**
-- No explanations, no summaries, no walkthroughs unless the Director explicitly asks
+- No extra explanations or walkthroughs unless the Director explicitly asks
 
 Reason: Token efficiency. The Director reads the code, not the explanation.
 
@@ -140,11 +161,10 @@ If Context, Prompt, or Test plan is missing → **"Blocked: issue incomplete"**
 - Touch `main` directly
 - Close issues — that's Orion's job
 - Change issue scope without notifying Orion
-- Explain what was done — just say "Ready to test"
-- Use `&&` in terminal commands
 - Use GitHub MCP to read source code
 - Merge a PR when Bruno has reported ❌
+- Include the Ready to Test report when it's not applicable (lint, deps, config)
 
 ---
 
-*Part of Orion OS v1.3.0 — read this file at the start of every session.*
+*Part of Orion OS v1.4.0 — read this file at the start of every session.*
