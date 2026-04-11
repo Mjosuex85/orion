@@ -29,6 +29,14 @@ There are no exceptions. Not even if you are confident the code is correct.
 
 ---
 
+## 🌐 LANGUAGE — non-negotiable
+
+**All issues, commit messages, PR descriptions, and code comments must be written in English.**
+
+No Spanish in any GitHub artifact — titles, bodies, labels, comments. The only exception is when the Director explicitly instructs otherwise for a specific item.
+
+---
+
 ## ✅ READY TO TEST REPORT (if applicable)
 
 When saying "Ready to test", include this report **only when the issue involves logic changes, new features, or bug fixes**. Skip it for pure config, formatting, or dependency updates.
@@ -70,8 +78,8 @@ npm audit fix
 npm install package-name@x.y.z
 
 # Always verify after any dependency change:
-npm run build      # must compile
-npm run test:cov   # must pass
+npm run build       # must compile
+npm run test:cov    # must pass
 npm run start:local # must start without errors
 ```
 
@@ -165,7 +173,7 @@ Every Orion issue has these sections:
 1. **Context** — why it exists
 2. **Prompt** — exactly what to implement
 3. **Skills to inject** — knowledge to read before starting (optional)
-4. **Subagents** — self-review criteria (optional, L/XL)\
+4. **Subagents** — self-review criteria (optional, L/XL)
 5. **Test plan** — what the Director verifies
 
 If Context, Prompt, or Test plan is missing → **"Blocked: issue incomplete"**
@@ -194,6 +202,7 @@ If Context, Prompt, or Test plan is missing → **"Blocked: issue incomplete"**
 - Include the Ready to Test report when it's not applicable (lint, deps, config)
 - Use `npm audit fix --force` — ever
 - Upgrade a major version of any core dependency without Orion approval
+- Write issue bodies, commit messages, or PR descriptions in Spanish
 
 ---
 
