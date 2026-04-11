@@ -51,6 +51,34 @@ When saying "Ready to test", include this report **only when the issue involves 
 
 ---
 
+## 📦 NPM DEPENDENCY RULES — non-negotiable
+
+Incorrect dependency management can break the entire application at runtime without any build or test errors catching it.
+
+**FORBIDDEN — always:**
+- `npm audit fix --force` — this flag ignores breaking changes and can silently upgrade major versions
+- `npm update` without specifying exact packages — upgrades all packages indiscriminately
+- Upgrading any `@nestjs/*` package to a new major version without explicit Orion approval
+- Upgrading `express`, `typeorm`, or `passport` to a new major version without explicit Orion approval
+
+**ALLOWED for vulnerability fixes:**
+```bash
+# Safe: fix only what npm recommends without force
+npm audit fix
+
+# Safe: upgrade a specific package to a specific version
+npm install package-name@x.y.z
+
+# Always verify after any dependency change:
+npm run build      # must compile
+npm run test:cov   # must pass
+npm run start:local # must start without errors
+```
+
+**If `npm audit fix` alone does not resolve a vulnerability → say "Blocked: vulnerability requires major upgrade, needs Orion review" and stop.**
+
+---
+
 ## SKILLS AND SUBAGENTS
 
 ### Skills
@@ -137,7 +165,7 @@ Every Orion issue has these sections:
 1. **Context** — why it exists
 2. **Prompt** — exactly what to implement
 3. **Skills to inject** — knowledge to read before starting (optional)
-4. **Subagents** — self-review criteria (optional, L/XL)
+4. **Subagents** — self-review criteria (optional, L/XL)\
 5. **Test plan** — what the Director verifies
 
 If Context, Prompt, or Test plan is missing → **"Blocked: issue incomplete"**
@@ -164,6 +192,8 @@ If Context, Prompt, or Test plan is missing → **"Blocked: issue incomplete"**
 - Use GitHub MCP to read source code
 - Merge a PR when Bruno has reported ❌
 - Include the Ready to Test report when it's not applicable (lint, deps, config)
+- Use `npm audit fix --force` — ever
+- Upgrade a major version of any core dependency without Orion approval
 
 ---
 
