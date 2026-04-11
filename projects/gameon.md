@@ -53,6 +53,7 @@ Deploy:     Vercel (gameon-nu.vercel.app)
 - JWT + Google OAuth
 - Roles: `USER`, `ORGANIZER`, `ADMIN`
 - Soft delete, email verification, password reset via Resend
+- Adding OWNER to org → auto-assigns ORGANIZER role (#106)
 
 ### Matches
 - `visibility`: `PRIVATE` | `PUBLIC` | `ORGANIZATION`
@@ -91,7 +92,7 @@ ORGANIZER:  { matchesPerDay: 4, tournamentsPerWeek: 2, leaguesPerMonth: 1 }
 ```
 
 ### How someone becomes ORGANIZER
-- **Demo phase:** Mario assigns role manually
+- **Demo phase:** Adding user as OWNER of an org → auto-assigns ORGANIZER role (#106)
 - **Post-demo:** payment (Stripe) triggers automatic role assignment
 
 ---
@@ -99,7 +100,7 @@ ORGANIZER:  { matchesPerDay: 4, tournamentsPerWeek: 2, leaguesPerMonth: 1 }
 ## INFRASTRUCTURE
 
 ```
-PRODUCTION: v1.3.0 FULLY DEPLOYED (April 3, 2026)
+PRODUCTION: v1.4.0 DEPLOYED (April 11, 2026)
   Frontend  →  Vercel (gameon-nu.vercel.app) — branch: main
   Backend   →  Vercel (serverless) — branch: main
   Database  →  Neon PostgreSQL (gameon-db)
@@ -165,7 +166,7 @@ Backend staging URL: gameon-api-git-staging-mjosuex85s-projects.vercel.app
 ## CI / QUALITY
 
 ### gameon-api CI
-- Lint + Build + Tests (coverage 50% on services) + Audit (critical) + SonarCloud
+- Lint + Build + Tests (coverage 50% on services) + Audit (critical, prod only) + SonarCloud
 
 ### gameon CI
 - Lint + Build + Tests (coverage 50% on core/) + SonarCloud
@@ -218,26 +219,22 @@ Rules:
 
 ---
 
-## STATUS — April 10, 2026 (Session 21)
+## STATUS — April 11, 2026 (Session 22)
+
+**Production:** v1.4.0 ✅
 
 **Open / Active:**
 - 🔄 #120 — Redesign MatchFiltersComponent (Olga)
 - 🔄 #123 — Organization-detail layout two-column (Olga)
-- 📋 #138 — Lint: remove unused imports (Nestor, XS)
-- 📋 #141 — npm high vulnerabilities (Nestor, S)
-- 📋 #106 — Auto-assign ORGANIZER on OWNER member add (Nestor, XS)
-- 📋 #113 — GitHub Team branch protection
-- 📋 #117 — Multi-sport foundation
-- 📋 RFC match-lifecycle — 🟡 Pendiente
+- 📋 #113 — GitHub Team branch protection (post first client)
+- 📋 #117 — Multi-sport foundation (backlog)
+- 📋 RFC match-lifecycle — 🟡 Pending
 
 **Next priorities:**
-1. Normalizar line endings (git rm --cached)
-2. Validar staging API (checklist arriba)
-3. PR develop → staging en `gameon` (frontend)
-4. Fix CI frontend si hace falta
-5. Merge → test staging → PR staging → main = `release: v1.4.0`
-6. Demo con Jose (SoccerMix)
-7. #138 + #141 → Nestor (antes de v1.4.0)
+1. Frontend: PR develop → staging on `gameon` (#120 + #123 with Olga)
+2. Validate frontend staging
+3. PR staging → main on `gameon` = `release: v1.4.0` frontend
+4. Demo with Jose (SoccerMix)
 
 ---
 
@@ -249,5 +246,5 @@ Rules:
 
 ---
 
-*Part of Orion OS v1.1.0 — updated April 10, 2026 (Session 21)*
+*Part of Orion OS v1.4.0 — updated April 11, 2026 (Session 22)*
 *Ideas and product roadmap → `projects/gameon-ideas.md`*
