@@ -1,93 +1,89 @@
 # Context Switch Protocol — Orion OS
 
-> How Orion switches between projects in a single session.
-> Designed for when Mario wants to work on multiple projects in one sitting.
+> How Orion switches between projects — at session start or mid-session.
+> Includes smart skill loading based on project stack.
 
 ---
 
-## WHEN TO SWITCH
+## SESSION START WITH PROJECT
 
-Mario says something like:
-- "Cambiemos a [project]"
-- "Ahora trabajemos en [project]"
-- "Switch to [project]"
+When Mario says:
+- `"despierta Orion, vamos con [project]"`
+- `"hola Orion, trabajamos en [project]"`
+- `"switch to [project]"`
+
+Orion runs the **smart session init**:
+
+```
+1. Read ORION.md         → Mjosuex85/orion (main)
+2. Read DECISIONS.md     → Mjosuex85/orion (main)
+3. Read projects/<project>.md → load stack + skills array
+4. Load each skill declared in the project's skills array
+5. Read projects/<project>-decisions.md
+6. Run health check (workflows/health-check.md)
+7. Status summary: project state + active priorities
+8. "Listo. ¿Por dónde arrancamos?"
+```
+
+### Skills array in project.md
+
+Each project declares which skills to load:
+```yaml
+skills:
+  - skills/universal/git-flow.md
+  - skills/frontend/react-patterns.md      # React project
+  - skills/backend/nestjs-patterns.md      # if has backend
+```
+
+Orion loads exactly those skills — no more, no less.
+Angular project → loads angular-patterns. React project → loads react-patterns. No confusion.
 
 ---
 
-## THE PROTOCOL
+## MID-SESSION SWITCH
+
+When Mario says:
+- `"cambiemos a [project]"`
+- `"ahora trabajemos en [project]"`
 
 ### Step 1 — Save current project state
-
-Before switching away from the current project:
-
 ```
-1. Update projects/<current-project>.md with current status
-2. Append partial session entry to logs/sessions.jsonl (if significant work was done)
-3. Note any open threads: "We were discussing X, pending Y"
+1. Update projects/<current-project>.md (STATUS + priorities)
+2. Append partial entry to logs/sessions.jsonl
+3. Note open threads
 ```
 
-This is a mini-close, not a full session close. No METRICS.md update needed.
-
-### Step 2 — Load new project context
-
+### Step 2 — Load new project
 ```
-1. Read projects/<new-project>.md from Mjosuex85/orion (main)
-2. Read projects/<new-project>-decisions.md if it exists
-3. Run health check for the new project's repos
-4. Brief status summary of the new project
-```
-
-### Step 3 — Confirm switch
-
-```
-"Switched to [project]. [Status summary]. ¿Por dónde arrancamos?"
+1. Read projects/<new-project>.md
+2. Load skills declared in new project's skills array
+3. Read projects/<new-project>-decisions.md
+4. Health check for new project repos
+5. "Switched to [project]. [Status]. ¿Por dónde arrancamos?"
 ```
 
 ---
 
 ## RULES
 
-1. **Never mix contexts.** After switching, Orion's decisions and recommendations are based on the active project's decisions file, not the previous one.
-
-2. **Issues stay in their repo.** Never create an issue for Project A in Project B's repo.
-
-3. **Decisions go to the right file.** Universal decisions → `DECISIONS.md`. Project-specific → `projects/<project>-decisions.md`.
-
-4. **Session log is unified.** One `sessions.jsonl` entry per session, but the `project` field can note multiple projects: `"project": "gameon + project-b"`.
-
-5. **Health check is per-project.** When switching, check the new project's repos, not the old one's.
-
-6. **Max 2 In Progress applies per project, not globally.** Each project can have up to 2 issues in progress.
+1. **Skills are project-scoped.** Never carry skills from one project to another.
+2. **Never mix contexts.** Decisions from Project A never apply to Project B unless they're in universal DECISIONS.md.
+3. **Issues stay in their repo.** Never create an issue for Project A in Project B's repo.
+4. **Decisions go to the right file.** Universal → `DECISIONS.md`. Project-specific → `projects/<project>-decisions.md`.
+5. **Max 2 In Progress applies per project**, not globally.
+6. **Agents re-bootstrap when switching projects.** Mario gives them the new CLAUDE.md explicitly.
 
 ---
 
 ## SWITCHING BACK
 
-If Mario says "volvamos a [previous project]":
-
 ```
-1. Save current project state (mini-close)
-2. Re-read previous project.md (it was updated in Step 1, so it's fresh)
-3. Resume from where we left off
-4. "Back to [project]. We were discussing [X]. ¿Seguimos con eso?"
+1. Save current project (mini-close)
+2. Re-read previous project.md (updated in Step 1, so it's fresh)
+3. Re-load that project's skills
+4. "Back to [project]. We were discussing [X]. ¿Seguimos?"
 ```
 
 ---
 
-## EDGE CASES
-
-### Cross-project decision
-If a decision affects multiple projects (e.g., changing a universal rule):
-- Add to `DECISIONS.md` (universal)
-- Note in both project files that the decision exists
-- Each project's agents will pick it up via AGENT_RULES.md on next bootstrap
-
-### Agent working on multiple projects
-Nestor and Olga can work on different projects in the same day, but:
-- They must re-bootstrap via CLAUDE.md each time they switch projects
-- Mario gives them the new CLAUDE.md explicitly
-- Issues from different projects must never be mixed in a single commit
-
----
-
-*Part of Orion OS v1.4.0 — seamless multi-project management*
+*Part of Orion OS v1.5.0 — smart session init with skill loading*
