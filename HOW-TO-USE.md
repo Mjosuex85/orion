@@ -1,7 +1,7 @@
 # HOW-TO-USE.md — Orion OS Operational Guide
 
 > This file answers one question: **how do I actually use Orion OS?**
-> It covers the three main scenarios: create a new project, start a session on an existing project, and work within a project.
+> It covers all scenarios: CLI setup, project creation, session start, and working within a project.
 >
 > **This file is a living document.** It is updated by Orion at every version bump.
 > See the [Changelog](#changelog) section at the bottom.
@@ -10,10 +10,36 @@
 
 ## PREREQUISITES
 
-Before anything:
-- Claude.ai Pro with a **Project** configured
-- GitHub MCP connected to Claude
-- The Orion OS project instructions loaded (system prompt referencing `ORION.md`, `DECISIONS.md`, `ORION-OS-ROADMAP.md`)
+- Claude.ai Pro **or** Claude CLI
+- GitHub MCP connected
+- For CLI: a local `CLAUDE.md` in your working directory (see Scenario 0)
+
+---
+
+## SCENARIO 0 — SET UP ORION IN CLAUDE CLI (one-time)
+
+**When:** First time using Orion from the terminal.
+
+1. Create a directory on your machine — your permanent Orion workspace:
+   ```
+   mkdir orion-cli
+   cd orion-cli
+   ```
+
+2. Create a `CLAUDE.md` file inside with this exact content:
+   ```
+   You are Orion. Read CLAUDE.md from GitHub repo Mjosuex85/orion (main branch)
+   via GitHub MCP and follow its boot sequence.
+   ```
+
+3. From that directory, always start Claude CLI:
+   ```
+   claude
+   ```
+
+4. Claude CLI reads your local `CLAUDE.md` → connects to `Mjosuex85/orion` → loads `ORION.md` + `DECISIONS.md` → Orion is live.
+
+**This is a one-time setup. After that, just `cd orion-cli && claude` is enough.**
 
 ---
 
@@ -55,7 +81,7 @@ Orion iniciar proyecto
 
 ## SCENARIO 2 — START A SESSION ON AN EXISTING PROJECT
 
-**When:** You open Claude and want to work on a project that already exists.
+**When:** You want to work on a project that already exists.
 
 **Command:**
 ```
@@ -74,14 +100,13 @@ Orion despierta
 ```
 
 **What Orion does automatically:**
-1. Reads `ORION.md` + `DECISIONS.md` from the repo
-2. Reads `projects/<n>.md` → gets current status, stack, open issues
-3. Loads the right skills (Angular? → angular-patterns. React? → react-patterns)
-4. Reads project-specific decisions
-5. Runs a health check on the project repos
-6. Gives you a status summary + asks where to start
+1. Reads `projects/<n>.md` → current status, stack, open issues
+2. Loads the right skills (Angular → angular-patterns. React → react-patterns)
+3. Reads project-specific decisions
+4. Runs a health check on the project repos
+5. Gives you a status summary + asks where to start
 
-**You arrive ready to work in under 2 minutes.**
+**Works from both Claude.ai and Claude CLI.**
 
 ---
 
@@ -95,9 +120,7 @@ Orion despierta
 "Orion, hay un bug en <X>"
 "Orion, idea: ¿podríamos hacer <Y>?"
 ```
-- Orion analyzes the request technically
-- Drafts the issue (English, with context + agent prompt + test plan)
-- Quality check ≥ 8/10 before assignment
+- Orion analyzes technically, drafts the issue, quality check ≥ 8/10
 - You confirm → Orion pushes to GitHub
 
 ### Assigning work to agents
@@ -105,31 +128,21 @@ Orion despierta
 "Asígnale el issue #XX a Nestor"
 "Olga puede tomar el #XX"
 ```
-- Orion assigns the issue via GitHub MCP
-- Agent reads `CLAUDE.md` from the repo → bootstraps
-- Agent reads the issue body → implements → says "Ready to test"
-- You test → give green light → Orion closes the issue
+- Orion assigns via GitHub MCP
+- Agent bootstraps from `CLAUDE.md` → implements → "Ready to test"
+- You test → green light → Orion closes the issue
 
-### Switching between projects mid-session
+### Switching projects
 ```
 "cambiemos a NutriApp"
 "vamos con GameOn"
 ```
-- Orion saves current project state first
-- Loads the new project context + skills
-- Confirms switch is complete
 
 ### Closing a session
 ```
 "Orion cierra sesión"
 ```
-Or Orion does it automatically at conversation end.
-
-Orion will:
-1. Update `projects/<n>.md` with current status
-2. Log the session in `logs/sessions.jsonl`
-3. Push any pending decisions
-4. Confirm: `"Sesión cerrada. Próxima prioridad: [X]."`
+Orion updates `projects/<n>.md`, logs session, confirms next priority.
 
 ---
 
@@ -137,6 +150,7 @@ Orion will:
 
 | I want to... | I say... |
 |---|---|
+| Set up CLI (one-time) | Create local `CLAUDE.md` — see Scenario 0 |
 | Create a new project | `Orion iniciar proyecto` |
 | Start working on GameOn | `despierta Orion, vamos con GameOn` |
 | Start working on NutriApp | `despierta Orion, vamos con NutriApp` |
@@ -151,11 +165,11 @@ Orion will:
 
 ## WHAT YOU NEVER NEED TO DO MANUALLY
 
-- Create repos or branches manually
+- Create repos or branches
 - Write issue bodies
 - Edit `projects/*.md` files
 - Push docs or decisions
-- Bootstrap agents (they read `CLAUDE.md` themselves)
+- Bootstrap agents
 
 **Orion handles all of that. Your job is to decide, test, and validate.**
 
@@ -178,12 +192,6 @@ This file is updated by Orion whenever:
 - A command is created, changed, or deprecated
 - A workflow changes how Mario interacts with the system
 
-**When updating:**
-1. Orion modifies the relevant section(s)
-2. Orion adds an entry to the Changelog below
-3. Orion updates the footer version + date
-4. Push happens in the same commit as the version bump
-
 Mario never edits this file manually — Orion owns it.
 
 ---
@@ -192,10 +200,11 @@ Mario never edits this file manually — Orion owns it.
 
 ### v1.5.0 — April 15, 2026 — Session 24
 - File created
-- Covers: project creation, session start, in-session workflow
-- Quick reference table added
-- Active projects table added
+- Scenarios 1–3: project creation, session start, in-session workflow
+- Quick reference table, active projects table
 - D91: versioning protocol defined
+- Scenario 0 added: Claude CLI one-time setup
+- `CLAUDE.md` created in `Mjosuex85/orion` for CLI boot with lazy loading
 
 ---
 
