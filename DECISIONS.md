@@ -169,7 +169,16 @@ Claude Code, it is not a valid Orion OS workflow.
 
 ---
 
-## 13. FUTURE
+## 13. DOCUMENTATION
+
+**D91. HOW-TO-USE.md is a living document — updated by Orion at every version bump.**
+Triggered by: new Orion OS version, new/removed project, command changes, workflow changes.
+Orion owns this file. Mario never edits it manually.
+Every update includes a Changelog entry + footer version bump, pushed in the same commit as the version change.
+
+---
+
+## 14. FUTURE
 
 **D40. Orion as multi-project architect.** ✅ Active since v1.4.0.
 
@@ -177,5 +186,5 @@ Claude Code, it is not a valid Orion OS workflow.
 
 ---
 
-*Orion OS v1.5.0 — Last updated: April 15, 2026 — Session 23*
-*New: D87 (session close), D89 (reversible decisions), D90 (scaffold via GitHub MCP)*
+*Orion OS v1.5.0 — Last updated: April 15, 2026 — Session 24*
+*New: D91 (HOW-TO-USE versioning protocol)*

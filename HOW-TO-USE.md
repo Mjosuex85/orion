@@ -2,6 +2,9 @@
 
 > This file answers one question: **how do I actually use Orion OS?**
 > It covers the three main scenarios: create a new project, start a session on an existing project, and work within a project.
+>
+> **This file is a living document.** It is updated by Orion at every version bump.
+> See the [Changelog](#changelog) section at the bottom.
 
 ---
 
@@ -36,8 +39,8 @@ Orion iniciar proyecto
 3. Orion creates via GitHub MCP:
    - Repo(s) with `develop` + `main` branches
    - `CLAUDE.md` (agent instructions)
-   - `projects/<name>.md` (project state)
-   - `projects/<name>-decisions.md` (project decisions)
+   - `projects/<n>.md` (project state)
+   - `projects/<n>-decisions.md` (project decisions)
    - Issue #1: environment setup + agent bootstrap
 4. You run locally:
    ```bash
@@ -72,7 +75,7 @@ Orion despierta
 
 **What Orion does automatically:**
 1. Reads `ORION.md` + `DECISIONS.md` from the repo
-2. Reads `projects/<name>.md` → gets current status, stack, open issues
+2. Reads `projects/<n>.md` → gets current status, stack, open issues
 3. Loads the right skills (Angular? → angular-patterns. React? → react-patterns)
 4. Reads project-specific decisions
 5. Runs a health check on the project repos
@@ -123,7 +126,7 @@ Orion despierta
 Or Orion does it automatically at conversation end.
 
 Orion will:
-1. Update `projects/<name>.md` with current status
+1. Update `projects/<n>.md` with current status
 2. Log the session in `logs/sessions.jsonl`
 3. Push any pending decisions
 4. Confirm: `"Sesión cerrada. Próxima prioridad: [X]."`
@@ -158,14 +161,43 @@ Orion will:
 
 ---
 
-## ACTIVE PROJECTS (v1.5.0)
+## ACTIVE PROJECTS
 
-| Project | Stack | Topology | Primary contact |
-|---|---|---|---|
-| GameOn | Angular 21 + NestJS | Polyrepo | Nestor (BE) + Olga (FE) |
-| NutriApp | React + Supabase + Vite | Monorepo | Mario + Orion (Phase 1) |
+| Project | Stack | Topology | Primary contact | Since |
+|---|---|---|---|---|
+| GameOn | Angular 21 + NestJS | Polyrepo | Nestor (BE) + Olga (FE) | v1.0.0 |
+| NutriApp | React + Supabase + Vite | Monorepo | Mario + Orion (Phase 1) | v1.5.0 |
 
 ---
 
-*Orion OS v1.5.0 — Created: April 15, 2026 — Session 24*
+## UPDATE PROTOCOL (D91)
+
+This file is updated by Orion whenever:
+- A new Orion OS version is released
+- A new project is added or removed
+- A command is created, changed, or deprecated
+- A workflow changes how Mario interacts with the system
+
+**When updating:**
+1. Orion modifies the relevant section(s)
+2. Orion adds an entry to the Changelog below
+3. Orion updates the footer version + date
+4. Push happens in the same commit as the version bump
+
+Mario never edits this file manually — Orion owns it.
+
+---
+
+## CHANGELOG
+
+### v1.5.0 — April 15, 2026 — Session 24
+- File created
+- Covers: project creation, session start, in-session workflow
+- Quick reference table added
+- Active projects table added
+- D91: versioning protocol defined
+
+---
+
+*Orion OS v1.5.0 — Last updated: April 15, 2026 — Session 24*
 *Maintained by Orion. Source of truth: `Mjosuex85/orion` (main)*
