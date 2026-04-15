@@ -1,7 +1,7 @@
 # Orion OS
 
 > The operating system for AI-powered development teams.
-> **v1.5.0** — Multi-framework, session commands, monorepo/polyrepo support.
+> **v1.5.0** — Multi-framework, session commands, monorepo/polyrepo, reversible decisions.
 
 ---
 
@@ -39,21 +39,23 @@ Full reference: `workflows/commands.md`
 
 ## Core concepts
 
-**Session commands** — Three explicit commands control the full session lifecycle: init, wake, close. Orion executes them automatically without manual steps.
+**Session commands** — Three explicit commands control the full session lifecycle: init, wake, close.
 
 **Smart session init** — When waking up for a project, Orion loads the exact skills for that project's stack. React project → react-patterns. Angular project → angular-patterns. Never mixed.
 
-**Multi-project architecture** — Orion OS manages multiple projects simultaneously. Each project has isolated context, decisions, skills, and repos. Switching is seamless with state preservation.
+**Reversible decisions (D89)** — Every technical decision must be reversible or explicitly documented as irreversible. Decisions that block the path to the v3.0.0 web product are flagged and justified. When two options exist, always prefer the one that doesn't close doors.
 
-**Multi-framework support** — Skills are framework-agnostic at the system level. Each project declares its own skill set. Supported today: Angular, React. Planned: Vue, Svelte.
+**Scaffold via GitHub MCP (D90)** — Orion creates project scaffolds by pushing files to the repo via GitHub MCP. Mario clones and runs `npm install` locally. This maps 1:1 to a future "Setup" button in the web UI — zero migration cost. Claude Code is optional for Mario, never required for a workflow to function.
 
-**Monorepo + polyrepo** — Project init supports both topologies. Polyrepo for independent deploy cycles (like GameOn). Monorepo for personal tools or minimal backends (like NutriApp).
+**Multi-project architecture** — Orion OS manages multiple projects simultaneously. Each project has isolated context, decisions, skills, and repos.
 
-**Issue-driven development** — GitHub Issues are the only communication channel between Orion and execution agents. Each issue follows a standard format: Context + Done + Agent Prompt + Skills + Test Plan.
+**Multi-framework support** — Skills are framework-agnostic at the system level. Each project declares its own skill set. Supported: Angular, React. Planned: Vue, Svelte.
 
-**Agent intelligence** — Issues are quality-scored before assignment. Skills and subagents are injected based on scope. Agent performance is evaluated after every completion. Failures trigger post-mortems.
+**Monorepo + polyrepo** — Project init supports both topologies.
 
-**Decision registry** — Every technical decision is documented. Universal decisions in `DECISIONS.md`, project-specific in `projects/<n>-decisions.md`.
+**Issue-driven development** — GitHub Issues are the only communication channel between Orion and execution agents. Format: Context + Done + Agent Prompt + Skills + Test Plan.
+
+**Decision registry** — Universal decisions in `DECISIONS.md`. Project-specific in `projects/<n>-decisions.md`.
 
 ## Repository structure
 
@@ -62,6 +64,7 @@ orion/
   ├── README.md                  → This file
   ├── ORION.md                   → Orion's identity, rules, session protocol
   ├── DECISIONS.md               → Universal decisions (all projects)
+  ├── BOOT.md                    → Provisional session bootstrap for Claude Desktop
   │
   ├── agents/
   │   ├── AGENT_RULES.md         → Universal rules for all agents
@@ -73,16 +76,16 @@ orion/
   │
   ├── projects/
   │   ├── gameon.md              → GameOn context (Angular + NestJS — polyrepo)
-  │   ├── gameon-decisions.md    → GameOn-specific decisions
+  │   ├── gameon-decisions.md
   │   ├── gameon-architecture.md
   │   ├── gameon-ideas.md
   │   ├── nutriapp.md            → NutriApp context (React + Supabase — monorepo)
-  │   └── nutriapp-decisions.md  → NutriApp-specific decisions
+  │   └── nutriapp-decisions.md
   │
   ├── logs/
-  │   ├── sessions.jsonl         → Structured session log
-  │   ├── agent-feedback.jsonl   → Post-issue evaluations
-  │   └── post-mortems.jsonl     → Failure analysis
+  │   ├── sessions.jsonl
+  │   ├── agent-feedback.jsonl
+  │   └── post-mortems.jsonl
   │
   ├── rfcs/                      → Pending architecture decisions
   │
@@ -90,57 +93,49 @@ orion/
   │   ├── universal/             → git-flow, issue-reading
   │   ├── backend/               → nestjs-patterns, jwt-auth, typeorm-migrations
   │   ├── frontend/
-  │   │   ├── angular-patterns.md  → Angular 17+ patterns
-  │   │   ├── angular-signals.md   → Signals state management
-  │   │   ├── api-service.md       → HTTP service patterns
-  │   │   └── react-patterns.md    → React 18 + Vite + Zustand patterns
-  │   └── projects/              → Project-specific skills
+  │   │   ├── angular-patterns.md
+  │   │   ├── angular-signals.md
+  │   │   ├── api-service.md
+  │   │   └── react-patterns.md  → provider-agnostic service layer
+  │   └── projects/
   │
   ├── templates/
-  │   ├── project-context.md     → Template for projects/<n>.md
-  │   ├── project-decisions.md   → Template for projects/<n>-decisions.md
-  │   ├── claude-md.md           → CLAUDE.md template for project repos
-  │   ├── issue-template.md      → Standard issue format + quality score
-  │   └── session-close.md       → Session close checklist
+  │   ├── project-context.md
+  │   ├── project-decisions.md
+  │   ├── claude-md.md
+  │   ├── issue-template.md
+  │   └── session-close.md
   │
   └── workflows/
-      ├── commands.md            → Session commands reference (init, wake, close)
-      ├── project-init.md        → New project init — monorepo/polyrepo variants
-      ├── context-switch.md      → Multi-project switching + smart skill loading
-      ├── health-check.md        → Session start health validation
-      ├── issue-quality.md       → Issue quality scoring
-      ├── skill-injection.md     → Skill & subagent mapping
-      ├── agent-feedback.md      → Agent performance evaluation
-      └── post-mortem.md         → Failure analysis & prevention
+      ├── commands.md            → Session commands (init, wake, close)
+      ├── project-init.md        → Monorepo/polyrepo + stack selection
+      ├── context-switch.md      → Smart skill loading on project switch
+      ├── health-check.md
+      ├── issue-quality.md
+      ├── skill-injection.md
+      ├── agent-feedback.md
+      └── post-mortem.md
 ```
 
 ## The Orion lifecycle
 
 ```
 Session start:
-  "despierta Orion, vamos con <project>"
-  → Read memory → Load project skills → Health check → Status summary
+  "lee BOOT.md... vamos con <project>"
+  → Read memory → Load project skills → Status summary
 
 New project:
   "Orion iniciar proyecto"
-  → Wizard → Confirm → Create repo + files + issue #1
+  → Wizard → Confirm → Create repo + files + issue #1 (via GitHub MCP)
 
-Project switch:
-  "cambiemos a <project>"
-  → Save state → Load new context + skills → Health check → Confirm
-
-Issue creation:
-  Draft → Quality score → Skill injection → Assign
-
-Agent execution:
-  Bootstrap → Read skills → Implement → Self-review → "Ready to test"
-
-Completion:
-  Director validates → Agent commits → Orion evaluates → Feedback logged
+Scaffold execution:
+  Orion pushes source files to repo via GitHub MCP
+  Mario: git clone + npm install
+  (maps to future web UI "Setup" button — D90)
 
 Session close:
   "Orion cierra sesión"
-  → Update state → Log session → Confirm next priority
+  → Update project.md + log + confirm next priority
 ```
 
 ## Active projects
@@ -158,12 +153,14 @@ v1.1.0  ✅  Separation of Concerns — framework decoupled from project
 v1.2.0  ✅  Metrics & Observability — dashboard, logs, health checks
 v1.3.0  ✅  Agent Intelligence — quality scoring, skill injection, feedback
 v1.4.0  ✅  Multi-Project Ready — templates, init workflow, context switching
-v1.5.0  ✅  Multi-Framework + Session Commands — React skills, monorepo support, commands.md
-v2.0.0  ⬜  orion-os public repo — clean fork, no project data, anyone can use it
-v3.0.0  ⬜  Orion OS interface — web UI wizard for project init and session management
+v1.5.0  ✅  Multi-Framework + Session Commands + Reversible Architecture
+             React skills, monorepo support, commands.md, D89, D90
+v2.0.0  ⬜  orion-os public repo — clean fork, no project data
+v3.0.0  ⬜  Orion OS web interface — wizard, GitHub OAuth, zero config
 ```
 
 ---
 
 *Created by Mario Vidal + Orion — March 2026*
 *GameOn is the primary lab. NutriApp is the multi-framework proof of concept.*
+*Every decision made today is a brick in the v3.0.0 product.*
