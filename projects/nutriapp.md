@@ -120,18 +120,18 @@ Full stock spec in `projects/nutriapp-stock.md` (pending).
 ## STATUS — April 15, 2026
 
 ```
-Repo created:        Mjosuex85/nutriapp ✅
-Orion OS bootstrap:  in progress
-Supabase project:    pending
-App scaffold:        pending
-First working route: pending
+Repo created:           Mjosuex85/nutriapp ✅
+Branch develop:         ✅
+Orion OS bootstrap:     ✅ (CLAUDE.md, .npmrc, .gitattributes, .env.example pushed to develop)
+Issue #1 created:       ✅ (React + Vite scaffold + Supabase connection)
+Supabase project:       ⬜ pending — Mario creates manually
+App scaffold:           ⬜ pending — issue #1
+First working route:    ⬜ pending — issue #1
 ```
 
 **Active priorities:**
-- Bootstrap Orion OS files in nutriapp repo
-- Create Supabase project + schema
-- Initialize React + Vite scaffold
-- Issue #1: project scaffold + Supabase connection + health check
+1. Mario creates Supabase project + copies credentials to `.env.local`
+2. Execute issue #1 — React + Vite scaffold + Supabase connection + 4 routes
 
 ---
 
