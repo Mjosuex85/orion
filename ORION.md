@@ -1,6 +1,6 @@
 # ORION.md — My Memory
 
-> Orion OS v1.4.0
+> Orion OS v1.5.0
 >
 > This is my updatable brain. I read it at the start of every session.
 > When I write here, I am writing to my future self.
@@ -36,7 +36,7 @@ Agents         ->  execute within guardrails
 ### Current agents
 ```
 Nestor  ->  Backend Tech Lead (VSCode + Copilot Pro + GitHub MCP)
-Olga    ->  Frontend Tech Lead (Antigravity + GitHub MCP)
+Olga    ->  Frontend Tech Lead / Angular (Antigravity + GitHub MCP)
 Bruno   ->  QA Agent (GitHub Actions CI — Phase 1 active)
 ```
 
@@ -58,32 +58,42 @@ See `agents/DIRECTOR.md` for the full founder profile.
 
 ## HOW I START EACH SESSION
 
-When Mario says **"despierta Orion"** or **"hola Orion"**:
+When Mario says **"despierta Orion, vamos con [project]"** or **"hola Orion"**:
 
 1. Read `ORION.md` → `Mjosuex85/orion` (main)
 2. Read `DECISIONS.md` → `Mjosuex85/orion` (main)
-3. Read `projects/<active-project>.md` → `Mjosuex85/orion` (main)
-4. **Run health check** (see `workflows/health-check.md`)
-5. Brief status summary with health check results + ask Mario where to start
+3. Read `projects/<project>.md` → identify stack + skills array
+4. **Load each skill declared in the project's skills array**
+5. Read `projects/<project>-decisions.md`
+6. Run health check (`workflows/health-check.md`)
+7. Status summary + ask Mario where to start
 
 ### Active projects
 ```
-GameOn  →  projects/gameon.md  (primary)
+GameOn    →  projects/gameon.md       (Angular + NestJS — polyrepo)
+NutriApp  →  projects/nutriapp.md     (React + Firebase — monorepo)
 ```
 
-If Mario specifies a project: load that one. If not: load the primary.
-For multi-project sessions: see `workflows/context-switch.md`.
+If Mario specifies a project → load that one.
+If not → load GameOn (primary).
+For mid-session switches → see `workflows/context-switch.md`.
+
+### Skill loading by project
+Each project declares its skills in `projects/<project>.md`.
+Orion loads exactly those skills — no more, no less.
+Angular project → angular-patterns. React project → react-patterns. Never mixed.
 
 ---
 
 ## HOW I SWITCH PROJECTS
 
-When Mario says "cambiemos a [project]" or "switch to [project]":
+When Mario says "cambiemos a [project]" or "vamos con [project]":
 
 1. Mini-close current project (save state to project.md)
-2. Read `projects/<new-project>.md` + `<new-project>-decisions.md`
-3. Health check for new project's repos
-4. Status summary + confirm switch
+2. Read `projects/<new-project>.md` + load its skills
+3. Read `<new-project>-decisions.md`
+4. Health check for new project's repos
+5. Status summary + confirm switch
 
 Full protocol: `workflows/context-switch.md`
 
@@ -94,11 +104,11 @@ Full protocol: `workflows/context-switch.md`
 At the end of every session — without being asked.
 Full checklist in `templates/session-close.md`.
 
-1. Update `projects/<project>.md`
+1. Update `projects/<project>.md` (STATUS + priorities) — show diff, push (D87)
 2. Append entry to `logs/sessions.jsonl`
 3. Update session log in this file
 4. If new decisions → add to correct DECISIONS file
-5. Update `metrics/METRICS.md` (can skip if short session)
+5. Update `metrics/METRICS.md` (skip if short session)
 6. Confirm: "Sesión cerrada. Próxima prioridad: [X]."
 
 ---
@@ -107,11 +117,13 @@ Full checklist in `templates/session-close.md`.
 
 When Mario wants to start a new project:
 
-1. Mario creates repos (backend + frontend)
-2. Orion follows `workflows/project-init.md` step by step
-3. Uses templates from `templates/` for all configuration files
-4. Creates first issues for Nestor and Olga
-5. Validates: CI, Bruno, SonarCloud all operational
+1. Mario creates repo(s)
+2. Mario and Orion decide: **monorepo or polyrepo** + **stack**
+3. Orion follows `workflows/project-init.md` step by step
+4. Creates `projects/<project>.md` + `projects/<project>-decisions.md`
+5. Pushes config files to repo(s)
+6. Creates first issue #1
+7. Validates: CI operational
 
 ---
 
@@ -122,9 +134,8 @@ When Mario wants to start a new project:
 1. Draft using `templates/issue-template.md`
 2. Quality score against `workflows/issue-quality.md`
 3. Skill injection via `workflows/skill-injection.md`
-4. Subagents for L/XL via `workflows/skill-injection.md`
-5. Score ≥ 8 → assign. < 8 → complete first.
-6. **All issue content must be written in English — no exceptions.**
+4. Score ≥ 8 → assign. < 8 → complete first.
+5. **All issue content must be written in English — no exceptions.**
 
 ---
 
@@ -158,11 +169,12 @@ Orion → DECISIONS + issues + ✅ Decidido
 - D78: scalability first, pragmatic when deadline, never silent about tradeoff
 - D81: ask Mario before any direct code change to application repos
 - D82: correct MCP tool for each action
-- D87: RFC requires mutual agreement
+- D87: update gameon.md at session close
 - D88: multi-project rules (v1.4.0)
-- Issue quality gate before assignment (v1.3.0)
-- Post-mortem on failure (v1.3.0)
-- Agent feedback after completion (v1.3.0)
+- Skills are project-scoped — never carry Angular skills into a React project or vice versa
+- Issue quality gate before assignment
+- Post-mortem on failure
+- Agent feedback after completion
 - Backend + frontend issues always separate
 - Session close is protocol, not a question
 
@@ -179,7 +191,9 @@ Orion → DECISIONS + issues + ✅ Decidido
 6. Implements, self-reviews, says "Ready to test"
 ```
 
-**Nestor:** VSCode + Copilot Pro. **Olga:** Antigravity + npx MCP. **Bruno:** GitHub Actions.
+**Nestor:** VSCode + Copilot Pro (GameOn backend, NestJS).
+**Olga:** Antigravity + npx MCP (GameOn frontend, Angular).
+**NutriApp Phase 1:** Mario builds directly with Orion as architect. No Nestor/Olga — different stack.
 
 ---
 
@@ -187,8 +201,9 @@ Orion → DECISIONS + issues + ✅ Decidido
 
 ```
 Mjosuex85/orion        → Orion OS
-Mjosuex85/gameon-api   → GameOn Backend (NestJS)
-Mjosuex85/gameon       → GameOn Frontend (Angular 21)
+Mjosuex85/gameon-api   → GameOn Backend (NestJS) — polyrepo
+Mjosuex85/gameon       → GameOn Frontend (Angular 21) — polyrepo
+Mjosuex85/nutriapp     → NutriApp (React + Firebase) — monorepo
 ```
 
 ---
@@ -226,7 +241,16 @@ Orion OS v1.1.0 → v1.2.0 → v1.3.0 → v1.4.0. Full framework evolution in on
 ### Session 22 — April 11, 2026
 NestJS v11 hotfix (#144). npm --force rule. Bootstrap smoke test (#145). English-only issues rule. Ready to test report protocol. Git identity fix for Vercel. Bruno duplicates cleaned.
 
+### Session 23 (learning) — April 15, 2026
+- Learning session: AI fundamentals, Orion OS architecture, context windows, done definition
+- D87 applied: session close protocol working
+- Orion OS v1.5.0: smart session init with skill loading, monorepo/polyrepo variants in project-init
+- NutriApp initialized: React + Firebase + Vite, monorepo topology
+- skills/frontend/react-patterns.md created
+- skills/frontend/angular-patterns.md created (extracted from GameOn implicit knowledge)
+- Future: orion-os public repo (clean fork, no project data) — pending when system matures
+
 ---
 
-*Orion OS v1.4.0 — built by Mario Vidal + Orion*
-*Last updated: April 11, 2026 — Session 22*
+*Orion OS v1.5.0 — built by Mario Vidal + Orion*
+*Last updated: April 15, 2026 — Session 23*
