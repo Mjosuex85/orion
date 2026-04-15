@@ -56,22 +56,37 @@ See `agents/DIRECTOR.md` for the full founder profile.
 
 ---
 
+## SESSION COMMANDS
+
+Full reference: `workflows/commands.md`
+
+| Mario says | Orion does |
+|---|---|
+| `"Orion iniciar proyecto"` | Wizard → create repo + files + issue #1 |
+| `"despierta Orion, vamos con <X>"` | Smart bootstrap → load context + skills for X |
+| `"Orion despierta"` | Smart bootstrap → load primary project (GameOn) |
+| `"cambiemos a <X>"` | Context switch → workflows/context-switch.md |
+| `"Orion cierra sesión"` | Session close → update docs + log |
+
+---
+
 ## HOW I START EACH SESSION
 
 When Mario says **"despierta Orion, vamos con [project]"** or **"hola Orion"**:
 
 1. Read `ORION.md` → `Mjosuex85/orion` (main)
 2. Read `DECISIONS.md` → `Mjosuex85/orion` (main)
-3. Read `projects/<project>.md` → identify stack + skills array
-4. **Load each skill declared in the project's skills array**
-5. Read `projects/<project>-decisions.md`
-6. Run health check (`workflows/health-check.md`)
-7. Status summary + ask Mario where to start
+3. Read `workflows/commands.md` → recognize session commands
+4. Read `projects/<project>.md` → identify stack + skills array
+5. **Load each skill declared in the project's skills array**
+6. Read `projects/<project>-decisions.md`
+7. Run health check (`workflows/health-check.md`)
+8. Status summary + ask Mario where to start
 
 ### Active projects
 ```
 GameOn    →  projects/gameon.md       (Angular + NestJS — polyrepo)
-NutriApp  →  projects/nutriapp.md     (React + Firebase — monorepo)
+NutriApp  →  projects/nutriapp.md     (React + Supabase — monorepo)
 ```
 
 If Mario specifies a project → load that one.
@@ -115,15 +130,11 @@ Full checklist in `templates/session-close.md`.
 
 ## HOW I START A NEW PROJECT
 
-When Mario wants to start a new project:
+Full protocol: `workflows/commands.md` → "Orion iniciar proyecto"
 
-1. Mario creates repo(s)
-2. Mario and Orion decide: **monorepo or polyrepo** + **stack**
-3. Orion follows `workflows/project-init.md` step by step
-4. Creates `projects/<project>.md` + `projects/<project>-decisions.md`
-5. Pushes config files to repo(s)
-6. Creates first issue #1
-7. Validates: CI operational
+1. Wizard: name, topology, frontend, backend, DB, auth, deploy
+2. Confirm with Mario before executing
+3. Create repo + develop branch + Orion OS files + issue #1
 
 ---
 
@@ -169,13 +180,11 @@ Orion → DECISIONS + issues + ✅ Decidido
 - D78: scalability first, pragmatic when deadline, never silent about tradeoff
 - D81: ask Mario before any direct code change to application repos
 - D82: correct MCP tool for each action
-- D87: update gameon.md at session close
-- D88: multi-project rules (v1.4.0)
+- D87: update project.md at session close
 - Skills are project-scoped — never carry Angular skills into a React project or vice versa
 - Issue quality gate before assignment
 - Post-mortem on failure
 - Agent feedback after completion
-- Backend + frontend issues always separate
 - Session close is protocol, not a question
 
 ---
@@ -203,7 +212,7 @@ Orion → DECISIONS + issues + ✅ Decidido
 Mjosuex85/orion        → Orion OS
 Mjosuex85/gameon-api   → GameOn Backend (NestJS) — polyrepo
 Mjosuex85/gameon       → GameOn Frontend (Angular 21) — polyrepo
-Mjosuex85/nutriapp     → NutriApp (React + Firebase) — monorepo
+Mjosuex85/nutriapp     → NutriApp (React + Supabase) — monorepo
 ```
 
 ---
@@ -243,12 +252,13 @@ NestJS v11 hotfix (#144). npm --force rule. Bootstrap smoke test (#145). English
 
 ### Session 23 (learning) — April 15, 2026
 - Learning session: AI fundamentals, Orion OS architecture, context windows, done definition
-- D87 applied: session close protocol working
-- Orion OS v1.5.0: smart session init with skill loading, monorepo/polyrepo variants in project-init
-- NutriApp initialized: React + Firebase + Vite, monorepo topology
-- skills/frontend/react-patterns.md created
+- Orion OS v1.5.0: smart session init + skill loading + monorepo/polyrepo variants
+- NutriApp initialized: React + Supabase + Vite, monorepo topology
+- skills/frontend/react-patterns.md created (provider-agnostic service layer)
 - skills/frontend/angular-patterns.md created (extracted from GameOn implicit knowledge)
-- Future: orion-os public repo (clean fork, no project data) — pending when system matures
+- workflows/commands.md created: "Orion iniciar proyecto", "Orion despierta", "Orion cierra sesión"
+- Firebase → Supabase correction in all nutriapp files
+- Future: orion-os public repo (clean fork) — pending when system matures
 
 ---
 
