@@ -21,7 +21,8 @@ It lets Mario manage his ingredient stock, select daily meals from a recipe list
 **Monorepo** — `Mjosuex85/nutriapp`
 ```
 nutriapp/
-  app/   → React 18 + Vite frontend
+  app/   → React 19 + Vite frontend
+  supabase/migrations/   → SQL migrations
 ```
 No dedicated backend — Supabase SDK used directly from frontend.
 
@@ -30,13 +31,13 @@ No dedicated backend — Supabase SDK used directly from frontend.
 ## STACK
 
 ```
-Frontend:   React 18 + Vite
-Styles:     CSS Modules + SCSS
+Frontend:   React 19 + Vite + TypeScript
+Styles:     CSS Modules (no Tailwind, no inline styles)
 State:      Zustand
-Router:     React Router v6
-Database:   Supabase (PostgreSQL)
+Router:     React Router v7
+Database:   Supabase (PostgreSQL + JSONB)
 Auth:       Supabase Auth (Phase 2 — not needed in Phase 1)
-Deploy:     Vercel
+Deploy:     Vercel (pending)
 ```
 
 ---
@@ -53,85 +54,112 @@ skills:
 
 ## DATA MODEL
 
-### `stock` (single row per user)
-- id, user_id (Phase 2), proteins JSONB, carbohydrates JSONB, condiments JSONB, updated_at
+### `stock` (single row)
+- id, proteins JSONB, carbohydrates JSONB, condiments JSONB, updated_at
+- JSONB shape: `{ ingredient_name: { amount: number, unit: string } }`
+- Low stock threshold: <100 for g/ml units, ≤1 for bote/spray/unidad
 
-### `recipes` (15 rows)
-- id, name, category (breakfast / lunch_dinner)
-- ingredients JSONB: { ingredient_id: { amount, unit } }
-- instructions, servings, calories, protein_g, carbs_g
+### `recipes`
+- id, name, category (`breakfast` | `lunch_dinner`)
+- ingredients JSONB: `{ ingredient_name: { amount, unit } }`
+- instructions, servings, calories, protein_g, carbs_g, created_at
 
-### `monthly_plan` (one row per month)
-- id, month, year
-- meals JSONB: [{ day, date, breakfast_lunch, dinner_snack, status }]
-- status: pending | completed | skipped
+### `monthly_plans`
+- id, month, year, meals JSONB, created_at
+- UNIQUE (month, year) — upserted on save
+- meals shape: `[{ day, date, breakfast, lunch_dinner, status, breakfast_done?, lunch_dinner_done? }]`
+- status: `pending` | `completed` | `skipped`
+- `breakfast_done` / `lunch_dinner_done`: boolean flags set when user cooks a meal (persisted)
 
-### `history` (append-only)
+### `history` (not yet built)
 - id, date, recipe_id, ingredients_used JSONB, created_at
 
 ---
 
-## FEATURES
+## FEATURES (as of April 15, 2026)
 
-### Dashboard
-- Stock cards: proteins / carbs / condiments
-- Alert if ingredient < 100g
-- Weekly consumption chart
-- CTA: "Ver Plan" | "Cocinar Hoy"
+### Dashboard ✅
+- Today's meal proposals (breakfast + lunch/dinner from current plan)
+- Stock summary cards with low-stock alerts (amber highlight)
+- MealActionSheet accessible from today's meals
+- "Crear menú" flow with ConfirmModal — deducts stock + marks meal done
 
-### Recipes
-- 15 recipe cards
-- Detail modal: ingredients, calories, macros, instructions
-- "Usar esta receta" → adds to plan
+### Recipes ✅
+- Cards with category badges (amber = Desayuno, green = Almuerzo & Cena)
+- RecipeModal: colored sticky header (amber/green per category), ingredients, macros, instructions
+- "Crear menú" button inside modal only when opened from Plan/Dashboard (not from Recipes page)
 
-### Monthly Plan
-- 30-day calendar view
-- Click day → select 2 recipes (breakfast + dinner)
-- Confirm → deducts stock + logs to history
-- Drag & drop between days
+### Monthly Plan ✅
+- Three views: Hoy / Semana / Mes
+- Week view with prev/next navigation (week offset)
+- Month grid with amber (breakfast) / green (lunch) chips
+- Click chip → MealActionSheet (Ver receta / Crear menú / Cambiar menú del día)
+- Click day cell → DayEditModal to change recipes
+- Auto-generate: Fisher-Yates shuffle, different result each call
+- ConfirmModal for Generate and Save actions
+- Saved to Supabase via upsert — persists across sessions
+- Done meals show strikethrough chip + ✓ prefix
 
-### Stock
-- Detailed table/cards per ingredient
-- kg + g dual display
-- % consumed of total
-
----
-
-## BUSINESS RULES
-
-- Marking a meal as "completed" deducts ingredients from stock automatically
-- Alert threshold: < 100g protein or carb triggers visual warning
-- Monthly reset: option to reset plan on day 31 (keep remaining stock)
-- Offline fallback: localStorage if Supabase unavailable
+### Stock ✅
+- Sections: Proteínas / Carbohidratos / Condimentos
+- StockCard with kg/g dual display, low-stock detection
+- Deducted automatically when a meal is cooked
 
 ---
 
-## INITIAL STOCK DATA
+## KEY ARCHITECTURE RULES
 
-Two purchases pre-loaded (98.43€ total):
-- Proteins: pechuga 3.711kg, burgers 2kg, jamoncitos 0.896kg, huevos 12u, quesos ~835g
-- Carbs: arroz 2kg, pasta 1kg, harina 2kg, pan (hamburguesa 4u, sandwich 27u, rallado 1kg)
-- Condiments: aceite 1L, salsas, mantequilla, verduras frescas, especias
+- No inline styles. No Tailwind. CSS Modules only.
+- Supabase calls only in `services/` layer.
+- Hooks consume Zustand stores via selectors (avoid infinite re-renders).
+- `maybeSingle()` for queries that may return 0 or 1 rows.
+- `structuredClone()` before mutating stock objects.
+- CSS variables design system defined in `index.css` (`--color-primary`, `--color-surface`, etc.).
+- Mobile: bottom nav `position: fixed`, `z-index: 9999`, `env(safe-area-inset-bottom)` for notch.
+- Desktop: top nav shown via media query `≥768px`.
 
-Full stock spec in `projects/nutriapp-stock.md` (pending).
+---
+
+## PENDING / DEFERRED
+
+- **Historial page**: Log of cooked meals (recipe, date, ingredients used). Not yet designed with Mario.
+- **Stock camera feature**: Open camera, photo of shopping list, auto-updates stock. Future.
+- **Auth / sign out**: Planned for end of Phase 1.
+- **Recipe add/edit from UI**: Currently recipes are read-only from the app.
+- **Vercel deploy**: Not yet done.
+- **Multi-user (Phase 2)**: Supabase Auth, user_id on all tables.
+
+---
+
+## MIGRATIONS RUN
+
+```
+001_stock.sql         ✅ run
+002_recipes.sql       ✅ run (15 recipes seeded)
+003_monthly_plans.sql ✅ run (Mario confirmed April 15, 2026)
+```
 
 ---
 
 ## STATUS — April 15, 2026
 
 ```
-Repo created:           Mjosuex85/nutriapp ✅
-Branch develop:         ✅
-Orion OS bootstrap:     ✅ (CLAUDE.md, .npmrc, .gitattributes, .env.example pushed to develop)
-Issue #1 created:       ✅ (React + Vite scaffold + Supabase connection)
-Supabase project:       ⬜ pending — Mario creates manually
-App scaffold:           ⬜ pending — issue #1
-First working route:    ⬜ pending — issue #1
+Repo:                   Mjosuex85/nutriapp ✅
+Branch develop:         ✅ (active branch)
+Supabase project:       ✅ hvvcqxdwbbgdxewbgrij.supabase.co
+All migrations run:     ✅
+Dashboard:              ✅ with today's meals + cook flow
+Recipes page:           ✅ with modal + cook button
+Monthly Plan page:      ✅ Hoy/Semana/Mes + generate + save + cook
+Stock page:             ✅
+UI redesign:            ✅ design system, vibrant colors, fixed bottom nav
+MealActionSheet:        ✅ redesigned (gradient cook button, handle pill)
+ConfirmModal:           ✅ used for generate/save/cook actions
+RecipeModal:            ✅ colored header, macros, cook button
+Vercel deploy:          ⬜ pending
+Auth / sign out:        ⬜ deferred
+Historial page:         ⬜ deferred
 ```
-
-**Active priorities:**
-1. Mario creates Supabase project + copies credentials to `.env.local`
-2. Execute issue #1 — React + Vite scaffold + Supabase connection + 4 routes
 
 ---
 
@@ -143,4 +171,4 @@ First working route:    ⬜ pending — issue #1
 
 ---
 
-*Part of Orion OS v1.5.0 — initialized April 15, 2026*
+*Part of Orion OS v1.5.0 — last updated April 15, 2026*
