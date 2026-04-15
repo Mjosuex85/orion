@@ -1,7 +1,7 @@
 # NutriApp — Project Context
 
 > Technical context for Orion.
-> Business ideas → `projects/nutriapp-decisions.md`.
+> Architecture decisions → `projects/nutriapp-decisions.md`.
 
 ---
 
@@ -23,7 +23,7 @@ It lets Mario manage his ingredient stock, select daily meals from a recipe list
 nutriapp/
   app/   → React 18 + Vite frontend
 ```
-No dedicated backend — Firebase SDK used directly from frontend.
+No dedicated backend — Supabase SDK used directly from frontend.
 
 ---
 
@@ -34,8 +34,8 @@ Frontend:   React 18 + Vite
 Styles:     CSS Modules + SCSS
 State:      Zustand
 Router:     React Router v6
-Database:   Firebase Firestore
-Auth:       Firebase Auth
+Database:   Supabase (PostgreSQL)
+Auth:       Supabase Auth (Phase 2 — not needed in Phase 1)
 Deploy:     Vercel
 ```
 
@@ -53,24 +53,21 @@ skills:
 
 ## DATA MODEL
 
-### `stock` (single document)
-- proteins: items with weight_kg / weight_g / quantity
-- carbohydrates: same
-- condiments: same
-- lastUpdated: timestamp
+### `stock` (single row per user)
+- id, user_id (Phase 2), proteins JSONB, carbohydrates JSONB, condiments JSONB, updated_at
 
-### `recipes` (collection, 15 documents)
-- name, category (breakfast / lunch_dinner)
-- ingredients: { ingredient_id: { amount, unit } }
+### `recipes` (15 rows)
+- id, name, category (breakfast / lunch_dinner)
+- ingredients JSONB: { ingredient_id: { amount, unit } }
 - instructions, servings, calories, protein_g, carbs_g
 
-### `monthlyPlan` (one document per month)
-- month, year
-- meals[]: { day, date, breakfast_lunch, dinner_snack, status }
+### `monthly_plan` (one row per month)
+- id, month, year
+- meals JSONB: [{ day, date, breakfast_lunch, dinner_snack, status }]
 - status: pending | completed | skipped
 
-### `history` (collection)
-- date, recipe_id, ingredients_used, timestamp
+### `history` (append-only)
+- id, date, recipe_id, ingredients_used JSONB, created_at
 
 ---
 
@@ -105,7 +102,7 @@ skills:
 - Marking a meal as "completed" deducts ingredients from stock automatically
 - Alert threshold: < 100g protein or carb triggers visual warning
 - Monthly reset: option to reset plan on day 31 (keep remaining stock)
-- Offline fallback: localStorage if Firestore unavailable
+- Offline fallback: localStorage if Supabase unavailable
 
 ---
 
@@ -116,31 +113,32 @@ Two purchases pre-loaded (98.43€ total):
 - Carbs: arroz 2kg, pasta 1kg, harina 2kg, pan (hamburguesa 4u, sandwich 27u, rallado 1kg)
 - Condiments: aceite 1L, salsas, mantequilla, verduras frescas, especias
 
-Full stock spec in original documentation.
+Full stock spec in `projects/nutriapp-stock.md` (pending).
 
 ---
 
 ## STATUS — April 15, 2026
 
 ```
-Repo created: Mjosuex85/nutriapp ✅
-Orion OS bootstrap: in progress
-App scaffold: pending
-Firebase init: pending
+Repo created:        Mjosuex85/nutriapp ✅
+Orion OS bootstrap:  in progress
+Supabase project:    pending
+App scaffold:        pending
 First working route: pending
 ```
 
 **Active priorities:**
 - Bootstrap Orion OS files in nutriapp repo
-- Initialize React + Vite + Firebase project
-- Issue #1: project scaffold + Firebase connection + health route
+- Create Supabase project + schema
+- Initialize React + Vite scaffold
+- Issue #1: project scaffold + Supabase connection + health check
 
 ---
 
 ## TARGET USERS
 
-**Phase 1 — Personal:** Mario. Single user, no auth needed initially.
-**Phase 2 — Household:** Multi-user with Firebase Auth.
+**Phase 1 — Personal:** Mario. Single user, no auth needed.
+**Phase 2 — Household:** Multi-user with Supabase Auth.
 **Phase 3 — Product:** Nutrition coaches managing client meal plans.
 
 ---

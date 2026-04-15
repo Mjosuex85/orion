@@ -1,6 +1,7 @@
 # Skill: React Patterns — Frontend
 
 > Core patterns for React 18+ projects under Orion OS.
+> Provider-agnostic: service layer abstracts the data source (Supabase, REST API, etc.)
 > Stack: React + Vite + Zustand + React Router v6.
 
 ---
@@ -12,13 +13,15 @@ src/
   components/     → reusable UI (atoms, molecules)
   features/       → one folder per feature
   hooks/          → custom hooks (useStock, usePlan, etc.)
-  services/       → API/Firebase calls
+  services/       → data access layer (abstracts provider)
   store/          → Zustand stores
   types/          → TypeScript interfaces
   utils/          → pure functions
   App.tsx
   main.tsx
 ```
+
+---
 
 ## State management — Zustand
 
@@ -42,6 +45,8 @@ export const useStockStore = create<StockState>((set) => ({
 }));
 ```
 
+---
+
 ## Custom hooks pattern
 
 ```typescript
@@ -56,6 +61,8 @@ export function useStock() {
   return { items, loading };
 }
 ```
+
+---
 
 ## Component pattern
 
@@ -76,31 +83,44 @@ export function StockCard({ item, onUpdate }: Props) {
 }
 ```
 
-## Firebase service pattern
+---
+
+## Service layer pattern (provider-agnostic)
+
+Services abstract the data provider. The rest of the app never imports Supabase, Firebase, or any SDK directly.
 
 ```typescript
 // services/stock.service.ts
-import { db } from '../firebase';
-import { doc, getDoc, updateDoc } from 'firebase/firestore';
+// The implementation below uses Supabase — swap for any other provider without touching hooks or components.
+
+import { supabase } from '../lib/supabase';
 
 export const stockService = {
   async getAll(): Promise<StockItem[]> {
-    const snap = await getDoc(doc(db, 'stock', 'main'));
-    return snap.exists() ? snap.data().items : [];
+    const { data, error } = await supabase.from('stock').select('*');
+    if (error) throw error;
+    return data ?? [];
   },
 
   async update(id: string, amount: number): Promise<void> {
-    await updateDoc(doc(db, 'stock', 'main'), { [`items.${id}.amount`]: amount });
+    const { error } = await supabase
+      .from('stock')
+      .update({ amount })
+      .eq('id', id);
+    if (error) throw error;
   },
 };
 ```
 
+---
+
 ## Rules
 
-- Prefer custom hooks over logic in components
+- All data provider calls live in `services/` — never in components or hooks directly
+- Hooks consume services. Components consume hooks.
 - Zustand over Context API for shared state
-- Services are pure functions — no hooks inside services
-- All Firebase calls live in `services/` — never in components directly
+- Services are pure functions — no React hooks inside services
 - TypeScript strict mode always on
 - CSS Modules for component styles — no inline styles
 - Mobile-first responsive design
+- `lib/` folder holds provider client initialization (e.g. `lib/supabase.ts`)
