@@ -37,7 +37,8 @@
 
 **D56. Mario gives the green light before Orion uses any MCP on application repos.**
 
-**D87. RFC flow — both Mario and Orion must agree before creating an RFC.**
+**D87. Session close protocol — Orion updates `projects/<project>.md` at the end of every session.**
+Shows diff to Mario before push. Source of truth for project state.
 
 ---
 
@@ -133,6 +134,11 @@
 
 **D78.** Scalable by default. Pragmatic when there is a real deadline. Never silent about the tradeoff.
 
+**D89. Every technical decision must be reversible or explicitly documented as irreversible.**
+Reason: Orion OS is evolving toward a web product (v3.0.0). Decisions that block that evolution
+must be flagged and justified. When two options exist, always prefer the one that doesn't
+close doors for the future interface.
+
 ---
 
 ## 11. MULTI-PROJECT
@@ -144,13 +150,26 @@
 3. **Context switch is explicit:** Orion saves state before switching (see `workflows/context-switch.md`).
 4. **Decisions go to the right file:** universal → DECISIONS.md, project-specific → projects/<n>-decisions.md.
 5. **Agents re-bootstrap on project switch:** they must re-read CLAUDE.md from the new repo.
-6. **Cross-project decisions are rare:** if one is needed, document in DECISIONS.md universal and note in both project files.
+6. **Cross-project decisions are rare:** if one is needed, document in DECISIONS.md and note in both project files.
 7. **New projects use the init workflow:** `workflows/project-init.md` + templates. No ad-hoc setup.
-8. **Primary project:** the project Orion loads by default at session start. Currently GameOn. Mario can change this.
+8. **Primary project:** the project Orion loads by default at session start. Currently GameOn.
 
 ---
 
-## 12. FUTURE
+## 12. SCAFFOLD AND EXECUTION
+
+**D90. Orion creates project scaffolds via GitHub MCP — never assumes local terminal access.**
+Reason: the workflow must scale to the v3.0.0 web interface where no terminal exists.
+Orion pushes all source files to the repo. Mario clones and runs `npm install` locally.
+This is the only reversible flow — it maps 1:1 to a future "Setup" button in the web UI.
+
+Claude Code can be used by Mario to accelerate local work, but it is never
+the required path for a workflow to function. If a workflow only works with
+Claude Code, it is not a valid Orion OS workflow.
+
+---
+
+## 13. FUTURE
 
 **D40. Orion as multi-project architect.** ✅ Active since v1.4.0.
 
@@ -158,4 +177,5 @@
 
 ---
 
-*Orion OS v1.4.0 — Last updated: April 10, 2026 — Session 21*
+*Orion OS v1.5.0 — Last updated: April 15, 2026 — Session 23*
+*New: D87 (session close), D89 (reversible decisions), D90 (scaffold via GitHub MCP)*
