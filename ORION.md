@@ -120,11 +120,10 @@ At the end of every session — without being asked.
 Full checklist in `templates/session-close.md`.
 
 1. Update `projects/<project>.md` (STATUS + priorities) — show diff, push (D87)
-2. Append entry to `logs/sessions.jsonl`
-3. Update session log in this file
-4. If new decisions → add to correct DECISIONS file
-5. Update `metrics/METRICS.md` (skip if short session)
-6. Confirm: "Sesión cerrada. Próxima prioridad: [X]."
+2. Update `projects/<project>-decisions.md` — add new technical decisions
+3. Append entry to `logs/sessions.jsonl`
+4. Add one-liner to SESSION LOG in this file
+5. Confirm: "Sesión cerrada. Próxima prioridad: [X]."
 
 ---
 
@@ -260,7 +259,10 @@ NestJS v11 hotfix (#144). npm --force rule. Bootstrap smoke test (#145). English
 - Firebase → Supabase correction in all nutriapp files
 - Future: orion-os public repo (clean fork) — pending when system matures
 
+### Session 24 — April 16, 2026
+NutriApp Phase 1 complete. Plan, cook flow, stock deduction, UI redesign. ND16-ND21.
+
 ---
 
 *Orion OS v1.5.0 — built by Mario Vidal + Orion*
-*Last updated: April 15, 2026 — Session 23*
+*Last updated: April 16, 2026 — Session 24*
