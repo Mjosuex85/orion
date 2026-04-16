@@ -178,7 +178,34 @@ Every update includes a Changelog entry + footer version bump, pushed in the sam
 
 ---
 
-## 14. FUTURE
+## 14. SONARCLOUD QUALITY STRATEGY
+
+**D92. SonarCloud quality enforcement — three-layer strategy:**
+
+### Layer 1 — Agents (prevention, before commit)
+- **Nestor (VSCode):** SonarQube for IDE extension installed + connected to SonarQube Cloud. Detects issues inline while writing code. Required in bootstrap.
+- **Olga (Antigravity):** SonarQube MCP Server installed from Antigravity MCP Store. Detects issues via natural language before saying "Ready to test". Required in bootstrap.
+- Goal: zero Sonar issues reach CI.
+
+### Layer 2 — CI (enforcement, on PR)
+- Bruno runs SonarCloud scan on every PR to `staging` and `main`.
+- Quality Gate must pass before Mario can merge.
+- If Quality Gate fails → fix in `develop`, never skip or bypass.
+
+### Layer 3 — Orion (deploy-only coordination)
+- **Orion does NOT use SonarCloud MCP during normal development.**
+- Orion's SonarCloud role is limited to **critical deploy moments**: when Quality Gate blocks a release and Orion must triage which issues to fix vs. temporarily exclude with justification.
+- Orion never excludes files from coverage without creating a follow-up issue with tests.
+- Orion never marks a Hotspot as "Safe" without confirming with Mario.
+
+### Sonar issue assignment rule
+- Angular/frontend issues → Olga
+- NestJS/backend issues → Nestor
+- Orion triages ambiguous cases
+
+---
+
+## 15. FUTURE
 
 **D40. Orion as multi-project architect.** ✅ Active since v1.4.0.
 
@@ -186,5 +213,5 @@ Every update includes a Changelog entry + footer version bump, pushed in the sam
 
 ---
 
-*Orion OS v1.5.0 — Last updated: April 15, 2026 — Session 24*
-*New: D91 (HOW-TO-USE versioning protocol)*
+*Orion OS v1.5.0 — Last updated: April 16, 2026 — Session 25*
+*New: D92 (SonarCloud three-layer quality strategy)*
