@@ -41,7 +41,7 @@
 
 Orion shows a summary:
 ```
-Proyecto:   <name>
+Proyecto:   <n>
 Topología:  monorepo / polyrepo
 Frontend:   <framework>
 Backend:    <backend>
@@ -57,8 +57,8 @@ Then asks: **"¿Todo correcto? Dame luz verde."**
 ```
 1. Create repo via GitHub MCP (if requested)
 2. Create develop branch
-3. Create projects/<name>.md (from template, filled with chosen stack)
-4. Create projects/<name>-decisions.md (initial decisions based on choices)
+3. Create projects/<n>.md (from template, filled with chosen stack)
+4. Create projects/<n>-decisions.md (initial decisions based on choices)
 5. Push CLAUDE.md + .npmrc + .gitattributes + .env.example to develop
 6. Update ORION.md — add project to REPOS + active projects list
 7. Create issue #1 — project scaffold based on chosen stack
@@ -67,8 +67,8 @@ Then asks: **"¿Todo correcto? Dame luz verde."**
 ### Output
 
 ```
-"Proyecto <name> inicializado bajo Orion OS.
-Repo: Mjosuex85/<name>
+"Proyecto <n> inicializado bajo Orion OS.
+Repo: Mjosuex85/<n>
 Issue #1 abierto: <title>
 Próximo paso: ejecuta el issue #1."
 ```
@@ -113,29 +113,62 @@ Próximo paso: ejecuta el issue #1."
 **What Orion does — session close protocol:**
 
 ```
-1. Show STATUS diff for projects/<project>.md
+1. Show diff for projects/<project>.md
    → What changed: issues closed, decisions made, priorities updated
-   → Ask Mario: "¿Hago push de esto?"
+   → Ask Mario: "¿Hago push?"
 
-2. On Mario's green light:
-   → Push updated projects/<project>.md
-   → Append entry to logs/sessions.jsonl
-   → Add new decisions to DECISIONS.md or projects/<project>-decisions.md
+2. On Mario's green light, push in this exact order:
+   a. projects/<project>.md          — status, features, pending (D87)
+   b. projects/<project>-decisions.md — new technical decisions (ALWAYS, not optional)
+   c. logs/sessions.jsonl            — append structured entry
+   d. ORION.md SESSION LOG           — one-liner only (see format below)
 
-3. Update ORION.md session log with:
-   → Issues closed
-   → Decisions made
-   → Lessons learned
-   → Next session priorities
-
-4. Confirm:
+3. Confirm:
    "Sesión cerrada. Próxima prioridad: [X]."
+```
+
+### SESSION LOG format — ORION.md (CRITICAL)
+
+> The SESSION LOG in ORION.md is a timeline of Orion OS — not a project log.
+> **One line per session. No project detail. No feature lists.**
+
+```
+### Session XX — Month DD, YYYY
+<Project>: <one sentence summary>. <key decisions if any>.
+```
+
+Examples of CORRECT entries:
+```
+### Session 24 — April 16, 2026
+NutriApp Phase 1 complete. Plan, cook flow, stock deduction, UI redesign. ND16-ND21.
+```
+
+Examples of WRONG entries (never do this):
+```
+### Session 24 — April 16, 2026
+- Monthly Plan page: Hoy/Semana/Mes views, week navigation, month grid
+- Auto-generate: Fisher-Yates shuffle
+- Cook flow: MealActionSheet → ConfirmModal → applyRecipe
+...
+```
+
+### projects/<project>-decisions.md — ALWAYS updated at close
+
+All new technical decisions made during the session go here — no exceptions.
+Format: `NDxx. <Decision title>` with context and reason.
+This is not optional. If decisions were made, they must be documented.
+
+### logs/sessions.jsonl — entry format
+
+```json
+{"session": N, "date": "YYYY-MM-DD", "project": "<project>", "issues_closed": ["#N"], "issues_created": [], "decisions": ["short description"], "summary": "one sentence", "orion_os_version": "x.x.x"}
 ```
 
 **Rules:**
 - Never close without updating projects/<project>.md (D87)
 - Always show diff before pushing — Mario decides what goes in
-- If session was short and nothing changed → say so explicitly, no unnecessary push
+- If session was short and nothing changed → say so, no unnecessary push
+- ORION.md SESSION LOG = one-liner only. The detail lives in project files.
 
 ---
 
@@ -152,4 +185,4 @@ Próximo paso: ejecuta el issue #1."
 ---
 
 *Part of Orion OS v1.5.0 — session commands*
-*Added: April 15, 2026 — Session 23*
+*Updated: April 16, 2026 — Session 25 — fix: session close protocol (bugs from session 24)*
