@@ -1,0 +1,202 @@
+================================================================================
+ORION OS: AI AGENT ORCHESTRATION SYSTEM
+Hackaton Pitch & System Overview
+================================================================================
+
+WHAT IS ORION OS?
+
+Orion OS is an operational framework and working methodology that enables the 
+user to build real software products with specialized AI agent teams. It is not 
+a generic tool or assistant. It is an orchestration system with clear 
+architecture, explicit rules, documented workflows, and reversible decisions.
+
+Two-layer structure:
+  System: workflows, skills, templates, universal decisions (reusable, generic)
+  Instance: project-specific files, logs, private technical decisions
+
+Current version: v1.5.0 (April 15, 2026)
+Goal: Evolve toward v3.0.0 — web interface where the user manages multiple 
+projects without technical knowledge
+
+================================================================================
+WHO IS ORION?
+
+I am Orion, the technical CTO of the user. I am not an assistant who executes 
+orders. I am an architect who decides, questions, documents, and improves the 
+system through every project we build together.
+
+Real team structure:
+  The user + Orion  →  decide, design, validate (decision-making)
+  Agents            →  execute within guardrails (specialization)
+
+Current agents:
+  Backend Tech Lead  → VSCode + Copilot Pro, NestJS in GameOn
+  Frontend Tech Lead → Antigravity, Angular in GameOn
+  QA Agent           → GitHub Actions CI, automated validation
+
+================================================================================
+HOW WE WORK
+
+1. Reversible Decisions (D89)
+   Every important action is recorded as a formal decision. D89 is the central 
+   principle: every decision must be reversible or explicitly justified. This 
+   is critical because Orion evolves toward v3.0.0 (web). Decisions that close 
+   future doors must be justified.
+
+2. Scaffold via GitHub MCP (D90)
+   Orion creates all architecture for new projects by pushing files to the 
+   repository through GitHub MCP. The user clones and runs npm install 
+   locally. This is reversible and scalable — it maps 1:1 to a future "Setup" 
+   button on the web.
+
+3. Session Command Flow
+   The user has simple commands available:
+   - "Orion iniciar proyecto" → interactive wizard + create repo + files + issue #1
+   - "despierta Orion, vamos con [project]" → load intelligent context
+   - "cambiemos a [project]" → context switch without losing state
+   - "Orion cierra sesión" → update docs, record changes, confirm
+
+4. Boot Sequence (Lazy-load)
+   Every session:
+   1. Read ORION.md, DECISIONS.md, workflows/commands.md from repo
+   2. Wait for the user to specify a project
+   3. Load project context + project-specific skills
+   4. Health check and state summary
+   
+   Why: Keeps CLI sessions agile and context footprint predictable for v3.0.0.
+
+5. D-Numbered Decisions
+   D1-D4:     Team and roles
+   D5-D9:     Workflow and issues
+   D10-D14:   Git and branches
+   D35-D37:   Security
+   D38, D82:  Tools and MCP
+   D54, D63-D66: Model scaling
+   D78, D89-D91:  Decision framework and documentation
+   D92:       SonarCloud three-layer quality strategy
+
+================================================================================
+GAMEON: THE PRIMARY LAB
+
+GameOn is not "just another project." It is the validation lab where Orion 
+trains as CTO.
+
+Stack:  Angular + NestJS, polyrepo architecture
+Status: In production since session 12
+
+Role in Orion OS:
+  Test real orchestration workflows
+  Validate agent-to-issue protocol
+  Discover patterns that improve the system
+
+Learning cycle:
+  Discovery in GameOn → Generalized as decision
+  → Documented in DECISIONS.md and workflows/
+  → Integrated into HOW-TO-USE.md
+  → Pattern scales toward v3.0.0
+
+Example: In recent sessions, we discovered that the session-close protocol had 
+two minor bugs. We fixed them in workflows/commands.md. This prevents v3.0.0 
+from inheriting those bugs.
+
+================================================================================
+NUTRIAPP: MULTI-PROJECT PROOF OF CONCEPT
+
+NutriApp was successfully built via Claude CLI to validate:
+  Monorepo vs. polyrepo (GameOn = polyrepo; NutriApp = monorepo)
+  Multi-framework support (Angular in GameOn, React in NutriApp)
+  Lazy-loading works for isolated projects
+
+Stack:  React + Supabase + Vite, monorepo architecture
+Lesson: The lazy-load boot sequence scales. Each project loads only its 
+specific skills.
+
+================================================================================
+TOWARD V3.0.0: THE WEB INTERFACE
+
+The evolution of Orion OS is the journey from Claude (prompt system) toward a 
+web product accessible to anyone, even without technical knowledge.
+
+V2.0.0 (next milestone) — orion-os public
+  New repo: Mjosuex85/orion-os (public)
+  Contains: workflows/, skills/, templates/, generic agents
+  Does NOT contain: private projects, personal logs, user decisions
+  Result: Anyone can clone and create their own Orion instance
+
+V3.0.0 (vision) — Orion Web
+  The user goes to orion-os.com
+  → GitHub OAuth
+  → Wizard: project name, topology, frontend, backend, DB, auth, deploy
+  → Orion creates repo + files + issue #1 automatically
+  → Chat with Orion (context loaded, no manual bootstrap)
+  → "Setup" button → automated git clone + npm install
+
+  Proposed stack:
+    Frontend: React (NutriApp validates this)
+    Backend: NestJS or serverless
+    LLM: Claude API (Anthropic)
+    GitHub: OAuth + API (replaces MCP)
+    Memory: DB-backed (replaces markdown bootstrap)
+
+================================================================================
+WHAT WORKS TODAY (V1.5.0)
+
+✓ Smart session init — Orion loads context + project-specific skills
+✓ Session commands — "iniciar proyecto", "vamos con X", "cierra sesión"
+✓ Multi-project — GameOn + NutriApp isolated
+✓ Multi-framework — framework-specific skills (Angular vs. React)
+✓ Monorepo + polyrepo support
+✓ Scaffold via GitHub MCP (reversible)
+✓ Improved session-close protocol
+✓ SonarCloud three-layer quality strategy
+
+================================================================================
+WHAT'S MISSING (ROADMAP)
+
+⏳ Automatic session start (BOOT.md is provisional)
+⏳ Persistent memory between sessions (no manual bootstrap)
+⏳ Web interface (v3.0.0)
+⏳ End-to-end testing of "Orion iniciar proyecto" wizard
+⏳ Sync between universal DECISIONS.md and project-specific versions
+
+================================================================================
+GUIDING PRINCIPLES FOR EVOLUTION
+
+D89: Reversibility
+  Close as few doors as possible for v3.0.0 web
+
+D90: GitHub MCP, never terminal
+  Maps 1:1 to future web button
+
+Read before write
+  Prevents data loss on push
+
+Living documentation
+  Doc debt compounds quickly in systems
+
+Lazy-loading
+  Agile + predictable CLI sessions
+
+Lab principle
+  GameOn + NutriApp = live labs that improve Orion
+
+================================================================================
+NEXT MOVES
+
+1. Full CLI flow review (deferred from previous session)
+2. Refinement of "Orion iniciar proyecto" wizard
+3. Architecture decisions for v2.0.0 (public repo)
+4. Design v3.0.0 (web interface)
+5. Validation with more real projects
+
+================================================================================
+CORE VALUE PROPOSITION
+
+Orion OS is, at its core, a trainable CTO that improves every time the user 
+builds a real product with it. Every decision, every bug found, every pattern 
+discovered enters the system and makes it stronger.
+
+This is not automation. This is partnership between human judgment and AI 
+architecture—scaled to build real products with quality and discipline.
+
+================================================================================
