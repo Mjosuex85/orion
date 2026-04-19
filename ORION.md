@@ -262,7 +262,11 @@ NestJS v11 hotfix (#144). npm --force rule. Bootstrap smoke test (#145). English
 ### Session 24 — April 16, 2026
 NutriApp Phase 1 complete. Plan, cook flow, stock deduction, UI redesign. ND16-ND21.
 
+### Session 25 — April 19, 2026
+Orion OS Hackaton Pitch. System documented for public presentation.
+ORION-OS-HACKATON.txt created. Ready to compete.
+
 ---
 
 *Orion OS v1.5.0 — built by Mario Vidal + Orion*
-*Last updated: April 16, 2026 — Session 24*
+*Last updated: April 19, 2026 — Session 25*
