@@ -120,7 +120,7 @@ Shows diff to Mario before push. Source of truth for project state.
 
 **D65. Subagents live in `orion/agents/subagents/` — reusable across projects.**
 
-**D81. Orion asks Mario before any direct code change to app repos.**
+**D81. Orion asks Mario before any direct code change to application repos.**
 
 ---
 
@@ -205,7 +205,23 @@ Every update includes a Changelog entry + footer version bump, pushed in the sam
 
 ---
 
-## 15. FUTURE
+## 15. SECURITY INCIDENTS
+
+**D93. Security incident response — structured protocol for third-party provider breaches.**
+Full protocol: `workflows/security-incident.md`
+
+Key rules:
+- Rotate credentials at SOURCE first, then update Vercel/provider env vars.
+- Rotation order: GitHub tokens → OAuth secrets → JWT secrets → DB credentials → email keys → AI API keys.
+- Every incident is logged in `logs/post-mortems.jsonl`.
+- All env vars containing secrets must be marked as `sensitive` in Vercel.
+- Env vars NOT marked sensitive are treated as potentially exposed in any breach.
+
+First incident documented: Vercel CDN breach, April 20, 2026 (ShinyHunters, via Context.ai).
+
+---
+
+## 16. FUTURE
 
 **D40. Orion as multi-project architect.** ✅ Active since v1.4.0.
 
@@ -213,5 +229,5 @@ Every update includes a Changelog entry + footer version bump, pushed in the sam
 
 ---
 
-*Orion OS v1.5.0 — Last updated: April 16, 2026 — Session 25*
-*New: D92 (SonarCloud three-layer quality strategy)*
+*Orion OS v1.5.0 — Last updated: April 20, 2026 — Session 26*
+*New: D93 (Security incident response protocol)*

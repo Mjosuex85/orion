@@ -180,6 +180,7 @@ Orion → DECISIONS + issues + ✅ Decidido
 - D81: ask Mario before any direct code change to application repos
 - D82: correct MCP tool for each action
 - D87: update project.md at session close
+- D93: security incident → workflows/security-incident.md
 - Skills are project-scoped — never carry Angular skills into a React project or vice versa
 - Issue quality gate before assignment
 - Post-mortem on failure
@@ -263,10 +264,12 @@ NestJS v11 hotfix (#144). npm --force rule. Bootstrap smoke test (#145). English
 NutriApp Phase 1 complete. Plan, cook flow, stock deduction, UI redesign. ND16-ND21.
 
 ### Session 25 — April 19, 2026
-Orion OS Hackaton Pitch. System documented for public presentation.
-ORION-OS-HACKATON.txt created. Ready to compete.
+Orion OS Hackaton Pitch. System documented for public presentation. ORION-OS-HACKATON.txt created.
+
+### Session 26 — April 20, 2026
+Vercel CDN breach response (ShinyHunters via Context.ai). Full credential audit: 9 projects, risk matrix. D93 + workflows/security-incident.md created.
 
 ---
 
 *Orion OS v1.5.0 — built by Mario Vidal + Orion*
-*Last updated: April 19, 2026 — Session 25*
+*Last updated: April 20, 2026 — Session 26*
