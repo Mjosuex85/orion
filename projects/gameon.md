@@ -100,12 +100,12 @@ ORGANIZER:  { matchesPerDay: 4, tournamentsPerWeek: 2, leaguesPerMonth: 1 }
 ## INFRASTRUCTURE
 
 ```
-PRODUCTION: v1.4.0 DEPLOYED (April 11, 2026)
-  Frontend  →  Vercel (gameon-nu.vercel.app) — branch: main
-  Backend   →  Vercel (serverless) — branch: main
+PRODUCTION: v1.4.0 (API) + v1.5.0 (Frontend) — DEPLOYED
+  Frontend  →  Vercel (gameon-nu.vercel.app) — branch: main — v1.5.0
+  Backend   →  Vercel (serverless) — branch: main — v1.4.0
   Database  →  Neon PostgreSQL (gameon-db)
 
-STAGING: FULLY OPERATIONAL
+STAGING: OPERATIONAL
   Frontend  →  Vercel Preview — branch: staging
   Backend   →  Vercel Preview — branch: staging
   Database  →  Neon PostgreSQL (gameon-db-pre) — 250 countries seeded
@@ -170,6 +170,7 @@ Backend staging URL: gameon-api-git-staging-mjosuex85s-projects.vercel.app
 
 ### gameon CI
 - Lint + Build + Tests (coverage 50% on core/) + SonarCloud
+- Note: Sonar Quality Gate blocking disabled on PRs until baseline is established post first main deploy (db6ba84)
 
 ### Bruno QA
 - `bruno.yml` in both repos — triggers on PR to staging/main
@@ -203,7 +204,7 @@ Rule: every new feature issue includes its tests.
 src/app/shared/
   ui/
     atoms/     → button, input, modal, loader, toast
-    molecules/ → stat-card, match-row, empty-state, match-filters
+    molecules/ → stat-card, match-row, empty-state, match-filters, confirm-dialog
   components/
     event-card/  → not migrated yet
     main-layout/ → not migrated yet
@@ -219,22 +220,29 @@ Rules:
 
 ---
 
-## STATUS — April 11, 2026 (Session 22)
+## STATUS — April 23, 2026 (Session 27)
 
-**Production:** v1.4.0 ✅
+**Production:**
+- API: v1.4.0 ✅ (gameon-api — deployed April 11)
+- Frontend: v1.5.0 ✅ (gameon — deployed April 18, PR #13)
 
-**Open / Active:**
-- 🔄 #120 — Redesign MatchFiltersComponent (Olga)
-- 🔄 #123 — Organization-detail layout two-column (Olga)
+**Completed since last update (Sessions 23-27):**
+- ✅ #120 — Redesign MatchFiltersComponent (Olga) — merged to main via v1.5.0
+- ✅ #123 — Organization-detail layout two-column (Olga) — merged to main via v1.5.0
+- ✅ v1.5.0 frontend deploy — staging validated, PR #13 merged to main April 18
+- ✅ Sonar pre-release fixes — accessible buttons, contrast, confirm-dialog semantics (PR #12)
+- ✅ `organizer-venues` component added to frontend
+
+**Open / Pending:**
 - 📋 #113 — GitHub Team branch protection (post first client)
 - 📋 #117 — Multi-sport foundation (backlog)
 - 📋 RFC match-lifecycle — 🟡 Pending
+- 🔔 Sonar Quality Gate blocking — needs re-enabling after first main deploy establishes baseline
 
 **Next priorities:**
-1. Frontend: PR develop → staging on `gameon` (#120 + #123 with Olga)
-2. Validate frontend staging
-3. PR staging → main on `gameon` = `release: v1.4.0` frontend
-4. Demo with Jose (SoccerMix)
+1. Demo with Jose (SoccerMix) — date TBD, Mario will confirm
+2. Define next development cycle post-demo
+3. Re-enable Sonar Quality Gate blocking on PRs (#gameon frontend)
 
 ---
 
@@ -246,5 +254,5 @@ Rules:
 
 ---
 
-*Part of Orion OS v1.4.0 — updated April 11, 2026 (Session 22)*
+*Part of Orion OS v1.5.0 — updated April 23, 2026 (Session 27)*
 *Ideas and product roadmap → `projects/gameon-ideas.md`*
