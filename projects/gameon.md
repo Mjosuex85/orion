@@ -54,6 +54,14 @@ Deploy:     Vercel (gameon-nu.vercel.app)
 - Roles: `USER`, `ORGANIZER`, `ADMIN`
 - Soft delete, email verification, password reset via Resend
 - Adding OWNER to org → auto-assigns ORGANIZER role (#106)
+- `username` field on `User` entity (auto-generated `user<random>` for existing rows)
+- `isPublic` field on `UserProfile` (default `true`) — privacy control
+
+### Public Profile
+- `GET /users/:id/profile` — public endpoint, optional auth
+- Returns `PublicProfileResponseDto`: `id`, `username`, `firstName`, `lastName`, `avatarUrl`, `country`, `flagUrl`, `bio`, `isPublic`
+- If `isPublic = false` → 403 for non-owners, 200 for owner
+- `PATCH /users/me/settings` — authenticated, updates `isPublic`
 
 ### Matches
 - `visibility`: `PRIVATE` | `PUBLIC` | `ORGANIZATION`
@@ -80,6 +88,12 @@ Deploy:     Vercel (gameon-nu.vercel.app)
 
 ### Leagues
 - Planned. Points-based. Issue pending.
+
+### Settings (Frontend)
+- `/profile/settings` — standalone page, `authGuard` protected
+- Sections: Account (Privacy), About (Version), Danger zone (Logout)
+- `UserService` created — owns non-auth user API calls
+- Privacy toggle: `PATCH /users/me/settings` → updates `isPublic` inline with spinner feedback
 
 ---
 
@@ -159,6 +173,11 @@ Backend staging URL: gameon-api-git-staging-mjosuex85s-projects.vercel.app
 ✅ Organizer panel
   Dashboard stats show real match counts (not 0)
   Match list shows all matches (showAll=true working)
+
+✅ Public Profile (new — Session 28)
+  GET  /users/:id/profile    → returns PublicProfileResponseDto (no token)
+  GET  /users/:id/profile    → 403 if isPublic=false and no token
+  PATCH /users/me/settings   → updates isPublic (requires JWT)
 ```
 
 ---
@@ -194,12 +213,15 @@ Layer 3 — Manual:  Orion triages only on critical deploys
 MatchService          → 78%+ (complete)
 AuthService           → 97%+ (complete)
 OrganizationsService  → 76%+ (complete)
+UsersService          → tests added for getPublicProfile + updatePrivacySettings (#7)
 CI + SonarCloud       → active + Quality Gate blocking
 ```
 
 ### Frontend
 ```
 core/ (services, interceptors, guards) → 82.88% (30/30 tests)
+UserService → tests added (updatePrivacySettings) — #155
+SettingsComponent → tests added (togglePrivacy) — #156
 CI + SonarCloud → active + Quality Gate blocking
 ```
 
@@ -229,30 +251,31 @@ Rules:
 
 ---
 
-## STATUS — April 23, 2026 (Session 27)
+## STATUS — April 24, 2026 (Session 28)
 
 **Production:**
 - API: v1.4.0 ✅ (gameon-api — deployed April 11)
 - Frontend: v1.5.1 ✅ (gameon — deployed April 23, PR #16)
 
-**Completed this session (Session 27):**
-- ✅ Repos verified — gameon-api v1.4.0, gameon v1.5.0→v1.5.1, all branches consistent
-- ✅ Version inconsistency fixed across branches in gameon-api (Mario)
-- ✅ #153 — SonarCloud Quality Gate blocking activated on gameon-api (Nestor)
-- ✅ #14 — SonarCloud Quality Gate blocking activated on gameon (Mario + Orion)
-- ✅ Security hotspot resolved — `crossorigin="anonymous"` on Google Fonts link
-- ✅ SonarCloud Automatic Analysis disabled on gameon — single analysis mode
-- ✅ gameon v1.5.1 deployed to production (PR #16)
+**Completed this session (Session 28):**
+- ✅ #7 — Public player profile: `username` + `isPublic` migrations, `GET /users/:id/profile`, `PATCH /users/me/settings` (Nestor)
+- ✅ #155 — Settings page scaffold: route, `SettingsComponent`, `UserService` (Olga)
+- ✅ #156 — Privacy toggle: `isPublic` wired end-to-end, `refreshUserProfile()`, spinner, toast (Olga) — in develop
+- ✅ TOKENS.md created in local — full token registry with MCP agent tokens
+- ✅ `gameon-mcp` (Orion PAT) renewed — scopes: `repo`, `workflow`, `read:org`
 
 **Open / Pending:**
+- 🟡 #156 — Privacy toggle: Ready to test by Mario (in develop, not yet to staging)
 - 📋 #113 — GitHub Team branch protection (post first client)
 - 📋 #117 — Multi-sport foundation (backlog)
 - 📋 RFC match-lifecycle — 🟡 Pending
 - 🔔 Demo with Jose (SoccerMix) — date TBD, Mario will confirm
+- ⚠️ `nestor-gameon-agent` + `olga-gameon-agent` → expire May 9, 2026 — renew before
 
 **Next priorities:**
-1. Define next feature cycle (pending issue review)
-2. Demo with Jose (SoccerMix) — date TBD
+1. Mario tests #156 end-to-end (privacy toggle full flow)
+2. If green → PR develop → staging → production
+3. Define next feature cycle
 
 ---
 
@@ -264,5 +287,5 @@ Rules:
 
 ---
 
-*Part of Orion OS v1.5.0 — updated April 23, 2026 (Session 27)*
+*Part of Orion OS v1.5.0 — updated April 24, 2026 (Session 28)*
 *Ideas and product roadmap → `projects/gameon-ideas.md`*
