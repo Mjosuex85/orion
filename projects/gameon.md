@@ -100,8 +100,8 @@ ORGANIZER:  { matchesPerDay: 4, tournamentsPerWeek: 2, leaguesPerMonth: 1 }
 ## INFRASTRUCTURE
 
 ```
-PRODUCTION: v1.4.0 (API) + v1.5.0 (Frontend) — DEPLOYED
-  Frontend  →  Vercel (gameon-nu.vercel.app) — branch: main — v1.5.0
+PRODUCTION: v1.4.0 (API) + v1.5.1 (Frontend) — DEPLOYED
+  Frontend  →  Vercel (gameon-nu.vercel.app) — branch: main — v1.5.1
   Backend   →  Vercel (serverless) — branch: main — v1.4.0
   Database  →  Neon PostgreSQL (gameon-db)
 
@@ -127,9 +127,9 @@ main     →  Production deploy (automatic on PR merge by Mario)
 ```
 develop  →  free (agents commit directly)
     PR down
-staging  →  CI runs. Enforcement pending #113
+staging  →  CI runs + Quality Gate enforced
     PR down
-main     →  CI runs. Enforcement pending #113
+main     →  CI runs + Quality Gate enforced
 ```
 
 ---
@@ -167,14 +167,23 @@ Backend staging URL: gameon-api-git-staging-mjosuex85s-projects.vercel.app
 
 ### gameon-api CI
 - Lint + Build + Tests (coverage 50% on services) + Audit (critical, prod only) + SonarCloud
+- **Quality Gate blocking: ACTIVE** (`qualitygate.wait=true`) — #153
 
 ### gameon CI
 - Lint + Build + Tests (coverage 50% on core/) + SonarCloud
-- Note: Sonar Quality Gate blocking disabled on PRs until baseline is established post first main deploy (db6ba84)
+- **Quality Gate blocking: ACTIVE** (`qualitygate.wait=true`) — #14
+- Automatic Analysis: DISABLED — analysis runs via GitHub Actions only
 
 ### Bruno QA
 - `bruno.yml` in both repos — triggers on PR to staging/main
 - ✅ on PR → Mario can merge. ❌ → fix first.
+
+### SonarCloud — 3-layer strategy (D92)
+```
+Layer 1 — IDE:     Nestor (VSCode SonarQube) + Olga (Antigravity SonarQube MCP) ✅
+Layer 2 — CI:      Quality Gate blocks PR on both repos ✅ (activated Session 27)
+Layer 3 — Manual:  Orion triages only on critical deploys
+```
 
 ---
 
@@ -185,13 +194,13 @@ Backend staging URL: gameon-api-git-staging-mjosuex85s-projects.vercel.app
 MatchService          → 78%+ (complete)
 AuthService           → 97%+ (complete)
 OrganizationsService  → 76%+ (complete)
-CI + SonarCloud       → active
+CI + SonarCloud       → active + Quality Gate blocking
 ```
 
 ### Frontend
 ```
 core/ (services, interceptors, guards) → 82.88% (30/30 tests)
-CI + SonarCloud → active
+CI + SonarCloud → active + Quality Gate blocking
 ```
 
 Rule: every new feature issue includes its tests.
@@ -216,7 +225,7 @@ Rules:
 - Responsive: Tailwind-first, mobile-first
 - Angular: `output()` not `@Output()`, `signal()` for state, `@if`/`@for` syntax
 - Tailwind: `[class.class-name]` bindings, not ternary
-- Icons: Material Symbols via CDN
+- Icons: Material Symbols via CDN (`crossorigin="anonymous"` on link tag)
 
 ---
 
@@ -224,25 +233,26 @@ Rules:
 
 **Production:**
 - API: v1.4.0 ✅ (gameon-api — deployed April 11)
-- Frontend: v1.5.0 ✅ (gameon — deployed April 18, PR #13)
+- Frontend: v1.5.1 ✅ (gameon — deployed April 23, PR #16)
 
-**Completed since last update (Sessions 23-27):**
-- ✅ #120 — Redesign MatchFiltersComponent (Olga) — merged to main via v1.5.0
-- ✅ #123 — Organization-detail layout two-column (Olga) — merged to main via v1.5.0
-- ✅ v1.5.0 frontend deploy — staging validated, PR #13 merged to main April 18
-- ✅ Sonar pre-release fixes — accessible buttons, contrast, confirm-dialog semantics (PR #12)
-- ✅ `organizer-venues` component added to frontend
+**Completed this session (Session 27):**
+- ✅ Repos verified — gameon-api v1.4.0, gameon v1.5.0→v1.5.1, all branches consistent
+- ✅ Version inconsistency fixed across branches in gameon-api (Mario)
+- ✅ #153 — SonarCloud Quality Gate blocking activated on gameon-api (Nestor)
+- ✅ #14 — SonarCloud Quality Gate blocking activated on gameon (Mario + Orion)
+- ✅ Security hotspot resolved — `crossorigin="anonymous"` on Google Fonts link
+- ✅ SonarCloud Automatic Analysis disabled on gameon — single analysis mode
+- ✅ gameon v1.5.1 deployed to production (PR #16)
 
 **Open / Pending:**
 - 📋 #113 — GitHub Team branch protection (post first client)
 - 📋 #117 — Multi-sport foundation (backlog)
 - 📋 RFC match-lifecycle — 🟡 Pending
-- 🔔 Sonar Quality Gate blocking — needs re-enabling after first main deploy establishes baseline
+- 🔔 Demo with Jose (SoccerMix) — date TBD, Mario will confirm
 
 **Next priorities:**
-1. Demo with Jose (SoccerMix) — date TBD, Mario will confirm
-2. Define next development cycle post-demo
-3. Re-enable Sonar Quality Gate blocking on PRs (#gameon frontend)
+1. Define next feature cycle (pending issue review)
+2. Demo with Jose (SoccerMix) — date TBD
 
 ---
 
