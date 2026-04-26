@@ -115,36 +115,57 @@ ORGANIZER:  { matchesPerDay: 4, tournamentsPerWeek: 2, leaguesPerMonth: 1 }
 ## INFRASTRUCTURE
 
 ```
-PRODUCTION: v1.4.0 (API) + v1.5.1 (Frontend) — DEPLOYED
+PRODUCTION: v1.5.0 (API) + v1.5.1 (Frontend) — DEPLOYED Session 30
   Frontend  →  Vercel (gameon-nu.vercel.app) — branch: main — v1.5.1
-  Backend   →  Vercel (serverless) — branch: main — v1.4.0
+  Backend   →  Vercel (serverless) — branch: main — v1.5.0
   Database  →  Neon PostgreSQL (gameon-db)
+  Migrations AddUsernameToUsers + AddIsPublicToUserProfiles → run manually via Neon SQL (Session 30)
 
-STAGING: OPERATIONAL — updated Session 29
-  Frontend  →  Vercel Preview — branch: staging (PR #17 merged)
-  Backend   →  Vercel Preview — branch: staging (PR #157 merged)
-  Database  →  Neon PostgreSQL (gameon-db-pre) — migrations run manually Session 29
+STAGING: OPERATIONAL
+  Frontend  →  Vercel Preview — branch: staging
+  Backend   →  Vercel Preview — branch: staging
+  Database  →  Neon PostgreSQL (gameon-db-pre)
 ```
 
 ### Deploy rules
 ```
 develop  →  NO deploy (Ignored Build Step)
 staging  →  Preview deploy (automatic on push)
-main     →  Production deploy (automatic on PR merge by Mario)
+main     →  Production deploy via Vercel Deploy Hook (triggered by release.yml job 2)
+            ⚠️ Auto-deploy on push to main must be DISABLED in Vercel dashboard
+            ⚠️ Secret VERCEL_DEPLOY_HOOK_API must be set in gameon-api GitHub secrets
 ```
 
-### Migration protocol (updated Session 29)
+### Migration protocol (updated Session 30 — Opción B)
+
+**gameon-api `release.yml` now has 2 sequential jobs:**
 ```
-BEFORE merging to staging:
-  1. GitHub Actions → "Migrate Staging DB" → Run workflow (workflow_dispatch)
-  2. Uses secret DATABASE_URL_STAGING → gameon-db-pre
+Job 1: migrate
+  - runs on PR merged to main
+  - npm ci → build → db:migrate (DATABASE_URL → Neon prod)
+  - if fails → workflow stops, Vercel deploy hook NOT triggered
 
-BEFORE merging to main:
-  1. GitHub Actions → "Migrate Production DB" → Run workflow (workflow_dispatch)
-  2. Uses secret DATABASE_URL → gameon-db
+Job 2: release (needs: migrate)
+  - bump version (skips if already at target)
+  - commit + tag
+  - POST to VERCEL_DEPLOY_HOOK_API → triggers production deploy
+  - create GitHub Release
+```
 
-NOTE: workflow_dispatch only shows "Run workflow" button when workflow exists in main branch.
-Both workflows updated to workflow_dispatch in Session 29.
+**For staging migrations (still manual workflow_dispatch):**
+```
+GitHub Actions → gameon-api → "Migrate Staging DB" → Run workflow
+Uses: DATABASE_URL_STAGING → gameon-db-pre
+Run BEFORE merging develop → staging
+```
+
+**Emergency SQL fallback (if workflow fails):**
+```sql
+-- Run directly in Neon SQL console
+-- Then register in TypeORM migrations table:
+INSERT INTO "migrations" ("timestamp", "name") VALUES
+  (<timestamp>, '<MigrationClassName>')
+ON CONFLICT DO NOTHING;
 ```
 
 ### GitFlow
@@ -153,7 +174,18 @@ develop  →  free (agents commit directly)
     PR down
 staging  →  CI runs + Quality Gate enforced
     PR down
-main     →  CI runs + Quality Gate enforced
+main     →  CI runs + Quality Gate enforced + migrate job runs first
+```
+
+### Pending Vercel setup (BLOCKING for next release)
+```
+⚠️ Vercel dashboard → gameon-api → Settings → Git → Deploy Hooks
+   → Create hook: name "GitHub Release", branch: main
+   → Copy URL → GitHub secret: VERCEL_DEPLOY_HOOK_API
+
+⚠️ Vercel dashboard → gameon-api → Settings → Git
+   → Disable auto-deploy on production branch (main)
+   → Without this, Vercel still deploys on push BEFORE migrations finish
 ```
 
 ---
@@ -181,11 +213,7 @@ Frontend staging URL: gameon-git-staging-mjosuex85s-projects.vercel.app
   GET  /organizations/:id/matches?showAll=true → all matches
   GET  /organizations/my                      → requires ORGANIZER role
 
-✅ Organizer panel
-  Dashboard stats show real match counts (not 0)
-  Match list shows all matches (showAll=true working)
-
-✅ Public Profile + Privacy (#7 + #155 + #156)
+✅ Public Profile + Privacy
   GET  /users/:id/profile    → returns PublicProfileResponseDto (no token)
   GET  /users/:id/profile    → 403 if isPublic=false and no token
   PATCH /users/me/settings   → updates isPublic (requires JWT)
@@ -199,12 +227,12 @@ Frontend staging URL: gameon-git-staging-mjosuex85s-projects.vercel.app
 ### gameon-api CI
 - Lint + Build + Tests + Audit (critical, prod only) + SonarCloud
 - **Quality Gate blocking: ACTIVE**
-- SonarQube for IDE mandatory for Nestor before every commit (Session 29)
+- SonarQube for IDE mandatory for Nestor before every commit
 
 ### gameon CI
 - Lint + Build + Tests + SonarCloud
 - **Quality Gate blocking: ACTIVE**
-- SonarQube MCP mandatory for Olga before every commit (Session 29)
+- SonarQube MCP mandatory for Olga before every commit
 - Automatic Analysis: DISABLED — analysis runs via GitHub Actions only
 
 ### Bruno QA
@@ -213,7 +241,7 @@ Frontend staging URL: gameon-git-staging-mjosuex85s-projects.vercel.app
 
 ### SonarCloud — 3-layer strategy (D92)
 ```
-Layer 1 — IDE:     Nestor (VSCode SonarQube) + Olga (Antigravity SonarQube MCP) ✅ mandatory Session 29
+Layer 1 — IDE:     Nestor (VSCode SonarQube) + Olga (Antigravity SonarQube MCP) ✅ mandatory
 Layer 2 — CI:      Quality Gate blocks PR on both repos ✅
 Layer 3 — Manual:  Orion triages only on critical deploys
 ```
@@ -236,7 +264,7 @@ CI + SonarCloud       → active + Quality Gate blocking
 core/ (services, interceptors, guards) → 82.88%
 UserService    → updatePrivacySettings covered
 SettingsComponent → togglePrivacy + logout + error path covered
-AuthService    → refreshUserProfile (3 new tests, Session 29)
+AuthService    → refreshUserProfile covered
 CI + SonarCloud → active + Quality Gate blocking
 ```
 
@@ -266,43 +294,52 @@ Rules:
 
 ---
 
-## STATUS — April 25, 2026 (Session 29)
+## STATUS — April 26, 2026 (Session 30)
 
 **Production:**
-- API: v1.4.0 ✅ (gameon-api — deployed April 11)
-- Frontend: v1.5.1 ✅ (gameon — deployed April 23, PR #16)
+- API: v1.5.0 ✅ (gameon-api — deployed Session 30)
+- Frontend: v1.5.1 ✅ (gameon — deployed Session 30)
 
-**Staging (updated this session):**
-- Frontend: PR #17 merged → #155 + #156 + Sonar fixes + SCSS toggle fix (develop)
-- Backend: PR #157 merged → #7 + ER diagram docs + Sonar fixes
-- Migrations: `AddUsernameToUsers` + `AddIsPublicToUserProfiles` run manually on gameon-db-pre ✅
+**Completed this session (Session 30):**
+- ✅ PR #18 → develop → staging (SCSS toggle fix) → CI verde, mergeado
+- ✅ PR #19 → staging → main frontend (v1.5.1) → merged + deployed
+- ✅ PR #158 → staging → main backend (v1.5.0) → merged + deployed
+- ✅ Migrations AddUsernameToUsers + AddIsPublicToUserProfiles → run via Neon SQL prod
+- ✅ fix(ci): release.yml ambos repos — skip npm bump si versión ya coincide
+- ✅ feat(ci): gameon-api release.yml — Opción B: migrate job antes de deploy
+- ✅ migrate.yml separado (workflow_dispatch) — se mantiene para emergencias
 
-**Completed this session (Session 29):**
-- ✅ #155 + #156 → staging (frontend PR #17)
-- ✅ #7 → staging (backend PR #157)
-- ✅ Sonar fixes: accessibility (a11y), coverage, duplicate imports, error handlers
-- ✅ SonarQube mandatory pre-commit protocol added to CLAUDE.md (Olga + Nestor)
-- ✅ agent-log.yml fix: contents:write permission in gameon frontend
-- ✅ migrate workflows → workflow_dispatch (run before merge, not after)
-- ✅ GitHub Secrets clarified: DATABASE_URL (prod) + DATABASE_URL_STAGING (staging)
-- ✅ SCSS toggle fix: `.slider.checked` class instead of `input:checked + .slider`
+**CI fixes aplicados en ambos repos:**
+```
+release.yml — Bump package.json version:
+  ANTES: npm version $VERSION_CLEAN --no-git-tag-version  → falla si ya coincide
+  AHORA: compara CURRENT vs VERSION_CLEAN, salta si igual
+```
+
+**Incidencia documentada — lección aprendida:**
+```
+Problema:   API desplegada en prod con código que requería columnas inexistentes
+Causa:      Migraciones no corrieron antes del deploy (workflow_dispatch manual olvidado)
+Impacto:    GET /users/:id/profile daba error en prod hasta correr SQL manual
+Solución:   Opción B — release.yml job 1: migrate → job 2: release + deploy hook
+Pendiente:  Configurar VERCEL_DEPLOY_HOOK_API + deshabilitar auto-deploy en Vercel
+```
 
 **Open / Pending:**
-- 🟡 SCSS toggle fix → still in develop, needs PR to staging (small, next session)
-- 🟡 staging → main both repos (pending full staging validation)
-- 🟡 Migrate Production DB → run before main merge (gameon-db)
+- ⚠️ CRÍTICO: Configurar Vercel Deploy Hook + secret VERCEL_DEPLOY_HOOK_API (antes del próximo release)
+- 📋 Session 31: dummy migration para probar el pipeline completo migrate → deploy
 - 📋 #113 — GitHub Team branch protection (post first client)
 - 📋 #117 — Multi-sport foundation (backlog)
-- 📋 RFC match-lifecycle — 🟡 Pending
+- 📋 RFC match-lifecycle — Pending
 - 🔔 Demo with Jose (SoccerMix) — date TBD
 - ⚠️ `nestor-gameon-agent` + `olga-gameon-agent` → expire May 9, 2026 — renew before
 
-**Next priorities:**
-1. PR develop → staging (SCSS toggle fix)
-2. Full staging validation checklist
-3. Run Migrate Staging DB workflow → confirm OK
-4. PR staging → main (both repos) + Migrate Production DB
-5. Define next feature cycle
+**Next session priorities (Session 31):**
+1. Configurar Vercel Deploy Hook en dashboard (Mario) + añadir secret VERCEL_DEPLOY_HOOK_API
+2. Deshabilitar auto-deploy en Vercel main (Mario)
+3. Crear dummy migration en develop (inocua — ej: comentario en columna o índice redundante)
+4. Flujo completo: develop → staging → main → verificar que job migrate corre primero, luego Vercel hook
+5. Definir siguiente ciclo de features
 
 ---
 
@@ -314,5 +351,5 @@ Rules:
 
 ---
 
-*Part of Orion OS v1.5.0 — updated April 25, 2026 (Session 29)*
+*Part of Orion OS v1.5.0 — updated April 26, 2026 (Session 30)*
 *Ideas and product roadmap → `projects/gameon-ideas.md`*
