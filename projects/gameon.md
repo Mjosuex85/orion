@@ -63,6 +63,13 @@ Deploy:     Vercel (gameon-nu.vercel.app)
 - If `isPublic = false` → 403 for non-owners, 200 for owner
 - `PATCH /users/me/settings` — authenticated, updates `isPublic`
 
+### Settings (Frontend)
+- `/profile/settings` — standalone page, `authGuard` protected
+- Sections: Account (Privacy), About (Version), Danger zone (Logout)
+- Privacy toggle: `PATCH /users/me/settings` → updates `isPublic` inline with spinner + toast feedback ✅ in production v1.5.1
+- `UserService` owns non-auth user API calls
+- `AuthService.refreshUserProfile()` re-fetches profile and updates signal after toggle
+
 ### Matches
 - `visibility`: `PRIVATE` | `PUBLIC` | `ORGANIZATION`
 - `PRIVATE` = not in public listings, but accessible with direct link (D71)
@@ -89,13 +96,6 @@ Deploy:     Vercel (gameon-nu.vercel.app)
 ### Leagues
 - Planned. Points-based. Issue pending.
 
-### Settings (Frontend)
-- `/profile/settings` — standalone page, `authGuard` protected
-- Sections: Account (Privacy), About (Version), Danger zone (Logout)
-- `UserService` created — owns non-auth user API calls
-- Privacy toggle: `PATCH /users/me/settings` → updates `isPublic` inline with spinner feedback
-- Toggle uses `<span role="switch">` + `.slider.checked` CSS class (accessible, Sonar-compliant)
-
 ---
 
 ## BUSINESS RULES
@@ -115,11 +115,10 @@ ORGANIZER:  { matchesPerDay: 4, tournamentsPerWeek: 2, leaguesPerMonth: 1 }
 ## INFRASTRUCTURE
 
 ```
-PRODUCTION: v1.5.0 (API) + v1.5.1 (Frontend) — DEPLOYED Session 30
+PRODUCTION: v1.5.0 (API) + v1.5.1 (Frontend) — current
   Frontend  →  Vercel (gameon-nu.vercel.app) — branch: main — v1.5.1
   Backend   →  Vercel (serverless) — branch: main — v1.5.0
   Database  →  Neon PostgreSQL (gameon-db)
-  Migrations AddUsernameToUsers + AddIsPublicToUserProfiles → run manually via Neon SQL (Session 30)
 
 STAGING: OPERATIONAL
   Frontend  →  Vercel Preview — branch: staging
@@ -136,9 +135,9 @@ main     →  Production deploy via Vercel Deploy Hook (triggered by release.yml
             ⚠️ Secret VERCEL_DEPLOY_HOOK_API must be set in gameon-api GitHub secrets
 ```
 
-### Migration protocol (updated Session 30 — Opción B)
+### Migration protocol (Opción B — active since Session 30)
 
-**gameon-api `release.yml` now has 2 sequential jobs:**
+**gameon-api `release.yml` — 2 sequential jobs:**
 ```
 Job 1: migrate
   - runs on PR merged to main
@@ -152,20 +151,11 @@ Job 2: release (needs: migrate)
   - create GitHub Release
 ```
 
-**For staging migrations (still manual workflow_dispatch):**
+**For staging migrations (manual workflow_dispatch):**
 ```
 GitHub Actions → gameon-api → "Migrate Staging DB" → Run workflow
 Uses: DATABASE_URL_STAGING → gameon-db-pre
 Run BEFORE merging develop → staging
-```
-
-**Emergency SQL fallback (if workflow fails):**
-```sql
--- Run directly in Neon SQL console
--- Then register in TypeORM migrations table:
-INSERT INTO "migrations" ("timestamp", "name") VALUES
-  (<timestamp>, '<MigrationClassName>')
-ON CONFLICT DO NOTHING;
 ```
 
 ### GitFlow
@@ -185,7 +175,6 @@ main     →  CI runs + Quality Gate enforced + migrate job runs first
 
 ⚠️ Vercel dashboard → gameon-api → Settings → Git
    → Disable auto-deploy on production branch (main)
-   → Without this, Vercel still deploys on push BEFORE migrations finish
 ```
 
 ---
@@ -294,52 +283,38 @@ Rules:
 
 ---
 
-## STATUS — April 26, 2026 (Session 30)
+## STATUS — April 27, 2026 (Session 31)
 
 **Production:**
-- API: v1.5.0 ✅ (gameon-api — deployed Session 30)
-- Frontend: v1.5.1 ✅ (gameon — deployed Session 30)
+- API: v1.5.0 ✅
+- Frontend: v1.5.1 ✅ (includes privacy toggle — #156 + #7 closed)
 
-**Completed this session (Session 30):**
-- ✅ PR #18 → develop → staging (SCSS toggle fix) → CI verde, mergeado
-- ✅ PR #19 → staging → main frontend (v1.5.1) → merged + deployed
-- ✅ PR #158 → staging → main backend (v1.5.0) → merged + deployed
-- ✅ Migrations AddUsernameToUsers + AddIsPublicToUserProfiles → run via Neon SQL prod
-- ✅ fix(ci): release.yml ambos repos — skip npm bump si versión ya coincide
-- ✅ feat(ci): gameon-api release.yml — Opción B: migrate job antes de deploy
-- ✅ migrate.yml separado (workflow_dispatch) — se mantiene para emergencias
-
-**CI fixes aplicados en ambos repos:**
-```
-release.yml — Bump package.json version:
-  ANTES: npm version $VERSION_CLEAN --no-git-tag-version  → falla si ya coincide
-  AHORA: compara CURRENT vs VERSION_CLEAN, salta si igual
-```
-
-**Incidencia documentada — lección aprendida:**
-```
-Problema:   API desplegada en prod con código que requería columnas inexistentes
-Causa:      Migraciones no corrieron antes del deploy (workflow_dispatch manual olvidado)
-Impacto:    GET /users/:id/profile daba error en prod hasta correr SQL manual
-Solución:   Opción B — release.yml job 1: migrate → job 2: release + deploy hook
-Pendiente:  Configurar VERCEL_DEPLOY_HOOK_API + deshabilitar auto-deploy en Vercel
-```
+**Completed this session (Session 31):**
+- ✅ Deploy Hook philosophy confirmed — Opción B is the right approach
+- ✅ RFC restructure: `rfcs/` now organized by project (`rfcs/gameon/`, `rfcs/nutriapp/`)
+- ✅ RFC `multi-sport-architecture.md` created — decision deferred, football first
+- ✅ #156 closed — Privacy toggle (Olga) shipped in v1.5.1
+- ✅ #7 closed — Public profile + privacy control (Nestor) shipped in v1.5.0/v1.5.1
 
 **Open / Pending:**
-- ⚠️ CRÍTICO: Configurar Vercel Deploy Hook + secret VERCEL_DEPLOY_HOOK_API (antes del próximo release)
-- 📋 Session 31: dummy migration para probar el pipeline completo migrate → deploy
+- ⚠️ CRÍTICO: Configurar Vercel Deploy Hook + secret `VERCEL_DEPLOY_HOOK_API` (Mario — before next release)
+- ⚠️ CRÍTICO: Deshabilitar auto-deploy en Vercel main (Mario — same time)
+- 📋 Next: dummy migration to test full pipeline migrate → deploy
+- 📋 #151 — Re-enable SonarCloud Quality Gate blocking (frontend)
+- 📋 #150 — OrganizationService unit tests (Olga)
+- 📋 #152 — SonarQube IDE for Olga (Antigravity)
+- 📋 #148 — Order by date on org matches (backend + frontend)
 - 📋 #113 — GitHub Team branch protection (post first client)
-- 📋 #117 — Multi-sport foundation (backlog)
-- 📋 RFC match-lifecycle — Pending
+- 📋 RFC match-lifecycle — pending Mario decisions
+- 📋 RFC multi-sport-architecture — deferred, revisit when second sport is real
 - 🔔 Demo with Jose (SoccerMix) — date TBD
 - ⚠️ `nestor-gameon-agent` + `olga-gameon-agent` → expire May 9, 2026 — renew before
 
-**Next session priorities (Session 31):**
-1. Configurar Vercel Deploy Hook en dashboard (Mario) + añadir secret VERCEL_DEPLOY_HOOK_API
-2. Deshabilitar auto-deploy en Vercel main (Mario)
-3. Crear dummy migration en develop (inocua — ej: comentario en columna o índice redundante)
-4. Flujo completo: develop → staging → main → verificar que job migrate corre primero, luego Vercel hook
-5. Definir siguiente ciclo de features
+**Next session priorities (Session 32):**
+1. Mario: Configurar Vercel Deploy Hook en dashboard + secret VERCEL_DEPLOY_HOOK_API
+2. Mario: Deshabilitar auto-deploy en Vercel main
+3. Crear issue para dummy migration (inocua) + ejecutar pipeline completo
+4. Definir siguiente ciclo de features para la demo con Jose
 
 ---
 
@@ -351,5 +326,5 @@ Pendiente:  Configurar VERCEL_DEPLOY_HOOK_API + deshabilitar auto-deploy en Verc
 
 ---
 
-*Part of Orion OS v1.5.0 — updated April 26, 2026 (Session 30)*
+*Part of Orion OS v1.5.0 — updated April 27, 2026 (Session 31)*
 *Ideas and product roadmap → `projects/gameon-ideas.md`*
