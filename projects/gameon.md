@@ -66,7 +66,7 @@ Deploy:     Vercel (gameon-nu.vercel.app)
 ### Settings (Frontend)
 - `/profile/settings` — standalone page, `authGuard` protected
 - Sections: Account (Privacy), About (Version), Danger zone (Logout)
-- Privacy toggle: `PATCH /users/me/settings` → updates `isPublic` inline with spinner + toast feedback ✅ in production v1.5.1
+- Privacy toggle: `PATCH /users/me/settings` → updates `isPublic` inline with spinner + toast feedback ✅ v1.5.1
 - `UserService` owns non-auth user API calls
 - `AuthService.refreshUserProfile()` re-fetches profile and updates signal after toggle
 
@@ -78,6 +78,7 @@ Deploy:     Vercel (gameon-nu.vercel.app)
 - Free users: 1 match/day. Organizers: 4 matches/day (PLAN_LIMITS)
 - Free users can set a price (D72)
 - `organizationId` optional — links match to org if visibility = ORGANIZATION
+- Event detail: proper not-found state when match is deleted (v1.5.2)
 
 ### Organizations
 - Entity with `name`, `slug`, `logoUrl`, `description`, `plan` (FREE/PRO)
@@ -86,6 +87,7 @@ Deploy:     Vercel (gameon-nu.vercel.app)
 - Public endpoints: list, slug detail, org matches
 - `GET /organizations/:id/matches` — default: today's matches; `?showAll=true`: all
 - `POST /organizations` requires ADMIN — manual creation for early clients
+- Organizer panel: match + venue action dropdowns working (v1.5.2)
 
 ### Tournaments
 - Belongs to Organization
@@ -115,8 +117,8 @@ ORGANIZER:  { matchesPerDay: 4, tournamentsPerWeek: 2, leaguesPerMonth: 1 }
 ## INFRASTRUCTURE
 
 ```
-PRODUCTION: v1.5.0 (API) + v1.5.1 (Frontend) — current
-  Frontend  →  Vercel (gameon-nu.vercel.app) — branch: main — v1.5.1
+PRODUCTION: v1.5.0 (API) + v1.5.2 (Frontend) — current
+  Frontend  →  Vercel (gameon-nu.vercel.app) — branch: main — v1.5.2
   Backend   →  Vercel (serverless) — branch: main — v1.5.0
   Database  →  Neon PostgreSQL (gameon-db)
 
@@ -167,7 +169,7 @@ staging  →  CI runs + Quality Gate enforced
 main     →  CI runs + Quality Gate enforced + migrate job runs first
 ```
 
-### Pending Vercel setup (BLOCKING for next release)
+### Pending Vercel setup (BLOCKING for next backend release)
 ```
 ⚠️ Vercel dashboard → gameon-api → Settings → Git → Deploy Hooks
    → Create hook: name "GitHub Release", branch: main
@@ -194,6 +196,7 @@ Frontend staging URL: gameon-git-staging-mjosuex85s-projects.vercel.app
 ✅ Matches
   GET  /matches              → returns creator's matches (requires auth)
   GET  /matches/:id          → public, returns match detail
+  GET  /event/:deleted-id    → shows not-found state (not broken page)
 
 ✅ Organizations
   GET  /organizations                         → public list
@@ -201,6 +204,10 @@ Frontend staging URL: gameon-git-staging-mjosuex85s-projects.vercel.app
   GET  /organizations/:id/matches             → only today's matches
   GET  /organizations/:id/matches?showAll=true → all matches
   GET  /organizations/my                      → requires ORGANIZER role
+
+✅ Organizer panel
+  Mis Partidos → three-dot dropdown opens correctly
+  Venues       → action dropdown opens correctly
 
 ✅ Public Profile + Privacy
   GET  /users/:id/profile    → returns PublicProfileResponseDto (no token)
@@ -250,7 +257,7 @@ CI + SonarCloud       → active + Quality Gate blocking
 
 ### Frontend
 ```
-core/ (services, interceptors, guards) → 82.88%
+core/ (services, interceptors, guards) → 82.88%+
 UserService    → updatePrivacySettings covered
 SettingsComponent → togglePrivacy + logout + error path covered
 AuthService    → refreshUserProfile covered
@@ -287,18 +294,21 @@ Rules:
 
 **Production:**
 - API: v1.5.0 ✅
-- Frontend: v1.5.1 ✅ (includes privacy toggle — #156 + #7 closed)
+- Frontend: v1.5.2 ✅ — deployed and validated
 
 **Completed this session (Session 31):**
 - ✅ Deploy Hook philosophy confirmed — Opción B is the right approach
 - ✅ RFC restructure: `rfcs/` now organized by project (`rfcs/gameon/`, `rfcs/nutriapp/`)
 - ✅ RFC `multi-sport-architecture.md` created — decision deferred, football first
-- ✅ #156 closed — Privacy toggle (Olga) shipped in v1.5.1
-- ✅ #7 closed — Public profile + privacy control (Nestor) shipped in v1.5.0/v1.5.1
+- ✅ #156 + #7 closed — Privacy toggle shipped in v1.5.1
+- ✅ #159 closed — Organizer matches dropdown fix (v1.5.2)
+- ✅ #160 closed — Organizer venues dropdown fix (v1.5.2)
+- ✅ #161 closed — Event detail not-found state (v1.5.2)
+- ✅ v1.5.2 deployed to production and validated by Mario
 
 **Open / Pending:**
-- ⚠️ CRÍTICO: Configurar Vercel Deploy Hook + secret `VERCEL_DEPLOY_HOOK_API` (Mario — before next release)
-- ⚠️ CRÍTICO: Deshabilitar auto-deploy en Vercel main (Mario — same time)
+- ⚠️ CRÍTICO: Configurar Vercel Deploy Hook + secret `VERCEL_DEPLOY_HOOK_API` (Mario — before next backend release)
+- ⚠️ CRÍTICO: Deshabilitar auto-deploy en Vercel main backend (Mario)
 - 📋 Next: dummy migration to test full pipeline migrate → deploy
 - 📋 #151 — Re-enable SonarCloud Quality Gate blocking (frontend)
 - 📋 #150 — OrganizationService unit tests (Olga)
@@ -312,8 +322,8 @@ Rules:
 
 **Next session priorities (Session 32):**
 1. Mario: Configurar Vercel Deploy Hook en dashboard + secret VERCEL_DEPLOY_HOOK_API
-2. Mario: Deshabilitar auto-deploy en Vercel main
-3. Crear issue para dummy migration (inocua) + ejecutar pipeline completo
+2. Mario: Deshabilitar auto-deploy en Vercel main (backend)
+3. Crear dummy migration → probar pipeline completo migrate → deploy
 4. Definir siguiente ciclo de features para la demo con Jose
 
 ---
