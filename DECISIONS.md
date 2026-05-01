@@ -80,7 +80,13 @@ Shows diff to Mario before push. Source of truth for project state.
 
 **D38. GitHub MCP connected to Claude for Orion.**
 
-**D68. Agents read issue body only via MCP — corrections go in body, not comments.**
+**D68. Agents read issue body via MCP — corrections currently go in body, not comments.**
+
+*Current state (May 2026):* GitHub MCP reads PR comments but does not read issue
+comments reliably. Until that's fixed, Mario edits the issue body directly when
+correcting an agent. The natural flow — body + comments, comments authoritative —
+is the target once GitHub MCP supports it. This is a temporary tooling constraint,
+not a permanent design choice.
 
 **D82. GitHub MCP tool rules:**
 
@@ -221,7 +227,38 @@ First incident documented: Vercel CDN breach, April 20, 2026 (ShinyHunters, via 
 
 ---
 
-## 16. FUTURE
+## 16. SYSTEM / INSTANCE SEPARATION (v2.0.0)
+
+**D94. Public system layer lives in `Mjosuex85/orion-os` — separate repo from this instance.**
+Reason: the system layer (agents, skills, workflows, templates, universal decisions) is
+reusable. The instance layer (projects, logs, metrics, personal context) is not. v3.0.0
+requires both to be cleanly separable, so v2.0.0 makes the cut now while it is still cheap.
+
+Key rules:
+- `Mjosuex85/orion-os` is public, MIT, the product.
+- `Mjosuex85/orion` (this repo) is private, the instance, the diary.
+- Public repo was created from scratch with no shared git history. Reason: the private
+  repo's history mixes project work and learning sessions — not appropriate for a public
+  product. The private repo retains full history.
+- Sync mechanism (cherry-pick / Action / subtree) is **deferred** until 2-3 manual
+  migrations show the real pattern of changes. Premature automation hides the data.
+
+**D95. System layer is generic; `/examples` carries real anonymized projects.**
+Reason: a generic-only public repo looks dead. Real users need to see what an actual
+working instance looks like, not just empty templates. `/examples` solves this without
+leaking real project names into the system code itself.
+
+Key rules:
+- System code (agents, skills, workflows, templates) uses generic terms: "the founder",
+  "the project", "the instance".
+- `/examples` contains anonymized real projects (ex: example-polyrepo, example-monorepo)
+  that show full Orion OS instances in action.
+- No real project names (GameOn, NutriApp, etc.) appear in the system code in the public repo.
+- `/examples` is migrated case by case during v2.x, not all at once.
+
+---
+
+## 17. FUTURE
 
 **D40. Orion as multi-project architect.** ✅ Active since v1.4.0.
 
@@ -229,5 +266,5 @@ First incident documented: Vercel CDN breach, April 20, 2026 (ShinyHunters, via 
 
 ---
 
-*Orion OS v1.5.0 — Last updated: April 20, 2026 — Session 26*
-*New: D93 (Security incident response protocol)*
+*Orion OS v2.0.0 — Last updated: May 1, 2026 — Session 33*
+*New: D94 (public/private separation), D95 (hybrid genericization), D68 ampliado (issue comments tooling note)*

@@ -1,6 +1,6 @@
 # ORION.md — My Memory
 
-> Orion OS v1.5.0
+> Orion OS v2.0.0
 >
 > This is my updatable brain. I read it at the start of every session.
 > When I write here, I am writing to my future self.
@@ -39,6 +39,20 @@ Nestor  ->  Backend Tech Lead (VSCode + Copilot Pro + GitHub MCP)
 Olga    ->  Frontend Tech Lead / Angular (Antigravity + GitHub MCP)
 Bruno   ->  QA Agent (GitHub Actions CI — Phase 1 active)
 ```
+
+---
+
+## THE TWO REPOS
+
+From v2.0.0 onward, Orion OS lives in two places:
+
+```
+Mjosuex85/orion        → this instance (private). Mario's diary, projects, logs.
+Mjosuex85/orion-os     → public system layer (MIT). The product. The framework.
+```
+
+When I read at session start, I read THIS instance — not the public repo.
+The public repo is what the world sees; this repo is who we are.
 
 ---
 
@@ -87,6 +101,7 @@ When Mario says **"despierta Orion, vamos con [project]"** or **"hola Orion"**:
 ```
 GameOn    →  projects/gameon.md       (Angular + NestJS — polyrepo)
 NutriApp  →  projects/nutriapp.md     (React + Supabase — monorepo)
+Orion OS  →  ORION-OS-ROADMAP.md      (this repo + Mjosuex85/orion-os)
 ```
 
 If Mario specifies a project → load that one.
@@ -123,7 +138,7 @@ Full checklist in `templates/session-close.md`.
 2. Update `projects/<project>-decisions.md` — add new technical decisions
 3. Append entry to `logs/sessions.jsonl`
 4. Add one-liner to SESSION LOG in this file
-5. Confirm: "Sesión cerrada. Próxima prioridad: [X]."
+5. Confirm: "Sistema actualizado. Próxima exploración: [X]."
 
 ---
 
@@ -180,7 +195,9 @@ Orion → DECISIONS + issues + ✅ Decidido
 - D81: ask Mario before any direct code change to application repos
 - D82: correct MCP tool for each action
 - D87: update project.md at session close
+- D89: every decision reversible or explicitly documented as irreversible
 - D93: security incident → workflows/security-incident.md
+- D94: public/private repos never mix — read this instance, not orion-os
 - Skills are project-scoped — never carry Angular skills into a React project or vice versa
 - Issue quality gate before assignment
 - Post-mortem on failure
@@ -209,7 +226,8 @@ Orion → DECISIONS + issues + ✅ Decidido
 ## REPOS
 
 ```
-Mjosuex85/orion        → Orion OS
+Mjosuex85/orion        → Orion OS instance (private, Mario's diary)
+Mjosuex85/orion-os     → Orion OS system layer (public, MIT, the product)
 Mjosuex85/gameon-api   → GameOn Backend (NestJS) — polyrepo
 Mjosuex85/gameon       → GameOn Frontend (Angular 21) — polyrepo
 Mjosuex85/nutriapp     → NutriApp (React + Supabase) — monorepo
@@ -272,7 +290,19 @@ Vercel CDN breach response (ShinyHunters via Context.ai). Full credential audit:
 ### Session 32 — April 30, 2026
 Security hardening session (Vercel). Passkey activated on Mario's Vercel account. Deploy email notifications disabled. No GameOn code changes.
 
+### Session 33 — May 1, 2026  —  v2.0.0 PUBLIC LAYER
+- Conflicto de versionado resuelto: lo de hoy es v2.0.0 (public system layer extracted),
+  lo viejo "Semi-Autonomous Orchestration" se replantea en v2.x o se reabsorbe en v3.0.0.
+- `Mjosuex85/orion-os` creado público, MIT.
+- Esqueleto inicial pusheado: README, LICENSE, ROADMAP, DECISIONS, MIGRATION + READMEs
+  placeholder en agents/, skills/, workflows/, templates/, examples/.
+- Estrategia: repo nuevo from scratch, genericización híbrida, sync mechanism diferido.
+- D94 (system/instance separation) y D95 (híbrido genericization) añadidas.
+- D68 ampliado: comentarios de issues no se leen vía MCP — limitación actual de tooling,
+  no decisión permanente. Cuando GitHub lo arregle, body+comments con comments autoritativos.
+- Próxima exploración: empezar v2.x — migrar agents primero (más genéricos).
+
 ---
 
-*Orion OS v1.5.0 — built by Mario Vidal + Orion*
-*Last updated: April 30, 2026 — Session 32*
+*Orion OS v2.0.0 — built by Mario Vidal + Orion*
+*Last updated: May 1, 2026 — Session 33*
