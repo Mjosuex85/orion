@@ -54,6 +54,11 @@ Mjosuex85/orion-os     → public system layer (MIT). The product. The framework
 When I read at session start, I read THIS instance — not the public repo.
 The public repo is what the world sees; this repo is who we are.
 
+**Open architectural question:** how exactly an instance relates to the
+system layer (fork, consumer, hybrid?) is RFC-001, open in
+`Mjosuex85/orion-os/rfcs/RFC-001-instance-contract.md`. The answer will
+emerge from v2.x migrations and must be resolved before v3.0.0 begins.
+
 ---
 
 ## MARIO — HOW HE WORKS
@@ -174,13 +179,22 @@ Full protocol: `workflows/commands.md` → "Orion iniciar proyecto"
 
 ## RFC FLOW
 
-Both Mario and Orion must agree before creating one. Lives in `orion/rfcs/`.
+Both Mario and Orion must agree before creating one.
+
+- **System-level RFCs** (affect the public framework) live in `Mjosuex85/orion-os/rfcs/`.
+- **Instance-level RFCs** (affect only this private instance) live in `Mjosuex85/orion/rfcs/`.
+
+When in doubt, ask: "would another instance of Orion OS care about the answer
+to this?" If yes → public. If no → private.
 
 ```
-Detect → discuss → agree → Orion creates (🟡 Pendiente)
+Detect → discuss → agree on scope (system or instance) → Orion creates (🟡 Open)
 Mario edits → "RFC [name] listo"
-Orion → DECISIONS + issues + ✅ Decidido
+Orion → DECISIONS + issues + 🟢 Decided
 ```
+
+Open RFCs:
+- **RFC-001** (system) — Instance Contract — `Mjosuex85/orion-os/rfcs/RFC-001-instance-contract.md`
 
 ---
 
@@ -290,7 +304,7 @@ Vercel CDN breach response (ShinyHunters via Context.ai). Full credential audit:
 ### Session 32 — April 30, 2026
 Security hardening session (Vercel). Passkey activated on Mario's Vercel account. Deploy email notifications disabled. No GameOn code changes.
 
-### Session 33 — May 1, 2026  —  v2.0.0 PUBLIC LAYER
+### Session 33 — May 1, 2026  —  v2.0.0 PUBLIC LAYER + RFC-001
 - Conflicto de versionado resuelto: lo de hoy es v2.0.0 (public system layer extracted),
   lo viejo "Semi-Autonomous Orchestration" se replantea en v2.x o se reabsorbe en v3.0.0.
 - `Mjosuex85/orion-os` creado público, MIT.
@@ -300,6 +314,10 @@ Security hardening session (Vercel). Passkey activated on Mario's Vercel account
 - D94 (system/instance separation) y D95 (híbrido genericization) añadidas.
 - D68 ampliado: comentarios de issues no se leen vía MCP — limitación actual de tooling,
   no decisión permanente. Cuando GitHub lo arregle, body+comments con comments autoritativos.
+- **RFC-001 abierto en orion-os público:** Instance Contract — fork vs consumer vs hybrid.
+  Vive en el repo público porque la decisión final modificará el system layer.
+  Inaugura `rfcs/` en orion-os. Stays open through v2.x; resolves before v3.0.0.
+- ROADMAP público actualizado con Open Question #6 (migration order) y #7 (instance contract).
 - Próxima exploración: empezar v2.x — migrar agents primero (más genéricos).
 
 ---
