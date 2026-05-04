@@ -35,10 +35,25 @@ Agents         ->  execute within guardrails
 
 ### Current agents
 ```
-Nestor  ->  Backend Tech Lead (VSCode + Copilot Pro + GitHub MCP)
-Olga    ->  Frontend Tech Lead / Angular (Antigravity + GitHub MCP)
-Bruno   ->  QA Agent (GitHub Actions CI — Phase 1 active)
+Nestor        ->  Backend Tech Lead (VSCode + Copilot Pro + GitHub MCP)
+Olga-Angular  ->  Frontend Tech Lead / Angular (Antigravity + GitHub MCP) — GameOn
+Olga-React    ->  Frontend Tech Lead / React (Antigravity + GitHub MCP) — PortfolioMV
+Bruno         ->  QA Agent (GitHub Actions CI — Phase 1 active)
 ```
+
+### Agent identity files
+```
+agents/OLGA.md        →  Angular stack (GameOn)
+agents/OLGA-REACT.md  →  React stack (PortfolioMV)
+agents/NESTOR.md      →  NestJS backend (GameOn)
+```
+
+### Agent–repo–identity mapping
+| Agent | Repo | Identity file |
+|-------|------|---------------|
+| Olga-React | portfolioMV | OLGA-REACT.md |
+| Olga-Angular | gameon | OLGA.md |
+| Nestor | gameon-api | NESTOR.md |
 
 ---
 
@@ -96,7 +111,7 @@ When Mario says **"despierta Orion, vamos con [project]"** or **"hola Orion"**:
 1. Read `ORION.md` → `Mjosuex85/orion` (main)
 2. Read `DECISIONS.md` → `Mjosuex85/orion` (main)
 3. Read `workflows/commands.md` → recognize session commands
-4. Read `projects/<project>.md` → identify stack + skills array
+4. Read `projects/<project>.md` → identify stack + skills array + ISSUES REPO
 5. **Load each skill declared in the project's skills array**
 6. Read `projects/<project>-decisions.md`
 7. Run health check (`workflows/health-check.md`)
@@ -104,9 +119,10 @@ When Mario says **"despierta Orion, vamos con [project]"** or **"hola Orion"**:
 
 ### Active projects
 ```
-GameOn    →  projects/gameon.md       (Angular + NestJS — polyrepo)
-NutriApp  →  projects/nutriapp.md     (React + Supabase — monorepo)
-Orion OS  →  ORION-OS-ROADMAP.md      (this repo + Mjosuex85/orion-os)
+GameOn       →  projects/gameon.md        (Angular + NestJS — polyrepo)
+NutriApp     →  projects/nutriapp.md      (React + Supabase — monorepo)
+PortfolioMV  →  projects/portfoliomv.md   (React CRA — single repo)
+Orion OS     →  ORION-OS-ROADMAP.md       (this repo + Mjosuex85/orion-os)
 ```
 
 If Mario specifies a project → load that one.
@@ -154,6 +170,7 @@ Full protocol: `workflows/commands.md` → "Orion iniciar proyecto"
 1. Wizard: name, topology, frontend, backend, DB, auth, deploy
 2. Confirm with Mario before executing
 3. Create repo + develop branch + Orion OS files + issue #1
+4. Mario creates GitHub Project (Kanban) manually — D96
 
 ---
 
@@ -212,7 +229,11 @@ Open RFCs:
 - D89: every decision reversible or explicitly documented as irreversible
 - D93: security incident → workflows/security-incident.md
 - D94: public/private repos never mix — read this instance, not orion-os
+- D96: one GitHub Project (Kanban) per project — columns: Backlog → Ready → In progress → In review → Done
+- D97: issues repo declared in projects/<project>.md — Orion references by repo, not URL
+- D99: decision prefix convention — GN-D (GameOn), N-D (NutriApp), PM-D (PortfolioMV)
 - Skills are project-scoped — never carry Angular skills into a React project or vice versa
+- Agent identity is stack-scoped — OLGA.md for Angular, OLGA-REACT.md for React
 - Issue quality gate before assignment
 - Post-mortem on failure
 - Agent feedback after completion
@@ -223,17 +244,19 @@ Open RFCs:
 ## HOW EACH AGENT RECEIVES CONTEXT
 
 ```
-1. IDE reads CLAUDE.md from project repo (develop)
-2. CLAUDE.md: read agents/<AGENT>.md + AGENT_RULES.md via GitHub MCP
-3. Agent confirms Read Log, waits for issue number
-4. Mario gives issue → agent reads body via GitHub MCP
-5. Agent reads skills/subagents from issue
-6. Implements, self-reviews, says "Ready to test"
+1. IDE reads CLAUDE.md from project repo (develop branch)
+2. CLAUDE.md tells agent which identity file to read:
+   - OLGA-REACT.md  → React projects (portfolioMV)
+   - OLGA.md        → Angular projects (gameon)
+   - NESTOR.md      → NestJS backend (gameon-api)
+3. Agent reads identity file + AGENT_RULES.md via GitHub MCP
+4. Agent confirms Read Log, waits for issue number
+5. Mario gives issue → agent reads body via GitHub MCP
+6. Agent reads skills/subagents from issue
+7. Implements, self-reviews, says "Ready to test"
 ```
 
-**Nestor:** VSCode + Copilot Pro (GameOn backend, NestJS).
-**Olga:** Antigravity + npx MCP (GameOn frontend, Angular).
-**NutriApp Phase 1:** Mario builds directly with Orion as architect. No Nestor/Olga — different stack.
+**Key rule:** one repo, one agent, one session. Never mix projects in a single agent session.
 
 ---
 
@@ -245,6 +268,7 @@ Mjosuex85/orion-os     → Orion OS system layer (public, MIT, the product)
 Mjosuex85/gameon-api   → GameOn Backend (NestJS) — polyrepo
 Mjosuex85/gameon       → GameOn Frontend (Angular 21) — polyrepo
 Mjosuex85/nutriapp     → NutriApp (React + Supabase) — monorepo
+Mjosuex85/portfolioMV  → PortfolioMV (React CRA) — single repo
 ```
 
 ---
@@ -283,17 +307,10 @@ Orion OS v1.1.0 → v1.2.0 → v1.3.0 → v1.4.0. Full framework evolution in on
 NestJS v11 hotfix (#144). npm --force rule. Bootstrap smoke test (#145). English-only issues rule. Ready to test report protocol. Git identity fix for Vercel. Bruno duplicates cleaned.
 
 ### Session 23 (learning) — April 15, 2026
-- Learning session: AI fundamentals, Orion OS architecture, context windows, done definition
-- Orion OS v1.5.0: smart session init + skill loading + monorepo/polyrepo variants
-- NutriApp initialized: React + Supabase + Vite, monorepo topology
-- skills/frontend/react-patterns.md created (provider-agnostic service layer)
-- skills/frontend/angular-patterns.md created (extracted from GameOn implicit knowledge)
-- workflows/commands.md created: "Orion iniciar proyecto", "Orion despierta", "Orion cierra sesión"
-- Firebase → Supabase correction in all nutriapp files
-- Future: orion-os public repo (clean fork) — pending when system matures
+Orion OS v1.5.0: smart session init + skill loading + multi-project. NutriApp initialized. react-patterns + angular-patterns skills created. workflows/commands.md created.
 
 ### Session 24 — April 16, 2026
-NutriApp Phase 1 complete. Plan, cook flow, stock deduction, UI redesign. ND16-ND21.
+NutriApp Phase 1 complete. Plan, cook flow, stock deduction, UI redesign. N-D16 to N-D21.
 
 ### Session 25 — April 19, 2026
 Orion OS Hackaton Pitch. System documented for public presentation. ORION-OS-HACKATON.txt created.
@@ -302,25 +319,15 @@ Orion OS Hackaton Pitch. System documented for public presentation. ORION-OS-HAC
 Vercel CDN breach response (ShinyHunters via Context.ai). Full credential audit: 9 projects, risk matrix. D93 + workflows/security-incident.md created.
 
 ### Session 32 — April 30, 2026
-Security hardening session (Vercel). Passkey activated on Mario's Vercel account. Deploy email notifications disabled. No GameOn code changes.
+Security hardening session (Vercel). Passkey activated. Deploy email notifications disabled.
 
-### Session 33 — May 1, 2026  —  v2.0.0 PUBLIC LAYER + RFC-001
-- Conflicto de versionado resuelto: lo de hoy es v2.0.0 (public system layer extracted),
-  lo viejo "Semi-Autonomous Orchestration" se replantea en v2.x o se reabsorbe en v3.0.0.
-- `Mjosuex85/orion-os` creado público, MIT.
-- Esqueleto inicial pusheado: README, LICENSE, ROADMAP, DECISIONS, MIGRATION + READMEs
-  placeholder en agents/, skills/, workflows/, templates/, examples/.
-- Estrategia: repo nuevo from scratch, genericización híbrida, sync mechanism diferido.
-- D94 (system/instance separation) y D95 (híbrido genericization) añadidas.
-- D68 ampliado: comentarios de issues no se leen vía MCP — limitación actual de tooling,
-  no decisión permanente. Cuando GitHub lo arregle, body+comments con comments autoritativos.
-- **RFC-001 abierto en orion-os público:** Instance Contract — fork vs consumer vs hybrid.
-  Vive en el repo público porque la decisión final modificará el system layer.
-  Inaugura `rfcs/` en orion-os. Stays open through v2.x; resolves before v3.0.0.
-- ROADMAP público actualizado con Open Question #6 (migration order) y #7 (instance contract).
-- Próxima exploración: empezar v2.x — migrar agents primero (más genéricos).
+### Session 33 — May 1, 2026
+Orion OS v2.0.0: public system layer extracted to Mjosuex85/orion-os (MIT). RFC-001 opened. D94, D95 added.
+
+### Session 34 — May 4, 2026
+PortfolioMV registered in Orion OS. OLGA-REACT.md created (React stack identity). react-component-architecture subagent created. Agent bootstrap protocol documented (Command 4). D96-D99 added. Kanban per project established. Decision prefix convention standardized.
 
 ---
 
 *Orion OS v2.0.0 — built by Mario Vidal + Orion*
-*Last updated: May 1, 2026 — Session 33*
+*Last updated: May 4, 2026 — Session 34*
