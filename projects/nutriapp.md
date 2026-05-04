@@ -16,6 +16,13 @@ It lets Mario manage his ingredient stock, select daily meals from a recipe list
 
 ---
 
+## ISSUES REPO: Mjosuex85/nutriapp
+## KANBAN:      GitHub Projects > NutriApp (account level)
+
+Columns: Backlog → Ready → In progress → In review → Done
+
+---
+
 ## TOPOLOGY
 
 **Monorepo** — `Mjosuex85/nutriapp`
@@ -171,4 +178,4 @@ Historial page:         ⬜ deferred
 
 ---
 
-*Part of Orion OS v1.5.0 — last updated April 15, 2026*
+*Part of Orion OS v2.0.0 — last updated May 4, 2026 (Session 34 — issues repo + kanban reference added)*

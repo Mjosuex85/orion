@@ -14,6 +14,13 @@ The differentiator is that it reflects Mario's real career — not a template. I
 
 ---
 
+## ISSUES REPO: Mjosuex85/portfolioMV
+## KANBAN:      GitHub Projects > PortfolioMV (account level)
+
+Columns: Backlog → Ready → In progress → In review → Done
+
+---
+
 ## STACK
 
 ```
@@ -35,13 +42,13 @@ Node:         22.x
 ## REPO
 
 ```
-Mjosuex85/portfolioMV  →  private, single repo (monorepo-like, no separate api repo)
+Mjosuex85/portfolioMV  → private, single repo
 ```
 
-Branch structure follows standard Orion OS GitFlow:
+Branch structure:
 ```
-main     →  production (Vercel)
-develop  →  active work (agents commit here)
+main     → production (Vercel)
+develop  → active work (Olga commits here)
 ```
 
 ---
@@ -51,11 +58,11 @@ develop  →  active work (agents commit here)
 ```
 src/
   assets/
-    projectsInfo/info.js   →  project entries array (id, name, img, video, deploy, repository)
-  store/                   →  Redux (translation boolean: false=ES, true=EN)
-api/                       →  Vercel serverless functions
-public/                    →  static assets
-supabase/                  →  Supabase config/migrations
+    projectsInfo/info.js   → project entries array (id, name, img, video, deploy, repository)
+  store/                   → Redux (translation boolean: false=ES, true=EN)
+api/                       → Vercel serverless functions
+public/                    → static assets
+supabase/                  → Supabase config/migrations
 ```
 
 ### Bilingual pattern
@@ -84,14 +91,7 @@ All sections are anchor-linked: `#home`, `#about`, `#skills`, `#projects`, `#qua
 
 ## AGENT
 
-**Olga** handles this project (React, not Angular — skills context: react-patterns, not angular-patterns).
-
-Olga bootstrap for this repo:
-1. Read `CLAUDE.md` from `portfolioMV` (develop branch)
-2. Read `agents/OLGA.md` + `AGENT_RULES.md` from `Mjosuex85/orion` via GitHub MCP
-3. Confirm Read Log, wait for issue number
-4. Read issue body via GitHub MCP
-5. Implement on `develop`, self-review, say "Ready to test"
+**Olga** handles this project (React — load `react-patterns` skill, NOT `angular-patterns`).
 
 ---
 
@@ -110,14 +110,13 @@ Pending definition:
 
 **Production:** Functional — last push April 22, 2026
 
-**Registered in Orion OS:** this session.
+**Registered in Orion OS:** Session 34.
 
 **Open / Pending:**
-- 📋 Define what features/content to add (next session with Mario)
+- 📋 Define what features/content to add
 - 📋 Update project entries: GameOn, NutriApp, Orion OS
 - 📋 Evaluate: Supabase integration (contact form? visitor tracking?)
 - 📋 Evaluate: CRA → Vite migration (future, not blocking)
-- 📋 Create `develop` branch if not exists
 
 ---
 

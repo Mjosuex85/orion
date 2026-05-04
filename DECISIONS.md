@@ -258,7 +258,55 @@ Key rules:
 
 ---
 
-## 17. FUTURE
+## 17. KANBAN AND ISSUE TRACKING
+
+**D96. One GitHub Project (Kanban) per active project in Orion OS.**
+Reason: each project has isolated context. A shared board across projects generates noise and
+doesn't scale. Consistent with the multi-project isolation principle (D88).
+
+Rules:
+- GitHub Project lives at account level (`Mjosuex85/Projects/<ProjectName>`) — not inside any repo.
+- Project name matches the project name in Orion OS exactly (GameOn, NutriApp, PortfolioMV).
+- Standard columns — always the same across all projects:
+  `Backlog → Ready → In progress → In review → Done`
+- Orion references the project's issues by repo (D97) — not by board URL.
+- Board creation is manual via GitHub UI until GitHub Projects v2 GraphQL is available via MCP (D98).
+
+**D97. The issues repo for each project is declared in `projects/<project>.md`.**
+Orion reads and creates issues by pointing to that repo via GitHub MCP.
+No board URL needed — the repo name is the reference.
+
+Format in project files:
+```
+ISSUES REPO: Mjosuex85/<repo-name>
+KANBAN:      GitHub Projects > <ProjectName> (account level)
+```
+
+**D98. GitHub Projects v2 GraphQL — deferred tooling.**
+The GitHub MCP currently uses REST API — Projects v2 requires GraphQL.
+Until MCP support lands, board creation is a manual step in `workflows/project-init.md`.
+When GraphQL becomes available: Orion automates board creation on `"Orion iniciar proyecto"`.
+This is a tooling constraint, not a permanent design choice.
+
+---
+
+## 18. CONVENTIONS
+
+**D99. Decision prefix convention — all project-specific decisions use `<PREFIX>-D<N>` format.**
+
+| Project | Prefix | Example |
+|---------|--------|---------|
+| Universal | `D` | `D96` |
+| GameOn | `GN-D` | `GN-D1` |
+| NutriApp | `N-D` | `N-D1` |
+| PortfolioMV | `PM-D` | `PM-D1` |
+
+Rule: new projects always get a prefix defined at registration time in Orion.
+Prefix format: short project abbreviation + hyphen + D + number.
+
+---
+
+## 19. FUTURE
 
 **D40. Orion as multi-project architect.** ✅ Active since v1.4.0.
 
@@ -266,5 +314,5 @@ Key rules:
 
 ---
 
-*Orion OS v2.0.0 — Last updated: May 1, 2026 — Session 33*
-*New: D94 (public/private separation), D95 (hybrid genericization), D68 ampliado (issue comments tooling note)*
+*Orion OS v2.0.0 — Last updated: May 4, 2026 — Session 34*
+*New: D96 (kanban per project), D97 (issues repo reference), D98 (GraphQL deferred), D99 (decision prefix convention)*
