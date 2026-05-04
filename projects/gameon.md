@@ -25,6 +25,13 @@ Paid layer (monetization)
 
 ---
 
+## ISSUES REPO: Mjosuex85/gameon-api
+## KANBAN:      GitHub Projects > GameOn (account level)
+
+Columns: Backlog → Ready → In progress → In review → Done
+
+---
+
 ## STACK
 
 ### Backend — `Mjosuex85/gameon-api`
@@ -336,5 +343,5 @@ Rules:
 
 ---
 
-*Part of Orion OS v1.5.0 — updated April 27, 2026 (Session 31)*
+*Part of Orion OS v2.0.0 — updated May 4, 2026 (Session 34 — issues repo + kanban reference added)*
 *Ideas and product roadmap → `projects/gameon-ideas.md`*

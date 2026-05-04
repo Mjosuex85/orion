@@ -4,6 +4,10 @@
 > Universal decisions live in the root `DECISIONS.md`.
 >
 > Read by Orion, Nestor, and Olga when working on GameOn.
+>
+> ⚠️ NOTE: GameOn decisions use bare `D` prefix (legacy, predates multi-project system).
+> Renaming to `GN-D` is deferred — references exist in issues and commits.
+> New GameOn decisions from Session 34 onward use `GN-D` prefix.
 
 ---
 
@@ -169,5 +173,5 @@ Target: raise to 80% as coverage grows.
 
 ---
 
-*Part of Orion OS v1.1.0 — GameOn specific decisions*
-*Last updated: April 10, 2026 — Session 21*
+*Part of Orion OS v2.0.0 — updated May 4, 2026 (Session 34)*
+*Legacy prefix note added. New decisions from Session 34 onward use GN-D prefix.*
