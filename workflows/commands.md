@@ -1,6 +1,6 @@
 # Orion OS — Session Commands
 
-> These are the three core commands Mario uses to interact with Orion OS.
+> These are the core commands Mario uses to interact with Orion OS.
 > Orion recognizes these triggers and executes the corresponding workflow automatically.
 
 ---
@@ -62,6 +62,8 @@ Then asks: **"¿Todo correcto? Dame luz verde."**
 5. Push CLAUDE.md + .npmrc + .gitattributes + .env.example to develop
 6. Update ORION.md — add project to REPOS + active projects list
 7. Create issue #1 — project scaffold based on chosen stack
+8. Create GitHub Project (Kanban) — manual step, Mario creates from UI
+   Columns: Backlog → Ready → In progress → In review → Done (D96)
 ```
 
 ### Output
@@ -70,6 +72,7 @@ Then asks: **"¿Todo correcto? Dame luz verde."**
 "Proyecto <n> inicializado bajo Orion OS.
 Repo: Mjosuex85/<n>
 Issue #1 abierto: <title>
+Kanban: crear manualmente en GitHub Projects > <n>
 Próximo paso: ejecuta el issue #1."
 ```
 
@@ -88,7 +91,7 @@ Próximo paso: ejecuta el issue #1."
 ```
 1. Read ORION.md          → Mjosuex85/orion (main)
 2. Read DECISIONS.md      → Mjosuex85/orion (main)
-3. Read projects/<project>.md → identify stack + skills array
+3. Read projects/<project>.md → identify stack + skills array + ISSUES REPO
 4. Load each skill in the skills array
 5. Read projects/<project>-decisions.md
 6. Run health check (workflows/health-check.md)
@@ -140,7 +143,7 @@ Próximo paso: ejecuta el issue #1."
 Examples of CORRECT entries:
 ```
 ### Session 24 — April 16, 2026
-NutriApp Phase 1 complete. Plan, cook flow, stock deduction, UI redesign. ND16-ND21.
+NutriApp Phase 1 complete. Plan, cook flow, stock deduction, UI redesign. N-D16 to N-D21.
 ```
 
 Examples of WRONG entries (never do this):
@@ -148,14 +151,13 @@ Examples of WRONG entries (never do this):
 ### Session 24 — April 16, 2026
 - Monthly Plan page: Hoy/Semana/Mes views, week navigation, month grid
 - Auto-generate: Fisher-Yates shuffle
-- Cook flow: MealActionSheet → ConfirmModal → applyRecipe
 ...
 ```
 
 ### projects/<project>-decisions.md — ALWAYS updated at close
 
 All new technical decisions made during the session go here — no exceptions.
-Format: `NDxx. <Decision title>` with context and reason.
+Format: `<PREFIX>-Dxx. <Decision title>` with context and reason.
 This is not optional. If decisions were made, they must be documented.
 
 ### logs/sessions.jsonl — entry format
@@ -172,17 +174,84 @@ This is not optional. If decisions were made, they must be documented.
 
 ---
 
-## COMMAND REFERENCE
+## COMMAND 4 — Starting an agent (Olga / Nestor)
 
-| Mario says | Orion does |
-|---|---|
-| `"Orion iniciar proyecto"` | Wizard → create repo + files + issue #1 |
-| `"despierta Orion, vamos con <X>"` | Smart bootstrap → load context + skills for X |
-| `"Orion despierta"` | Smart bootstrap → load primary project |
-| `"cambiemos a <X>"` | Context switch → see context-switch.md |
-| `"Orion cierra sesión"` | Session close → update docs + log |
+> This is not a command to Orion — it's the protocol Mario follows to start any agent
+> cleanly, without context pollution.
+
+### The rule
+
+```
+Orion    → trigger phrase in Claude.ai
+Agents   → CLAUDE.md of the repo does the bootstrap
+           Mario only gives the issue number
+```
+
+### How to start Olga — React (PortfolioMV, Antigravity)
+
+1. Open Antigravity with `portfolioMV` repo loaded
+2. Olga reads `CLAUDE.md` automatically on startup
+3. She bootstraps: reads `OLGA-REACT.md` + `AGENT_RULES.md` from `Mjosuex85/orion`
+4. She posts her **Read Log** confirming what she read
+5. Mario gives the issue number — nothing else
+6. Olga reads the issue body via GitHub MCP and begins
+
+### How to start Olga — Angular (GameOn, Antigravity)
+
+1. Open Antigravity with `gameon` repo loaded
+2. Olga reads `CLAUDE.md` automatically on startup
+3. She bootstraps: reads `OLGA.md` + `AGENT_RULES.md` from `Mjosuex85/orion`
+4. She posts her **Read Log**
+5. Mario gives the issue number
+
+### How to start Nestor (GameOn backend, VSCode + Copilot)
+
+1. Open VSCode with `gameon-api` repo loaded
+2. Nestor reads `CLAUDE.md` automatically on startup
+3. He bootstraps: reads `NESTOR.md` + `AGENT_RULES.md` from `Mjosuex85/orion`
+4. He posts his **Read Log**
+5. Mario gives the issue number
+
+### Agent–repo mapping
+
+| Agent | Repo | Identity file |
+|-------|------|---------------|
+| Olga-React | portfolioMV | `OLGA-REACT.md` |
+| Olga-Angular | gameon | `OLGA.md` |
+| Nestor | gameon-api | `NESTOR.md` |
+
+### What pollutes context — never do this
+
+```
+❌ Give the issue before the agent confirms the Read Log
+❌ Open agent in the wrong repo (gameon loaded, portfolioMV issue)
+❌ Add extra instructions at startup — CLAUDE.md is enough
+❌ Long sessions without closing — context degrades after ~3h
+❌ Same agent session for two different projects
+```
+
+### One repo, one agent, one session
+
+Each agent works in exactly one repo per session.
+If you need to work on two projects → two separate agent sessions.
 
 ---
 
-*Part of Orion OS v1.5.0 — session commands*
-*Updated: April 16, 2026 — Session 25 — fix: session close protocol (bugs from session 24)*
+## COMMAND REFERENCE
+
+| Mario says | Who | What happens |
+|---|---|---|
+| `"Orion iniciar proyecto"` | Orion | Wizard → create repo + files + issue #1 |
+| `"despierta Orion, vamos con <X>"` | Orion | Bootstrap → load context + skills for X |
+| `"Orion despierta"` | Orion | Bootstrap → load primary project (GameOn) |
+| `"cambiemos a <X>"` | Orion | Context switch → see context-switch.md |
+| `"Orion cierra sesión"` | Orion | Session close → update docs + log |
+| Open Antigravity (portfolioMV) | Olga-React | Auto-bootstrap via CLAUDE.md → OLGA-REACT.md |
+| Open Antigravity (gameon) | Olga-Angular | Auto-bootstrap via CLAUDE.md → OLGA.md |
+| Open VSCode (gameon-api) | Nestor | Auto-bootstrap via CLAUDE.md → NESTOR.md |
+
+---
+
+*Part of Orion OS v2.0.0 — session commands*
+*Updated: May 4, 2026 — Session 34*
+*Added: Command 4 (agent bootstrap protocol), D96 in project init, decision prefix convention in session close*
