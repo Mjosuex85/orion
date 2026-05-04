@@ -91,33 +91,47 @@ All sections are anchor-linked: `#home`, `#about`, `#skills`, `#projects`, `#qua
 
 ## AGENT
 
-**Olga** handles this project (React — load `react-patterns` skill, NOT `angular-patterns`).
+**Olga-React** handles this project (load `OLGA-REACT.md`, NOT `OLGA.md`).
 
 ---
 
-## OBJECTIVE — Current Phase
+## KNOWN INCIDENTS — Session 34
 
-**Goal:** Add features and update content to reflect current career stage.
+### ⚠️ INC-01: GitHub Project token not configured for portfolioMV
+**What happened:** Issue #18 was created as a normal GitHub issue — it did NOT appear in the portfolioMV Kanban board automatically.
+**Root cause:** The GitHub Project (Kanban) for portfolioMV is not linked to the repo. GitHub Projects v2 requires either a REST token with `project` scope or manual repo linking from the UI.
+**Impact:** Issues created via GitHub MCP go to the repo issue tracker but not to the board.
+**Fix:** Mario must manually link `portfolioMV` repo to the GitHub Project board from the UI:
+  GitHub → Projects → PortfolioMV → Settings → Linked repositories → add portfolioMV
+**Status:** ⬜ Pending — Mario action required.
 
-Pending definition:
-- Which new projects to add (GameOn, NutriApp, Orion OS)
-- Any new sections or interactions
-- Contact/Supabase integration (currently EmailJS only)
+### ⚠️ INC-02: Olga could not read issue #18 correctly
+**What happened:** Olga failed to read the issue body via GitHub MCP during the first attempt with portfolioMV.
+**Root cause:** Suspected — same token scope issue as INC-01, or Antigravity session context. Not confirmed.
+**Impact:** First Olga session with portfolioMV was blocked before implementation started.
+**Fix:** Resolve INC-01 first. Then retry with a fresh Antigravity session, clean bootstrap.
+**Status:** ⬜ Pending — blocked by INC-01.
 
 ---
 
-## STATUS — May 4, 2026 (Session 34)
+## STATUS — May 4, 2026 (Session 34 close)
 
 **Production:** Functional — last push April 22, 2026
 
 **Registered in Orion OS:** Session 34.
 
 **Open / Pending:**
-- 📋 Define what features/content to add
+- 🔴 Fix: Link portfolioMV repo to GitHub Project board (INC-01) — Mario
+- 🔴 Retry: Olga session after INC-01 is resolved (INC-02)
+- 📋 Issue #18 open: replace StockWise → Orion OS card + OrionOS page
 - 📋 Update project entries: GameOn, NutriApp, Orion OS
 - 📋 Evaluate: Supabase integration (contact form? visitor tracking?)
 - 📋 Evaluate: CRA → Vite migration (future, not blocking)
 
+**Next session priority:**
+1. Mario links portfolioMV to GitHub Project board
+2. Fresh Olga-React session → issue #18
+
 ---
 
-*Part of Orion OS v2.0.0 — created May 4, 2026 (Session 34)*
+*Part of Orion OS v2.0.0 — updated May 4, 2026 (Session 34 close)*
