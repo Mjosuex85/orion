@@ -327,7 +327,10 @@ Orion OS v2.0.0: public system layer extracted to Mjosuex85/orion-os (MIT). RFC-
 ### Session 34 — May 4, 2026
 PortfolioMV registered in Orion OS. OLGA-REACT.md created (React stack identity). react-component-architecture subagent created. Agent bootstrap protocol documented (Command 4). D96-D99 added. Kanban per project established. Decision prefix convention standardized.
 
+### Session 35 — May 5, 2026
+LICENSE (MIT) added to instance repo for temporary public visibility (recruiter review). Repo returned to private after.
+
 ---
 
 *Orion OS v2.0.0 — built by Mario Vidal + Orion*
-*Last updated: May 4, 2026 — Session 34*
+*Last updated: May 5, 2026 — Session 35*
