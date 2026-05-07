@@ -306,7 +306,31 @@ Prefix format: short project abbreviation + hyphen + D + number.
 
 ---
 
-## 19. FUTURE
+## 19. PROJECT VISION (v2.2.0)
+
+**D100. Every project has a `vision.md` — frozen original pitch, anchor against drift.**
+
+Reason: as projects evolve, technical decisions and operational context (`<name>.md`,
+`<name>-decisions.md`) accumulate and slowly drift away from the original product idea.
+The `vision.md` exists to catch that drift early — it is the immutable reference Mario
+can compare against in any strategic session to ask "are we still building what we set
+out to build?".
+
+Key rules:
+- File path: `projects/<name>/<name>-vision.md`.
+- Content: Mario's **original pitch in his own voice**, unedited, dated.
+- **Frozen by default.** Never overwritten — only appended with a new dated entry if the
+  vision consciously changes. Old entries remain visible.
+- Orion never rewrites the vision in its own tone. The voice belongs to the founder.
+- If vision is not yet fully written, file is created as a **stub** with seed idea + TODO
+  block — explicit, never hidden.
+- Distinct from `<name>-ideas.md` (living backlog of what could be built next). Never merge
+  the two — frozen vision and living backlog serve different purposes.
+- New projects: `vision.md` is part of the standard scaffold (5 files per project).
+
+---
+
+## 20. FUTURE
 
 **D40. Orion as multi-project architect.** ✅ Active since v1.4.0.
 
@@ -314,5 +338,5 @@ Prefix format: short project abbreviation + hyphen + D + number.
 
 ---
 
-*Orion OS v2.0.0 — Last updated: May 4, 2026 — Session 34*
-*New: D96 (kanban per project), D97 (issues repo reference), D98 (GraphQL deferred), D99 (decision prefix convention)*
+*Orion OS v2.2.0 — Last updated: May 7, 2026 — Session 37*
+*New: D100 (project vision.md as fifth standard file)*

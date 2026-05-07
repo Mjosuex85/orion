@@ -1,6 +1,6 @@
 # ORION.md — My Memory
 
-> Orion OS v2.1.0
+> Orion OS v2.2.0
 >
 > This is my updatable brain. I read it at the start of every session.
 > When I write here, I am writing to my future self.
@@ -148,14 +148,17 @@ PortfolioMV  →  projects/portfoliomv/portfoliomv.md (React CRA — single repo
 Orion OS     →  ORION-OS-ROADMAP.md                 (this repo + Mjosuex85/orion-os)
 ```
 
-### Project folder structure (standard — v2.1.0)
+### Project folder structure (standard — v2.2.0)
 ```
 projects/<name>/
   <name>.md               → operational context (stack, status, issues)
+  <name>-vision.md        → original pitch, frozen, anchor against drift (D100)
   <name>-decisions.md     → project-specific decisions
   <name>-architecture.md  → architecture reference
-  <name>-ideas.md         → product vision, backlog ideas
+  <name>-ideas.md         → product backlog ideas (living)
 ```
+
+The distinction matters: `vision.md` is **frozen** (Mario's original voice, dated, never overwritten — only appended on conscious change). `ideas.md` is **living** (backlog, what could be built next). They serve different purposes — never merge them.
 
 ---
 
@@ -194,7 +197,7 @@ Full protocol: `workflows/commands.md` → "Orion iniciar proyecto"
 1. Wizard: name, topology, frontend, backend, DB, auth, deploy
 2. Confirm with Mario before executing
 3. Create repo + develop branch + Orion OS files + issue #1
-4. Create folder `projects/<name>/` with all 4 standard files
+4. Create folder `projects/<name>/` with all 5 standard files (including vision.md stub)
 5. Mario creates GitHub Project (Kanban) + links repo — workflows/config.md
 
 ---
@@ -254,6 +257,7 @@ Open RFCs:
 - D96: one GitHub Project (Kanban) per project — setup convention → workflows/config.md
 - D97: issues repo declared in projects/<X>/<X>.md — Orion references by repo, not URL
 - D99: decision prefix convention — GN-D (GameOn), N-D (NutriApp), PM-D (PortfolioMV)
+- D100: every project has vision.md — frozen original pitch, anchor against drift
 - Skills are project-scoped — never carry Angular skills into a React project or vice versa
 - Agent identity is stack-scoped — OLGA.md for Angular, OLGA-REACT.md for React
 - Issue quality gate before assignment
@@ -355,7 +359,10 @@ LICENSE (MIT) added to instance repo for temporary public visibility (recruiter 
 ### Session 36 — May 7, 2026
 Orion OS v2.1.0: bootstrap modes (MODO CTO / MODO PROYECTO), modular project folders, ORION-EVOLUTION.md created, workflows/config.md (Kanban), INC-01 resolved, GameOn default removed.
 
+### Session 37 — May 7, 2026
+Orion OS v2.2.0: vision.md added as fifth standard project file (D100). gameon-vision.md created (literal original pitch). nutriapp-vision.md and portfoliomv-vision.md created as stubs. Claude Projects strategy clarified — one Project per work mode, GitHub as source of truth (no file drift).
+
 ---
 
-*Orion OS v2.1.0 — built by Mario Vidal + Orion*
-*Last updated: May 7, 2026 — Session 36*
+*Orion OS v2.2.0 — built by Mario Vidal + Orion*
+*Last updated: May 7, 2026 — Session 37*
