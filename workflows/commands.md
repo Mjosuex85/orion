@@ -57,13 +57,14 @@ Then asks: **"¿Todo correcto? Dame luz verde."**
 ```
 1. Create repo via GitHub MCP (if requested)
 2. Create develop branch
-3. Create projects/<n>.md (from template, filled with chosen stack)
-4. Create projects/<n>-decisions.md (initial decisions based on choices)
-5. Push CLAUDE.md + .npmrc + .gitattributes + .env.example to develop
-6. Update ORION.md — add project to REPOS + active projects list
-7. Create issue #1 — project scaffold based on chosen stack
-8. Create GitHub Project (Kanban) — manual step, Mario creates from UI
-   Columns: Backlog → Ready → In progress → In review → Done (D96)
+3. Create projects/<n>/<n>.md (from template, filled with chosen stack)
+4. Create projects/<n>/<n>-decisions.md (initial decisions based on choices)
+5. Create projects/<n>/<n>-architecture.md (placeholder)
+6. Create projects/<n>/<n>-ideas.md (placeholder)
+7. Push CLAUDE.md + .npmrc + .gitattributes + .env.example to develop
+8. Update ORION.md — add project to REPOS + active projects list
+9. Create issue #1 — project scaffold based on chosen stack
+10. Mario creates GitHub Project (Kanban) + links repo — see workflows/config.md (D96)
 ```
 
 ### Output
@@ -72,36 +73,51 @@ Then asks: **"¿Todo correcto? Dame luz verde."**
 "Proyecto <n> inicializado bajo Orion OS.
 Repo: Mjosuex85/<n>
 Issue #1 abierto: <title>
-Kanban: crear manualmente en GitHub Projects > <n>
+Kanban: crear manualmente en GitHub Projects > <n> → vincular repo → workflows/config.md
 Próximo paso: ejecuta el issue #1."
 ```
 
 ---
 
-## COMMAND 2 — "Orion vamos con X" / "Orion despierta"
+## COMMAND 2 — Bootstrap de sesión
 
-**Triggers:**
-- `"despierta Orion, vamos con <project>"`
-- `"hola Orion, trabajamos en <project>"`
-- `"Orion vamos con <project>"`
-- `"Orion despierta"` (loads primary project)
+**MODO CTO**
 
-**What Orion does — smart session init:**
+Triggers:
+- `"despierta Orion"`
+- `"necesito hablar contigo"`
+- Strategic or architectural discussion (no project work)
 
 ```
 1. Read ORION.md          → Mjosuex85/orion (main)
 2. Read DECISIONS.md      → Mjosuex85/orion (main)
-3. Read projects/<project>.md → identify stack + skills array + ISSUES REPO
-4. Load each skill in the skills array
-5. Read projects/<project>-decisions.md
-6. Run health check (workflows/health-check.md)
+→ No project. No skills. No health check.
+→ Ready to discuss architecture, strategy, system.
+```
+
+---
+
+**MODO PROYECTO**
+
+Triggers:
+- `"despierta Orion, vamos con <project>"`
+- `"hola Orion, trabajamos en <project>"`
+- `"Orion vamos con <project>"`
+
+```
+1. Read ORION.md                              → Mjosuex85/orion (main)
+2. Read DECISIONS.md                          → Mjosuex85/orion (main)
+3. Read projects/<project>/<project>.md       → stack + skills + issues repo
+4. Read projects/<project>/<project>-decisions.md
+5. Load skills declared in project            → only if coding session
+6. Health check (workflows/health-check.md)
 7. Status summary: current state + open issues + active priorities
 8. "Listo. ¿Por dónde arrancamos?"
 ```
 
 **Rules:**
+- If Mario does not specify project → Orion asks which one. No default.
 - Skills are project-scoped — never load Angular skills for a React project
-- If Mario doesn't specify a project → load primary project (GameOn)
 - If switching mid-session → follow workflows/context-switch.md
 
 ---
@@ -116,15 +132,15 @@ Próximo paso: ejecuta el issue #1."
 **What Orion does — session close protocol:**
 
 ```
-1. Show diff for projects/<project>.md
+1. Show diff for projects/<project>/<project>.md
    → What changed: issues closed, decisions made, priorities updated
    → Ask Mario: "¿Hago push?"
 
 2. On Mario's green light, push in this exact order:
-   a. projects/<project>.md          — status, features, pending (D87)
-   b. projects/<project>-decisions.md — new technical decisions (ALWAYS, not optional)
-   c. logs/sessions.jsonl            — append structured entry
-   d. ORION.md SESSION LOG           — one-liner only (see format below)
+   a. projects/<project>/<project>.md          — status, features, pending (D87)
+   b. projects/<project>/<project>-decisions.md — new technical decisions (ALWAYS)
+   c. logs/sessions.jsonl                       — append structured entry
+   d. ORION.md SESSION LOG                      — one-liner only (see format below)
 
 3. Confirm:
    "Sesión cerrada. Próxima prioridad: [X]."
@@ -154,7 +170,7 @@ Examples of WRONG entries (never do this):
 ...
 ```
 
-### projects/<project>-decisions.md — ALWAYS updated at close
+### projects/<project>/<project>-decisions.md — ALWAYS updated at close
 
 All new technical decisions made during the session go here — no exceptions.
 Format: `<PREFIX>-Dxx. <Decision title>` with context and reason.
@@ -167,7 +183,7 @@ This is not optional. If decisions were made, they must be documented.
 ```
 
 **Rules:**
-- Never close without updating projects/<project>.md (D87)
+- Never close without updating projects/<project>/<project>.md (D87)
 - Always show diff before pushing — Mario decides what goes in
 - If session was short and nothing changed → say so, no unnecessary push
 - ORION.md SESSION LOG = one-liner only. The detail lives in project files.
@@ -241,9 +257,9 @@ If you need to work on two projects → two separate agent sessions.
 
 | Mario says | Who | What happens |
 |---|---|---|
-| `"Orion iniciar proyecto"` | Orion | Wizard → create repo + files + issue #1 |
-| `"despierta Orion, vamos con <X>"` | Orion | Bootstrap → load context + skills for X |
-| `"Orion despierta"` | Orion | Bootstrap → load primary project (GameOn) |
+| `"Orion iniciar proyecto"` | Orion | Wizard → create repo + 4 project files + issue #1 |
+| `"despierta Orion, vamos con <X>"` | Orion | MODO PROYECTO → bootstrap context + skills for X |
+| `"despierta Orion"` / `"necesito hablar contigo"` | Orion | MODO CTO → identity + decisions only, no project |
 | `"cambiemos a <X>"` | Orion | Context switch → see context-switch.md |
 | `"Orion cierra sesión"` | Orion | Session close → update docs + log |
 | Open Antigravity (portfolioMV) | Olga-React | Auto-bootstrap via CLAUDE.md → OLGA-REACT.md |
@@ -252,6 +268,6 @@ If you need to work on two projects → two separate agent sessions.
 
 ---
 
-*Part of Orion OS v2.0.0 — session commands*
-*Updated: May 4, 2026 — Session 34*
-*Added: Command 4 (agent bootstrap protocol), D96 in project init, decision prefix convention in session close*
+*Part of Orion OS v2.1.0 — session commands*
+*Updated: May 7, 2026 — Session 36*
+*Changes: bootstrap modes (MODO CTO / MODO PROYECTO), modular project paths, no default project*
