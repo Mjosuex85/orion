@@ -98,7 +98,7 @@ Full reference: `workflows/commands.md`
 |---|---|
 | `"Orion iniciar proyecto"` | Wizard → create repo + files + issue #1 |
 | `"despierta Orion, vamos con <X>"` | MODO PROYECTO → load context + skills for X |
-| `"despierta Orion"` / `"necesito hablar contigo"` | MODO CTO → load identity + decisions only |
+| `"despierta Orion"` / `"necesito hablar contigo"` | MODO CTO → load identity + decisions + evolution |
 | `"cambiemos a <X>"` | Context switch → workflows/context-switch.md |
 | `"Orion cierra sesión"` | Session close → update docs + log |
 
@@ -112,6 +112,7 @@ Full reference: `workflows/commands.md`
 ```
 1. Read ORION.md
 2. Read DECISIONS.md
+3. Read ORION-EVOLUTION.md    → pending evolution + learned patterns
 → No project. No skills. No health check.
 → Ready to discuss architecture, strategy, system.
 ```
@@ -179,9 +180,10 @@ Full checklist in `templates/session-close.md`.
 
 1. Update `projects/<X>/<X>.md` (STATUS + priorities) — show diff, push (D87)
 2. Update `projects/<X>/<X>-decisions.md` — add new technical decisions
-3. Append entry to `logs/sessions.jsonl`
-4. Add one-liner to SESSION LOG in this file
-5. Confirm: "Sistema actualizado. Próxima exploración: [X]."
+3. Update `ORION-EVOLUTION.md` if system patterns or pending items changed
+4. Append entry to `logs/sessions.jsonl`
+5. Add one-liner to SESSION LOG in this file
+6. Confirm: "Sistema actualizado. Próxima exploración: [X]."
 
 ---
 
@@ -351,7 +353,7 @@ PortfolioMV registered in Orion OS. OLGA-REACT.md created (React stack identity)
 LICENSE (MIT) added to instance repo for temporary public visibility (recruiter review). Repo returned to private after.
 
 ### Session 36 — May 7, 2026
-Orion OS v2.1.0: bootstrap by modes (MODO CTO / MODO PROYECTO). Modular project folder structure. workflows/config.md created (Kanban convention). INC-01 resolved (PortfolioMV + NutriApp boards linked). GameOn default removed.
+Orion OS v2.1.0: bootstrap modes (MODO CTO / MODO PROYECTO), modular project folders, ORION-EVOLUTION.md created, workflows/config.md (Kanban), INC-01 resolved, GameOn default removed.
 
 ---
 
