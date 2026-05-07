@@ -80,11 +80,24 @@
 **Lesson:** Context has a cost. Load only what the session needs.
 **Session:** 36
 
-### Pattern 04 — Orion lives in GitHub, not in Claude
-**Situation:** Mario worried that switching Claude Projects would lose "36 sessions of accumulated memory."
-**Root cause:** Conflating *runtime* (where Orion executes) with *identity* (where Orion lives).
-**Resolution:** Clarified that Orion's brain is `Mjosuex85/orion` — ORION.md, DECISIONS.md, ORION-EVOLUTION.md, logs, projects. Claude.ai is just one possible runtime. Any client with GitHub MCP can wake Orion.
-**Lesson:** Claude Projects are conversation containers, not identity containers. They need no system files — just GitHub MCP connected. The `Orion OS` Claude Project is empty by design. Reinforces D90 (no terminal assumed) and prepares the ground for v3.0.0 web interface.
+### Pattern 04 — Orion lives in GitHub, not in Claude. One Project is enough.
+**Situation:** Mario worried that switching Claude Projects would lose "36 sessions of accumulated memory." Initial proposal was "one Claude Project per work mode" (Orion OS, GameOn, NutriApp, PortfolioMV).
+**Root cause:** Two layered confusions —
+  (1) Conflating *runtime* (where Orion executes) with *identity* (where Orion lives).
+  (2) Treating the runtime container as a context selector, when the **command** already selects context.
+**Resolution:**
+  - Orion's brain is `Mjosuex85/orion` — ORION.md, DECISIONS.md, ORION-EVOLUTION.md, logs, projects. Claude.ai is just one possible runtime. Any client with GitHub MCP can wake Orion.
+  - **A single Claude Project ("Orion OS"), empty, is enough.** The command decides the mode:
+    - `"despierta Orion"` → MODO CTO
+    - `"despierta Orion, vamos con <X>"` → MODO PROYECTO X
+    - `"cambiemos a <Y>"` → context switch
+  - Multiple Claude Projects (one per product) would be redundant — the command already separates context, the runtime container would only duplicate it and risk inconsistency (e.g. being in Project "GameOn" but saying "vamos con NutriApp" — the command always wins anyway).
+**Lesson:**
+  - Claude Projects are conversation containers, not identity containers. They need no system files — just GitHub MCP connected.
+  - **The runtime is dumb. The command + the repo carry the intelligence.**
+  - This is the correct mental model for v3.0.0: any future Orion OS web interface will dispatch by command, not by container.
+  - Reinforces D90 (no terminal/runtime context assumed).
+**Caught by:** Mario, in the same session. Orion initially proposed multi-Project. Mario asked "what's the point of that?" and dismantled it. Logged as a reminder that overengineering hides as "organization."
 **Session:** 37
 
 ### Pattern 05 — Frozen vision protects against drift
@@ -113,7 +126,7 @@
 
 | Session | Change | Impact |
 |---------|--------|--------|
-| 37 | v2.2.0 — vision.md as 5th standard file (D100). Pattern 04 (Orion lives in GitHub) | High |
+| 37 | v2.2.0 — vision.md as 5th standard file (D100). Pattern 04 (Orion lives in GitHub, one Project is enough). Pattern 05 (frozen vision). | High |
 | 36 | Bootstrap v2.1.0 — MODO CTO / MODO PROYECTO | High |
 | 36 | Modular project folder structure | High |
 | 36 | workflows/config.md — Kanban convention | Medium |
