@@ -1,7 +1,7 @@
 # Orion OS
 
 > The operating system for AI-powered development teams.
-> **v2.0.0** — Public system layer, multi-framework agents, kanban per project, decision prefix convention.
+> **v2.1.0** — Bootstrap modes (MODO CTO / MODO PROYECTO), modular project folders, system evolution tracking.
 
 ---
 
@@ -31,31 +31,28 @@ Director / Founder (vision & business decisions)
 
 | Command | What happens |
 |---|---|
+| `"despierta Orion"` / `"necesito hablar contigo"` | MODO CTO → identity + decisions + evolution |
+| `"despierta Orion, vamos con <project>"` | MODO PROYECTO → load context + skills for that project |
 | `"Orion iniciar proyecto"` | Wizard → choose stack → create repo + files + issue #1 |
-| `"despierta Orion, vamos con <project>"` | Smart bootstrap → load context + skills for that project |
 | `"Orion cierra sesión"` | Update docs + log session + confirm next priority |
 
 Full reference: `workflows/commands.md`
 
 ## Core concepts
 
-**Stack-scoped agent identities** — Olga has two identities: `OLGA.md` for Angular projects and `OLGA-REACT.md` for React projects. The `CLAUDE.md` of each repo tells her which to load. One repo, one agent, one session — never mixed.
+**Bootstrap modes** — Two distinct modes: MODO CTO (identity + decisions + evolution, no project) and MODO PROYECTO (full project context + skills). No default project — Orion always asks.
 
-**Smart session init** — When waking up for a project, Orion loads the exact skills for that project's stack. React → react-patterns. Angular → angular-patterns. Never mixed.
+**Stack-scoped agent identities** — Olga has two identities: `OLGA.md` for Angular and `OLGA-REACT.md` for React. The `CLAUDE.md` of each repo tells her which to load. One repo, one agent, one session — never mixed.
 
-**Kanban per project (D96)** — Each active project has its own GitHub Project board at account level. Standard columns: Backlog → Ready → In progress → In review → Done. Orion references issues by repo, not by board URL (D97).
+**Modular project structure** — Each project lives in `projects/<name>/` with 4 standard files: `<name>.md`, `<name>-decisions.md`, `<name>-architecture.md`, `<name>-ideas.md`.
 
-**Decision prefix convention (D99)** — Project-specific decisions use a prefix: `GN-D` (GameOn), `N-D` (NutriApp), `PM-D` (PortfolioMV). Universal decisions use bare `D`.
+**Kanban per project (D96)** — Each project has its own GitHub Project board. Repo must be linked manually — see `workflows/config.md`.
 
-**Reversible decisions (D89)** — Every technical decision must be reversible or explicitly documented as irreversible.
+**Decision prefix convention (D99)** — `GN-D` (GameOn), `N-D` (NutriApp), `PM-D` (PortfolioMV). Universal decisions use bare `D`.
 
-**Scaffold via GitHub MCP (D90)** — Orion creates project scaffolds by pushing files to the repo via GitHub MCP. Mario clones and runs `npm install` locally.
+**System evolution tracking** — `ORION-EVOLUTION.md` is the source of truth for how Orion grows. Read in MODO CTO. Contains pending items, learned patterns, open system decisions.
 
-**Multi-project architecture** — Each project has isolated context, decisions, skills, repos, and kanban. Max 2 issues In Progress per project simultaneously (D7).
-
-**Issue-driven development** — GitHub Issues are the only communication channel between Orion and execution agents. Format: Context + Done + Agent Prompt + Skills + Test Plan.
-
-**Decision registry** — Universal decisions in `DECISIONS.md`. Project-specific in `projects/<n>-decisions.md`.
+**Issue-driven development** — GitHub Issues are the only communication channel between Orion and execution agents.
 
 ## Repository structure
 
@@ -64,53 +61,52 @@ orion/
   ├── README.md                  → This file
   ├── ORION.md                   → Orion's identity, rules, session protocol
   ├── DECISIONS.md               → Universal decisions (all projects)
+  ├── ORION-EVOLUTION.md         → System growth tracking (read in MODO CTO)
+  ├── BOOT.md                    → Boot sequence (provisional until v3.0.0)
+  ├── CHANGELOG.md               → Version history
+  ├── ORION-OS-ROADMAP.md        → Roadmap toward v3.0.0
   │
   ├── agents/
-  │   ├── AGENT_RULES.md         → Universal rules for all agents
-  │   ├── DIRECTOR.md            → Founder profile
-  │   ├── NESTOR.md              → Backend tech lead (NestJS)
-  │   ├── OLGA.md                → Frontend tech lead (Angular — GameOn)
-  │   ├── OLGA-REACT.md          → Frontend tech lead (React — PortfolioMV)
-  │   ├── BRUNO.md               → QA agent (CI-based)
+  │   ├── AGENT_RULES.md
+  │   ├── DIRECTOR.md
+  │   ├── NESTOR.md
+  │   ├── OLGA.md
+  │   ├── OLGA-REACT.md
+  │   ├── BRUNO.md
   │   └── subagents/
-  │       ├── angular-component-architecture.md
-  │       ├── angular-performance.md
-  │       ├── angular-accessibility.md
-  │       ├── react-component-architecture.md
-  │       ├── ui-design-reviewer.md
-  │       ├── nestjs-architecture.md
-  │       ├── typeorm-migrations.md
-  │       └── backend-security.md
   │
   ├── projects/
-  │   ├── gameon.md              → GameOn (Angular + NestJS — polyrepo)
-  │   ├── gameon-decisions.md
-  │   ├── gameon-ideas.md
-  │   ├── nutriapp.md            → NutriApp (React + Supabase — monorepo)
-  │   ├── nutriapp-decisions.md
-  │   ├── portfoliomv.md         → PortfolioMV (React CRA — single repo)
-  │   └── portfoliomv-decisions.md
+  │   ├── gameon/
+  │   │   ├── gameon.md
+  │   │   ├── gameon-decisions.md
+  │   │   ├── gameon-architecture.md
+  │   │   └── gameon-ideas.md
+  │   ├── nutriapp/
+  │   │   ├── nutriapp.md
+  │   │   ├── nutriapp-decisions.md
+  │   │   ├── nutriapp-architecture.md
+  │   │   └── nutriapp-ideas.md
+  │   └── portfoliomv/
+  │       ├── portfoliomv.md
+  │       ├── portfoliomv-decisions.md
+  │       ├── portfoliomv-architecture.md
+  │       └── portfoliomv-ideas.md
   │
   ├── logs/
   │   ├── sessions.jsonl
   │   ├── agent-feedback.jsonl
   │   └── post-mortems.jsonl
   │
-  ├── rfcs/                      → Pending architecture decisions
-  │
+  ├── rfcs/
   ├── skills/
   │   ├── universal/
   │   ├── backend/
   │   └── frontend/
-  │       ├── angular-patterns.md
-  │       ├── angular-signals.md
-  │       ├── api-service.md
-  │       └── react-patterns.md
   │
   ├── templates/
   └── workflows/
-      ├── commands.md            → Session + agent bootstrap protocol
-      ├── project-init.md
+      ├── commands.md
+      ├── config.md              → Universal config (Kanban setup, conventions)
       ├── context-switch.md
       ├── health-check.md
       ├── issue-quality.md
@@ -132,17 +128,17 @@ orion/
 
 ```
 v1.0.0  ✅  Foundation — manual framework, single project
-v1.1.0  ✅  Separation of Concerns — framework decoupled from project
-v1.2.0  ✅  Metrics & Observability — dashboard, logs, health checks
-v1.3.0  ✅  Agent Intelligence — quality scoring, skill injection, feedback
-v1.4.0  ✅  Multi-Project Ready — templates, init workflow, context switching
-v1.5.0  ✅  Multi-Framework + Session Commands + Reversible Architecture
-v2.0.0  ✅  Public system layer (orion-os), OLGA-REACT, kanban per project,
-             agent bootstrap protocol, decision prefix convention (D96-D99)
+v1.1.0  ✅  Separation of Concerns
+v1.2.0  ✅  Metrics & Observability
+v1.3.0  ✅  Agent Intelligence
+v1.4.0  ✅  Multi-Project Ready
+v1.5.0  ✅  Multi-Framework + Session Commands
+v2.0.0  ✅  Public system layer (orion-os), OLGA-REACT, kanban per project
+v2.1.0  ✅  Bootstrap modes, modular project folders, ORION-EVOLUTION.md
 v3.0.0  ⬜  Orion OS web interface — wizard, GitHub OAuth, zero config
 ```
 
 ---
 
 *Created by Mario Vidal + Orion — March 2026*
-*Last updated: May 4, 2026 — Session 34*
+*Last updated: May 7, 2026 — Session 36*
