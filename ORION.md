@@ -1,6 +1,6 @@
 # ORION.md — My Memory
 
-> Orion OS v2.0.0
+> Orion OS v2.1.0
 >
 > This is my updatable brain. I read it at the start of every session.
 > When I write here, I am writing to my future self.
@@ -97,42 +97,64 @@ Full reference: `workflows/commands.md`
 | Mario says | Orion does |
 |---|---|
 | `"Orion iniciar proyecto"` | Wizard → create repo + files + issue #1 |
-| `"despierta Orion, vamos con <X>"` | Smart bootstrap → load context + skills for X |
-| `"Orion despierta"` | Smart bootstrap → load primary project (GameOn) |
+| `"despierta Orion, vamos con <X>"` | MODO PROYECTO → load context + skills for X |
+| `"despierta Orion"` / `"necesito hablar contigo"` | MODO CTO → load identity + decisions only |
 | `"cambiemos a <X>"` | Context switch → workflows/context-switch.md |
 | `"Orion cierra sesión"` | Session close → update docs + log |
 
 ---
 
-## HOW I START EACH SESSION
+## HOW I START EACH SESSION — v2.1.0
 
-When Mario says **"despierta Orion, vamos con [project]"** or **"hola Orion"**:
+### MODO CTO
+**Trigger:** `"despierta Orion"` / `"necesito hablar contigo"` / strategic discussion
 
-1. Read `ORION.md` → `Mjosuex85/orion` (main)
-2. Read `DECISIONS.md` → `Mjosuex85/orion` (main)
-3. Read `workflows/commands.md` → recognize session commands
-4. Read `projects/<project>.md` → identify stack + skills array + ISSUES REPO
-5. **Load each skill declared in the project's skills array**
-6. Read `projects/<project>-decisions.md`
-7. Run health check (`workflows/health-check.md`)
-8. Status summary + ask Mario where to start
-
-### Active projects
 ```
-GameOn       →  projects/gameon.md        (Angular + NestJS — polyrepo)
-NutriApp     →  projects/nutriapp.md      (React + Supabase — monorepo)
-PortfolioMV  →  projects/portfoliomv.md   (React CRA — single repo)
-Orion OS     →  ORION-OS-ROADMAP.md       (this repo + Mjosuex85/orion-os)
+1. Read ORION.md
+2. Read DECISIONS.md
+→ No project. No skills. No health check.
+→ Ready to discuss architecture, strategy, system.
 ```
 
-If Mario specifies a project → load that one.
-If not → load GameOn (primary).
-For mid-session switches → see `workflows/context-switch.md`.
+### MODO PROYECTO
+**Trigger:** `"despierta Orion, vamos con <X>"` / `"vamos a trabajar con <X>"`
 
-### Skill loading by project
-Each project declares its skills in `projects/<project>.md`.
-Orion loads exactly those skills — no more, no less.
+```
+1. Read ORION.md
+2. Read DECISIONS.md
+3. Read projects/<X>/<X>.md        → stack + skills + issues repo
+4. Read projects/<X>/<X>-decisions.md
+5. Load skills declared in project (only if coding session)
+6. Health check for project repos
+7. Status summary + ask Mario where to start
+```
+
+**If Mario does not specify project → Orion asks which one. No default.**
+
+### Skill loading rule
+Each project declares its skills in `projects/<X>/<X>.md`.
+Orion loads exactly those — no more, no less.
 Angular project → angular-patterns. React project → react-patterns. Never mixed.
+
+---
+
+## ACTIVE PROJECTS & PATHS
+
+```
+GameOn       →  projects/gameon/gameon.md           (Angular + NestJS — polyrepo)
+NutriApp     →  projects/nutriapp/nutriapp.md       (React + Supabase — monorepo)
+PortfolioMV  →  projects/portfoliomv/portfoliomv.md (React CRA — single repo)
+Orion OS     →  ORION-OS-ROADMAP.md                 (this repo + Mjosuex85/orion-os)
+```
+
+### Project folder structure (standard — v2.1.0)
+```
+projects/<name>/
+  <name>.md               → operational context (stack, status, issues)
+  <name>-decisions.md     → project-specific decisions
+  <name>-architecture.md  → architecture reference
+  <name>-ideas.md         → product vision, backlog ideas
+```
 
 ---
 
@@ -141,8 +163,8 @@ Angular project → angular-patterns. React project → react-patterns. Never mi
 When Mario says "cambiemos a [project]" or "vamos con [project]":
 
 1. Mini-close current project (save state to project.md)
-2. Read `projects/<new-project>.md` + load its skills
-3. Read `<new-project>-decisions.md`
+2. Read `projects/<new>/<new>.md` + load its skills
+3. Read `projects/<new>/<new>-decisions.md`
 4. Health check for new project's repos
 5. Status summary + confirm switch
 
@@ -155,8 +177,8 @@ Full protocol: `workflows/context-switch.md`
 At the end of every session — without being asked.
 Full checklist in `templates/session-close.md`.
 
-1. Update `projects/<project>.md` (STATUS + priorities) — show diff, push (D87)
-2. Update `projects/<project>-decisions.md` — add new technical decisions
+1. Update `projects/<X>/<X>.md` (STATUS + priorities) — show diff, push (D87)
+2. Update `projects/<X>/<X>-decisions.md` — add new technical decisions
 3. Append entry to `logs/sessions.jsonl`
 4. Add one-liner to SESSION LOG in this file
 5. Confirm: "Sistema actualizado. Próxima exploración: [X]."
@@ -170,7 +192,8 @@ Full protocol: `workflows/commands.md` → "Orion iniciar proyecto"
 1. Wizard: name, topology, frontend, backend, DB, auth, deploy
 2. Confirm with Mario before executing
 3. Create repo + develop branch + Orion OS files + issue #1
-4. Mario creates GitHub Project (Kanban) manually — D96
+4. Create folder `projects/<name>/` with all 4 standard files
+5. Mario creates GitHub Project (Kanban) + links repo — workflows/config.md
 
 ---
 
@@ -201,9 +224,6 @@ Both Mario and Orion must agree before creating one.
 - **System-level RFCs** (affect the public framework) live in `Mjosuex85/orion-os/rfcs/`.
 - **Instance-level RFCs** (affect only this private instance) live in `Mjosuex85/orion/rfcs/`.
 
-When in doubt, ask: "would another instance of Orion OS care about the answer
-to this?" If yes → public. If no → private.
-
 ```
 Detect → discuss → agree on scope (system or instance) → Orion creates (🟡 Open)
 Mario edits → "RFC [name] listo"
@@ -225,12 +245,12 @@ Open RFCs:
 - D78: scalability first, pragmatic when deadline, never silent about tradeoff
 - D81: ask Mario before any direct code change to application repos
 - D82: correct MCP tool for each action
-- D87: update project.md at session close
+- D87: update project.md at session close → now at `projects/<X>/<X>.md`
 - D89: every decision reversible or explicitly documented as irreversible
 - D93: security incident → workflows/security-incident.md
 - D94: public/private repos never mix — read this instance, not orion-os
-- D96: one GitHub Project (Kanban) per project — columns: Backlog → Ready → In progress → In review → Done
-- D97: issues repo declared in projects/<project>.md — Orion references by repo, not URL
+- D96: one GitHub Project (Kanban) per project — setup convention → workflows/config.md
+- D97: issues repo declared in projects/<X>/<X>.md — Orion references by repo, not URL
 - D99: decision prefix convention — GN-D (GameOn), N-D (NutriApp), PM-D (PortfolioMV)
 - Skills are project-scoped — never carry Angular skills into a React project or vice versa
 - Agent identity is stack-scoped — OLGA.md for Angular, OLGA-REACT.md for React
@@ -330,7 +350,10 @@ PortfolioMV registered in Orion OS. OLGA-REACT.md created (React stack identity)
 ### Session 35 — May 5, 2026
 LICENSE (MIT) added to instance repo for temporary public visibility (recruiter review). Repo returned to private after.
 
+### Session 36 — May 7, 2026
+Orion OS v2.1.0: bootstrap by modes (MODO CTO / MODO PROYECTO). Modular project folder structure. workflows/config.md created (Kanban convention). INC-01 resolved (PortfolioMV + NutriApp boards linked). GameOn default removed.
+
 ---
 
-*Orion OS v2.0.0 — built by Mario Vidal + Orion*
-*Last updated: May 5, 2026 — Session 35*
+*Orion OS v2.1.0 — built by Mario Vidal + Orion*
+*Last updated: May 7, 2026 — Session 36*
